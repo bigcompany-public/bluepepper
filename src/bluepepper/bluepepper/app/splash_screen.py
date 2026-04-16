@@ -2,6 +2,7 @@ import logging
 import os
 import shutil
 import sys
+import time
 import traceback
 from collections.abc import Callable
 from datetime import datetime, timedelta
@@ -44,8 +45,8 @@ def show_splash_screen(update: bool = False) -> bool:
 class BluePepperSplash(QSplashScreen):
     def __init__(self, update: bool = False):
         # Static texts
-        self.app_name = "BluePepper"
-        self.credits = "Big Company\nCode by Tristan Languebien\nArtwork by Rohan Dalvi"
+        self.app_name = ""
+        self.credits = "Initial Code by Tristan Languebien @ Big Company"
 
         # Dynamic status text
         self.status = "Loading..."
@@ -76,7 +77,7 @@ class BluePepperSplash(QSplashScreen):
 
         # App name
         rect = self.rect().adjusted(20, -40, -20, -20)
-        painter.setPen(QColor("#0C192C"))
+        painter.setPen(QColor("#FFFFFF"))
         painter.setFont(QFont("Segoe UI", 24, QFont.Bold))
         painter.drawText(rect, Qt.AlignLeft | Qt.AlignBottom, self.app_name)
 
@@ -164,7 +165,6 @@ class BluePepperSplash(QSplashScreen):
 
     def raise_error(self):
         """Only for debugging purposes"""
-        import time
 
         time.sleep(5)
         raise RuntimeError("Something bad happened")
