@@ -388,7 +388,7 @@ class BluePepperInstaller:
         Returns:
             Path to the install/requirements directory.
         """
-        return self.root_path / "install" / "requirements"
+        return self.root_path / "conf" / "requirements"
 
     @property
     def requirements_files(self) -> List[Path]:

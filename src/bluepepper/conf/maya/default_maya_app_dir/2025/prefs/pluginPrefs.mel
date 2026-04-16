@@ -1,0 +1,19 @@
+//Maya Preference 2024 (Release 1)
+//
+//
+evalDeferred("autoLoadPlugin(\"\", \"rotateHelper\", \"rotateHelper\")");
+evalDeferred("autoLoadPlugin(\"\", \"tiffFloatReader\", \"tiffFloatReader\")");
+evalDeferred("autoLoadPlugin(\"\", \"matrixNodes\", \"matrixNodes\")");
+evalDeferred("autoLoadPlugin(\"\", \"ikSpringSolver\", \"ikSpringSolver\")");
+evalDeferred("autoLoadPlugin(\"\", \"ik2Bsolver\", \"ik2Bsolver\")");
+evalDeferred("autoLoadPlugin(\"\", \"ufeSupport.py\", \"ufeSupport\")");
+evalDeferred("autoLoadPlugin(\"\", \"GPUBuiltInDeformer\", \"GPUBuiltInDeformer\")");
+evalDeferred("autoLoadPlugin(\"\", \"OpenEXRLoader\", \"OpenEXRLoader\")");
+evalDeferred("autoLoadPlugin(\"\", \"lookdevKit\", \"lookdevKit\")");
+evalDeferred("autoLoadPlugin(\"\", \"Unfold3D\", \"Unfold3D\")");
+evalDeferred("autoLoadPlugin(\"\", \"Type\", \"Type\")");
+evalDeferred("autoLoadPlugin(\"\", \"mayaCharacterization\", \"mayaCharacterization\")");
+evalDeferred("autoLoadPlugin(\"\", \"modelingToolkit\", \"modelingToolkit\")");
+evalDeferred("autoLoadPlugin(\"\", \"objExport\", \"objExport\")");
+evalDeferred("autoLoadPlugin(\"\", \"meshReorder\", \"meshReorder\")");
+evalDeferred("autoLoadPlugin(\"\", \"fbxmaya\", \"fbxmaya\")");
