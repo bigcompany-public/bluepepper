@@ -59,14 +59,14 @@ class DefaultLauncherConfig(LauncherConfig):
     tools: list[LauncherItem] = [
         LauncherItem(
             label="Asset Tag Manager",
-            icon="software_maya.png",
+            icon="tag.png",
             module="bluepepper.tools.tags.tag_manager_widget",
             function="show_asset_tag_manager_dialog",
             tooltip="Manage asset tags",
         ),
         LauncherItem(
             label="Shot Tag Manager",
-            icon="software_maya.png",
+            icon="tag.png",
             module="bluepepper.tools.tags.tag_manager_widget",
             function="show_shot_tag_manager_dialog",
             tooltip="Manage shot tags",
