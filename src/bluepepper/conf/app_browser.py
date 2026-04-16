@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from config.project import ProjectSettings
+from conf.project import ProjectSettings
 
 from bluepepper.core import codex
 from bluepepper.tools.browser.browser_config import (

@@ -12,6 +12,8 @@ from threading import Thread
 from typing import Any, Callable
 
 import qtawesome
+from conf.fastapi import FastApiSettings
+from conf.project import ProjectSettings
 from qtpy.QtCore import QSize, Qt, QTimer
 from qtpy.QtGui import QIcon, QMouseEvent
 from qtpy.QtWidgets import QPushButton, QWidget
@@ -20,7 +22,6 @@ from bluepepper.app.api.fastapi_bridge import fastapi_bridge
 from bluepepper.app.api.fastapi_server import run_server_as_daemon
 from bluepepper.app.main_window.frameless_window import FramelessMainWindow
 from bluepepper.app.main_window.ui_main_window import Ui_bluepepper_app_widget
-from bluepepper.conf.project import Settings
 from bluepepper.console import BluePepperConsole
 from bluepepper.core import init_logging, root_dir, version
 from bluepepper.gui.utils import format_widgets, get_qt_app, get_stylesheet, get_theme
@@ -90,7 +91,7 @@ class BluePepperApp(FramelessMainWindow):
         self.ui.pb_maximize.clicked.connect(self.toggle_maximized)
 
     def _setup_fastapi(self) -> None:
-        run_server_as_daemon(port=Settings.fastapi_port)
+        run_server_as_daemon(port=FastApiSettings.fastapi_port)
         fastapi_bridge.payload.connect(self._handle_fastapi_query)
 
     def _handle_fastapi_query(self, payload: dict[str, Any]) -> None:
@@ -290,7 +291,7 @@ def except_hook(exc_type: type, exc_value: BaseException, exc_traceback: Any) ->
 def show_main_window() -> None:
     """Bootstrap and display the BluePepper application window."""
     sys.excepthook = except_hook
-    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(f"bluepepper.{Settings.project_name}")
+    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(f"bluepepper.{ProjectSettings.project_name}")
     app = get_qt_app()
     main_window = BluePepperApp()
     main_window.show()

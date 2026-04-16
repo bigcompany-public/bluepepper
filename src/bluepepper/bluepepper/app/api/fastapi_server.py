@@ -5,8 +5,8 @@ import threading
 import uvicorn
 from bluepepper.app.api.fastapi_router_browser import router_browser
 from bluepepper.app.api.fastapi_router_example import router_example
-from bluepepper.conf.project import Settings
 from bluepepper.core import init_logging
+from conf.fastapi import FastApiSettings
 from fastapi import FastAPI
 
 app = FastAPI()
@@ -61,4 +61,4 @@ def run_server_as_daemon(host: str = "0.0.0.0", port: int = 8000) -> None:
 
 if __name__ == "__main__":
     init_logging("fastapiServer")
-    run_server(host="0.0.0.0", port=Settings.fastapi_port)
+    run_server(host="0.0.0.0", port=FastApiSettings.fastapi_port)

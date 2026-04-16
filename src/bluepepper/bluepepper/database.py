@@ -477,7 +477,7 @@ class BigMongoClient(MongoClient):
         logging.info("Starting local MongoDB Server")
         root_dir = Path(os.environ["BLUEPEPPER_ROOT"])
         mongod_path = root_dir / "bin/mongodb/mongod.exe"
-        db_path = root_dir / ".database"
+        db_path = root_dir.parent / ".database"
         db_path.mkdir(parents=True, exist_ok=True)
 
         command = [

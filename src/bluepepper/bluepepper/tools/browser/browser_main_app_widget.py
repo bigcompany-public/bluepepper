@@ -1,3 +1,4 @@
+from conf.app_browser import get_tool_config
 from qtpy.QtWidgets import QApplication, QDialog, QVBoxLayout, QWidget
 
 from bluepepper.tools.browser.browser_widget import BrowserWidget

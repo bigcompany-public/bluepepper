@@ -4,6 +4,7 @@ from typing import Dict, Optional
 
 from aquarium.aquarium import Asset as AqAsset
 from bson import ObjectId
+from conf.project import ProjectSettings
 
 from bluepepper.aqua import get_aqua
 from bluepepper.core import codex, database, init_logging
@@ -26,11 +27,13 @@ class AssetCreator:
             self.check_required_fields()
             self.check_field_rules()
             self.create_db_document()
-            self.create_aquarium_asset()
+            if "aquarium" in ProjectSettings.production_trackers:
+                self.create_aquarium_asset()
         except Exception:
             logging.error("An error occured while creating the asset")
             self.remove_db_document()
-            self.remove_aquarium_asset()
+            if "aquarium" in ProjectSettings.production_trackers:
+                self.remove_aquarium_asset()
             raise
 
     def check_required_fields(self):
@@ -56,22 +59,16 @@ class AssetCreator:
         if not result.inserted_id:
             raise RuntimeError(f"Failed to create asset on database : {self.fields}")
         self.document = database.get_asset_document_by_id(str(result.inserted_id))
-        logging.info(
-            f"Successfully created asset document on the database : {self.document}"
-        )
+        logging.info(f"Successfully created asset document on the database : {self.document}")
         return self.document
 
     def check_existing_asset(self) -> None:
         query = {
-            key: value
-            for key, value in self.fields.items()
-            if key in codex.convs.asset_identifier.required_fields
+            key: value for key, value in self.fields.items() if key in codex.convs.asset_identifier.required_fields
         }
         result = list(database.assets.find(query))
         if result:
-            raise AssetAlreadyExistsError(
-                f"An asset with these fields already exists : {query}"
-            )
+            raise AssetAlreadyExistsError(f"An asset with these fields already exists : {query}")
 
     def remove_db_document(self):
         if not self.document:
@@ -81,6 +78,8 @@ class AssetCreator:
 
     def create_aquarium_asset(self):
         """Creates the asset on aquarium, and fills the "_aquariumKey" field on the database"""
+        if "aquarium" not in ProjectSettings.production_trackers:
+            return
         aqua = get_aqua()
         aq_asset = aqua.create_asset(self.document)
         self.aquarium_asset = aq_asset
@@ -90,6 +89,9 @@ class AssetCreator:
         )
 
     def remove_aquarium_asset(self):
+        if "aquarium" not in ProjectSettings.production_trackers:
+            return
+
         if not self.aquarium_asset:
             return
         logging.warning("Removing aquarium asset")

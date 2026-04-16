@@ -11,7 +11,6 @@ from argparse import ArgumentParser
 from typing import Callable
 
 import requests
-from bluepepper.conf.project import Settings
 from bluepepper.core import init_logging
 from requests.exceptions import HTTPError
 from requests.models import Response
