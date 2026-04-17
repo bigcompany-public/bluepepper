@@ -1,16 +1,25 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'main_windowGVsypA.ui'
+## Form generated from reading UI file 'main_windowGFhOfh.ui'
 ##
-## Created by: Qt User Interface Compiler version 5.15.2
+## Created by: Qt User Interface Compiler version 6.10.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from qtpy.QtCore import *
-from qtpy.QtGui import *
-from qtpy.QtWidgets import *
+from qtpy.QtCore import QCoreApplication, QMetaObject, QSize, Qt
+from qtpy.QtWidgets import (
+    QFrame,
+    QHBoxLayout,
+    QLabel,
+    QPushButton,
+    QSizePolicy,
+    QSpacerItem,
+    QStackedWidget,
+    QVBoxLayout,
+    QWidget,
+)
 
 
 class Ui_bluepepper_app_widget(object):
@@ -24,13 +33,13 @@ class Ui_bluepepper_app_widget(object):
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.frame_topbar = QFrame(bluepepper_app_widget)
         self.frame_topbar.setObjectName("frame_topbar")
-        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.frame_topbar.sizePolicy().hasHeightForWidth())
         self.frame_topbar.setSizePolicy(sizePolicy)
-        self.frame_topbar.setFrameShape(QFrame.StyledPanel)
-        self.frame_topbar.setFrameShadow(QFrame.Raised)
+        self.frame_topbar.setFrameShape(QFrame.Shape.StyledPanel)
+        self.frame_topbar.setFrameShadow(QFrame.Shadow.Raised)
         self.horizontalLayout = QHBoxLayout(self.frame_topbar)
         self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setObjectName("horizontalLayout")
@@ -40,8 +49,8 @@ class Ui_bluepepper_app_widget(object):
         sizePolicy.setHeightForWidth(self.frame_3.sizePolicy().hasHeightForWidth())
         self.frame_3.setSizePolicy(sizePolicy)
         self.frame_3.setMinimumSize(QSize(0, 0))
-        self.frame_3.setFrameShape(QFrame.StyledPanel)
-        self.frame_3.setFrameShadow(QFrame.Raised)
+        self.frame_3.setFrameShape(QFrame.Shape.StyledPanel)
+        self.frame_3.setFrameShadow(QFrame.Shadow.Raised)
         self.verticalLayout_7 = QVBoxLayout(self.frame_3)
         self.verticalLayout_7.setSpacing(0)
         self.verticalLayout_7.setObjectName("verticalLayout_7")
@@ -51,56 +60,60 @@ class Ui_bluepepper_app_widget(object):
         sizePolicy.setHeightForWidth(self.frame.sizePolicy().hasHeightForWidth())
         self.frame.setSizePolicy(sizePolicy)
         self.frame.setMinimumSize(QSize(0, 0))
-        self.frame.setFrameShape(QFrame.StyledPanel)
-        self.frame.setFrameShadow(QFrame.Raised)
+        self.frame.setFrameShape(QFrame.Shape.StyledPanel)
+        self.frame.setFrameShadow(QFrame.Shadow.Raised)
         self.horizontalLayout_2 = QHBoxLayout(self.frame)
         self.horizontalLayout_2.setSpacing(0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
-        self.horizontalSpacer_2 = QSpacerItem(
-            10, 20, QSizePolicy.Fixed, QSizePolicy.Minimum
-        )
+        self.frame_icon = QFrame(self.frame)
+        self.frame_icon.setObjectName("frame_icon")
+        self.frame_icon.setMinimumSize(QSize(16, 16))
+        self.frame_icon.setFrameShape(QFrame.Shape.StyledPanel)
+        self.frame_icon.setFrameShadow(QFrame.Shadow.Raised)
+        self.layout_icon = QHBoxLayout(self.frame_icon)
+        self.layout_icon.setObjectName("layout_icon")
+        self.layout_icon.setContentsMargins(0, 0, 0, 0)
 
-        self.horizontalLayout_2.addItem(self.horizontalSpacer_2)
+        self.horizontalLayout_2.addWidget(self.frame_icon)
 
         self.label_main_title = QLabel(self.frame)
         self.label_main_title.setObjectName("label_main_title")
         self.label_main_title.setAlignment(
-            Qt.AlignBottom | Qt.AlignLeading | Qt.AlignLeft
+            Qt.AlignmentFlag.AlignBottom | Qt.AlignmentFlag.AlignLeading | Qt.AlignmentFlag.AlignLeft
         )
 
         self.horizontalLayout_2.addWidget(self.label_main_title)
 
-        self.horizontalSpacer_4 = QSpacerItem(
-            10, 20, QSizePolicy.Fixed, QSizePolicy.Minimum
-        )
+        self.horizontalSpacer_4 = QSpacerItem(10, 20, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_2.addItem(self.horizontalSpacer_4)
 
         self.label_important_content = QLabel(self.frame)
         self.label_important_content.setObjectName("label_important_content")
         self.label_important_content.setAlignment(
-            Qt.AlignBottom | Qt.AlignLeading | Qt.AlignLeft
+            Qt.AlignmentFlag.AlignBottom | Qt.AlignmentFlag.AlignLeading | Qt.AlignmentFlag.AlignLeft
         )
         self.label_important_content.setMargin(2)
 
         self.horizontalLayout_2.addWidget(self.label_important_content)
 
-        self.horizontalSpacer = QSpacerItem(
-            10, 5, QSizePolicy.Expanding, QSizePolicy.Minimum
-        )
+        self.horizontalSpacer = QSpacerItem(10, 5, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_2.addItem(self.horizontalSpacer)
 
         self.label_version = QLabel(self.frame)
         self.label_version.setObjectName("label_version")
-        self.label_version.setAlignment(Qt.AlignBottom | Qt.AlignLeading | Qt.AlignLeft)
+        self.label_version.setAlignment(
+            Qt.AlignmentFlag.AlignBottom | Qt.AlignmentFlag.AlignLeading | Qt.AlignmentFlag.AlignLeft
+        )
+        self.label_version.setMargin(2)
 
         self.horizontalLayout_2.addWidget(self.label_version)
 
         self.verticalLayout_7.addWidget(self.frame)
 
-        self.verticalSpacer = QSpacerItem(20, 3, QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.verticalSpacer = QSpacerItem(20, 3, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
 
         self.verticalLayout_7.addItem(self.verticalSpacer)
 
@@ -111,8 +124,8 @@ class Ui_bluepepper_app_widget(object):
         sizePolicy.setHeightForWidth(self.frame_2.sizePolicy().hasHeightForWidth())
         self.frame_2.setSizePolicy(sizePolicy)
         self.frame_2.setMinimumSize(QSize(0, 0))
-        self.frame_2.setFrameShape(QFrame.StyledPanel)
-        self.frame_2.setFrameShadow(QFrame.Raised)
+        self.frame_2.setFrameShape(QFrame.Shape.StyledPanel)
+        self.frame_2.setFrameShadow(QFrame.Shadow.Raised)
         self.horizontalLayout_4 = QHBoxLayout(self.frame_2)
         self.horizontalLayout_4.setSpacing(0)
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
@@ -133,7 +146,7 @@ class Ui_bluepepper_app_widget(object):
 
         self.pb_close = QPushButton(self.frame_2)
         self.pb_close.setObjectName("pb_close")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
         sizePolicy1.setHorizontalStretch(0)
         sizePolicy1.setVerticalStretch(0)
         sizePolicy1.setHeightForWidth(self.pb_close.sizePolicy().hasHeightForWidth())
@@ -154,29 +167,27 @@ class Ui_bluepepper_app_widget(object):
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.frame_middle = QFrame(self.widget_main)
         self.frame_middle.setObjectName("frame_middle")
-        self.frame_middle.setFrameShape(QFrame.StyledPanel)
-        self.frame_middle.setFrameShadow(QFrame.Raised)
+        self.frame_middle.setFrameShape(QFrame.Shape.StyledPanel)
+        self.frame_middle.setFrameShadow(QFrame.Shadow.Raised)
         self.horizontalLayout_3 = QHBoxLayout(self.frame_middle)
         self.horizontalLayout_3.setSpacing(0)
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.frame_leftbar = QFrame(self.frame_middle)
         self.frame_leftbar.setObjectName("frame_leftbar")
-        self.frame_leftbar.setFrameShape(QFrame.StyledPanel)
-        self.frame_leftbar.setFrameShadow(QFrame.Raised)
+        self.frame_leftbar.setFrameShape(QFrame.Shape.StyledPanel)
+        self.frame_leftbar.setFrameShadow(QFrame.Shadow.Raised)
         self.verticalLayout_3 = QVBoxLayout(self.frame_leftbar)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.frame_apps = QFrame(self.frame_leftbar)
         self.frame_apps.setObjectName("frame_apps")
-        self.frame_apps.setFrameShape(QFrame.StyledPanel)
-        self.frame_apps.setFrameShadow(QFrame.Raised)
+        self.frame_apps.setFrameShape(QFrame.Shape.StyledPanel)
+        self.frame_apps.setFrameShadow(QFrame.Shadow.Raised)
         self.verticalLayout_5 = QVBoxLayout(self.frame_apps)
         self.verticalLayout_5.setObjectName("verticalLayout_5")
         self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
-        self.spacer_apps = QSpacerItem(
-            20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding
-        )
+        self.spacer_apps = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_5.addItem(self.spacer_apps)
 
@@ -184,19 +195,15 @@ class Ui_bluepepper_app_widget(object):
 
         self.frame_settings = QFrame(self.frame_leftbar)
         self.frame_settings.setObjectName("frame_settings")
-        sizePolicy.setHeightForWidth(
-            self.frame_settings.sizePolicy().hasHeightForWidth()
-        )
+        sizePolicy.setHeightForWidth(self.frame_settings.sizePolicy().hasHeightForWidth())
         self.frame_settings.setSizePolicy(sizePolicy)
         self.frame_settings.setMinimumSize(QSize(20, 50))
-        self.frame_settings.setFrameShape(QFrame.StyledPanel)
-        self.frame_settings.setFrameShadow(QFrame.Raised)
+        self.frame_settings.setFrameShape(QFrame.Shape.StyledPanel)
+        self.frame_settings.setFrameShadow(QFrame.Shadow.Raised)
         self.verticalLayout_6 = QVBoxLayout(self.frame_settings)
         self.verticalLayout_6.setObjectName("verticalLayout_6")
         self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
-        self.spacer_settings = QSpacerItem(
-            20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding
-        )
+        self.spacer_settings = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_6.addItem(self.spacer_settings)
 
@@ -206,8 +213,8 @@ class Ui_bluepepper_app_widget(object):
 
         self.frame_app = QFrame(self.frame_middle)
         self.frame_app.setObjectName("frame_app")
-        self.frame_app.setFrameShape(QFrame.StyledPanel)
-        self.frame_app.setFrameShadow(QFrame.Raised)
+        self.frame_app.setFrameShape(QFrame.Shape.StyledPanel)
+        self.frame_app.setFrameShadow(QFrame.Shadow.Raised)
         self.verticalLayout_4 = QVBoxLayout(self.frame_app)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
         self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
@@ -229,64 +236,34 @@ class Ui_bluepepper_app_widget(object):
     # setupUi
 
     def retranslateUi(self, bluepepper_app_widget):
-        bluepepper_app_widget.setWindowTitle(
-            QCoreApplication.translate("bluepepper_app_widget", "Form", None)
-        )
-        self.frame_topbar.setProperty(
-            "tag", QCoreApplication.translate("bluepepper_app_widget", "topbar", None)
-        )
-        self.label_main_title.setText(
-            QCoreApplication.translate("bluepepper_app_widget", "BluePepper", None)
-        )
-        self.label_main_title.setProperty(
-            "tag", QCoreApplication.translate("bluepepper_app_widget", "H0", None)
-        )
+        bluepepper_app_widget.setWindowTitle(QCoreApplication.translate("bluepepper_app_widget", "Form", None))
+        self.frame_topbar.setProperty("tag", QCoreApplication.translate("bluepepper_app_widget", "topbar", None))
+        self.label_main_title.setText(QCoreApplication.translate("bluepepper_app_widget", "BluePepper", None))
+        self.label_main_title.setProperty("tag", QCoreApplication.translate("bluepepper_app_widget", "H0", None))
         self.label_important_content.setText(
-            QCoreApplication.translate(
-                "bluepepper_app_widget", "important content", None
-            )
+            QCoreApplication.translate("bluepepper_app_widget", "important content", None)
         )
         self.label_important_content.setProperty(
-            "status",
-            QCoreApplication.translate("bluepepper_app_widget", "secondary", None),
+            "status", QCoreApplication.translate("bluepepper_app_widget", "secondary", None)
         )
-        self.label_version.setText(
-            QCoreApplication.translate("bluepepper_app_widget", "version", None)
-        )
-        self.label_version.setProperty(
-            "status",
-            QCoreApplication.translate("bluepepper_app_widget", "secondary", None),
-        )
+        self.label_version.setText(QCoreApplication.translate("bluepepper_app_widget", "version", None))
+        self.label_version.setProperty("status", QCoreApplication.translate("bluepepper_app_widget", "secondary", None))
         self.pb_minimize.setText("")
         self.pb_minimize.setProperty(
-            "status",
-            QCoreApplication.translate(
-                "bluepepper_app_widget", "menu_bar_button", None
-            ),
+            "status", QCoreApplication.translate("bluepepper_app_widget", "menu_bar_button", None)
         )
         self.pb_maximize.setText("")
         self.pb_maximize.setProperty(
-            "status",
-            QCoreApplication.translate(
-                "bluepepper_app_widget", "menu_bar_button", None
-            ),
+            "status", QCoreApplication.translate("bluepepper_app_widget", "menu_bar_button", None)
         )
         self.pb_close.setText("")
         self.pb_close.setProperty(
-            "status",
-            QCoreApplication.translate(
-                "bluepepper_app_widget", "menu_bar_button_close", None
-            ),
+            "status", QCoreApplication.translate("bluepepper_app_widget", "menu_bar_button_close", None)
         )
         self.widget_main.setProperty(
-            "visibility",
-            QCoreApplication.translate("bluepepper_app_widget", "transparent", None),
+            "visibility", QCoreApplication.translate("bluepepper_app_widget", "transparent", None)
         )
-        self.frame_leftbar.setProperty(
-            "tag", QCoreApplication.translate("bluepepper_app_widget", "sidebar", None)
-        )
-        self.frame_app.setProperty(
-            "depth", QCoreApplication.translate("bluepepper_app_widget", "-1", None)
-        )
+        self.frame_leftbar.setProperty("tag", QCoreApplication.translate("bluepepper_app_widget", "sidebar", None))
+        self.frame_app.setProperty("depth", QCoreApplication.translate("bluepepper_app_widget", "-1", None))
 
     # retranslateUi

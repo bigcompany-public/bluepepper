@@ -12,11 +12,9 @@ from threading import Thread
 from typing import Any, Callable
 
 import qtawesome
-from conf.fastapi import FastApiSettings
-from conf.project import ProjectSettings
 from qtpy.QtCore import QSize, Qt, QTimer
-from qtpy.QtGui import QIcon, QMouseEvent
-from qtpy.QtWidgets import QPushButton, QWidget
+from qtpy.QtGui import QIcon, QMouseEvent, QPixmap
+from qtpy.QtWidgets import QLabel, QPushButton, QWidget
 
 from bluepepper.app.api.fastapi_bridge import fastapi_bridge
 from bluepepper.app.api.fastapi_server import run_server_as_daemon
@@ -24,8 +22,10 @@ from bluepepper.app.main_window.frameless_window import FramelessMainWindow
 from bluepepper.app.main_window.ui_main_window import Ui_bluepepper_app_widget
 from bluepepper.console import BluePepperConsole
 from bluepepper.core import init_logging, root_dir, version
-from bluepepper.gui.utils import format_widgets, get_qt_app, get_stylesheet, get_theme
+from bluepepper.gui.utils import format_widgets, get_icon, get_qt_app, get_stylesheet, get_theme
 from bluepepper.gui.widgets.outcome_popups import show_error
+from conf.fastapi import FastApiSettings
+from conf.project import ProjectSettings
 
 _PAGES_DIR = Path(__file__).parent
 _DOUBLE_CLICK_MS = 150
@@ -83,7 +83,7 @@ class BluePepperApp(FramelessMainWindow):
         self.central_widget = QWidget()
         self.central_widget.setStyleSheet(get_stylesheet())
         self.setWindowTitle("BluePepper")
-        self.setWindowIcon(QIcon((root_dir.joinpath("bluepepper/gui/icons/bluepepper.ico")).as_posix()))
+        self.setWindowIcon(QIcon(get_icon("bluepepper.ico").as_posix()))
         self.setCentralWidget(self.central_widget)
 
     def _setup_signals(self) -> None:
@@ -112,6 +112,11 @@ class BluePepperApp(FramelessMainWindow):
         self.ui = Ui_bluepepper_app_widget()
         self.ui.setupUi(self.central_widget)
         self.ui.label_version.setText(f"v{version}")
+        image_path = get_icon("bluepepper_transparent.png")
+        pixmap = QPixmap(image_path).scaledToWidth(24, Qt.SmoothTransformation)
+        icon_label = QLabel()
+        icon_label.setPixmap(pixmap)
+        self.ui.layout_icon.addWidget(icon_label)
         format_widgets(self.ui.widget_main)
 
         self._add_topbar_buttons()
