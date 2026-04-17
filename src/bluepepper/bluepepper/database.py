@@ -14,7 +14,11 @@ from pymongo import MongoClient, errors
 from pymongo.synchronous.collection import Collection
 from pymongo.synchronous.database import Database
 
-# TODO : ajouter des retries avec le package "tenacity"
+# TODO : add retries mechanisms with the tenacity package
+
+_SOCKET_TIMEOUT_S = 0.5
+_LOCAL_STARTUP_RETRIES = 20
+_LOCAL_STARTUP_TIMEOUT_S = 0.2
 
 
 class AssetNotFoundError(Exception):
@@ -45,23 +49,58 @@ class BigMongoClient(MongoClient):
     """MongoDB client for the BluePepper animation pipeline.
 
     Handles connection management, local server startup, and document retrieval
-    for assets and shots with robust error handling and retries.
+    for assets and shots with robust error handling.
+
+    Three connection modes are supported, configured via DatabaseSettings:
+    - ``host-port``: connects to a remote/LAN server by hostname and port.
+      A fast socket-level probe is run first so failures are detected quickly
+      rather than waiting for PyMongo's own timeout.
+    - ``uri``: connects using a full MongoDB URI string.
+      Connection validation is delegated entirely to PyMongo
+      (``serverSelectionTimeoutMS`` is set to 3 s).
+    - ``local``: starts a ``mongod`` process on localhost if one is not already
+      running, then connects to it.
     """
 
     def __init__(self) -> None:
-        """Initialize connection to MongoDB with retries and fallback to local server.
-
-        Attempts to connect to the configured MongoDB server. If connection fails
-        and the server is configured as local, automatically starts a local
-        MongoDB instance.
+        """Initialise the appropriate connection based on DatabaseSettings.mode.
 
         Raises:
-            errors.ConnectionFailure: If unable to connect to MongoDB server
-                after retries and local startup attempts.
+            ValueError: If ``settings.mode`` is not one of the recognised modes.
+            errors.ConnectionFailure: If the server cannot be reached after all
+                attempts.
         """
         logging.info("Connecting to MongoDB database")
         logging.getLogger("pymongo").setLevel(logging.INFO)
         self.settings: DatabaseSettings = DatabaseSettings()
+
+        if self.settings.mode == "host-port":
+            self._init_host_port()
+        elif self.settings.mode == "local":
+            self._init_local()
+        elif self.settings.mode == "uri":
+            self._init_uri()
+        else:
+            raise ValueError(
+                f'{self.settings.mode} is not a valid database mode. Choose one of: "host-port", "uri", "local".'
+            )
+
+    def _init_host_port(self) -> None:
+        """Connect to a remote/LAN MongoDB server by host and port.
+
+        A single socket-level probe is performed before handing control to
+        PyMongo.  This gives a fast, deterministic failure rather than waiting
+        for PyMongo's driver-level timeout, which can be unreliable at short
+        durations.
+
+        Raises:
+            errors.ConnectionFailure: If the socket probe fails.
+        """
+        if not self._socket_reachable(self.settings.host, self.settings.port, _SOCKET_TIMEOUT_S):
+            raise errors.ConnectionFailure(
+                f"Cannot reach MongoDB server at {self.settings.host}:{self.settings.port} "
+                f"(socket timeout {_SOCKET_TIMEOUT_S} s)"
+            )
         super().__init__(
             self.settings.host,
             self.settings.port,
@@ -69,56 +108,104 @@ class BigMongoClient(MongoClient):
             password=self.settings.password,
         )
 
-        # Test connection on socket with fine-tuned timeout
-        if not self.test_connection_retries(timeout_s=0.3, retries=3):
-            if not self.is_local_server:
-                msg = f"Failed to connect to MongoDB server {self.settings.host}:{self.settings.port}"
-                raise errors.ConnectionFailure(msg)
-            self.start_local_mongodb_server()
+    def _init_uri(self) -> None:
+        """Connect using a full MongoDB URI string.
 
-    def test_connection_retries(self, timeout_s: float, retries: int) -> bool:
-        """Test MongoDB connection with multiple retries.
+        PyMongo handles all connection details; ``serverSelectionTimeoutMS``
+        is set to 3 000 ms so failures surface quickly without a socket probe
+        (host/port may not be straightforwardly parseable from an arbitrary URI).
 
-        Attempts to connect to the MongoDB server multiple times with the
-        specified timeout per attempt.
-
-        Args:
-            timeout_s: Socket timeout in seconds for each connection attempt.
-            retries: Number of connection attempts to make.
-
-        Returns:
-            True if connection successful on any attempt, False if all
-            attempts fail.
+        Raises:
+            errors.ConnectionFailure: If PyMongo cannot select a server within
+                the timeout.
         """
-        for i in range(1, retries + 1):
-            logging.debug(f"Testing MongoDB connection (attempt {i})")
-            if self.test_connection(timeout_s):
-                return True
-        return False
+        super().__init__(self.settings.uri, serverSelectionTimeoutMS=3_000)
+        # Force a round-trip so the caller gets a ConnectionFailure immediately
+        # rather than on the first actual query.
+        try:
+            self.admin.command("ping")
+        except errors.ConnectionFailure:
+            raise
+        except Exception as exc:
+            raise errors.ConnectionFailure(str(exc)) from exc
 
-    def test_connection(self, timeout_s: float) -> bool:
-        """Test connection to MongoDB server using socket-level operations.
+    def _init_local(self) -> None:
+        """Ensure a local ``mongod`` is running, then connect.
 
-        Prevents features using MongoDB from freezing if server is unreachable.
-        PyMongo's timeout is unreliable with very small timeouts, so we use
-        socket-level testing instead.
+        If no server is detected on 127.0.0.1:27017 a new ``mongod`` process
+        is spawned.  The startup loop already confirms reachability, so no
+        further probe is needed after ``super().__init__``.
+
+        Raises:
+            errors.ConnectionFailure: If ``mongod`` cannot be started or does
+                not become reachable within the retry window.
+        """
+        self._ensure_local_mongodb_running()
+        super().__init__(host="127.0.0.1", port=27017)
+
+    @staticmethod
+    def _socket_reachable(host: str, port: int, timeout_s: float) -> bool:
+        """Return True if a TCP connection to *host*:*port* succeeds.
+
+        PyMongo's own timeout is unreliable at sub-second values because it
+        operates at the driver level rather than at the OS socket level.  This
+        method performs a plain TCP probe so failures are detected within the
+        specified *timeout_s*.
 
         Args:
-            timeout_s: Socket timeout in seconds for the connection attempt.
+            host: Hostname or IP address to connect to.
+            port: TCP port number.
+            timeout_s: Seconds to wait before declaring the host unreachable.
 
         Returns:
-            True if socket connection to MongoDB server succeeds, False otherwise.
+            ``True`` if the connection succeeded, ``False`` otherwise.
         """
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.settimeout(timeout_s)
         try:
-            sock.connect((self.settings.host, self.settings.port))
-            sock.shutdown(2)
+            sock.connect((host, port))
+            sock.shutdown(socket.SHUT_RDWR)
             return True
         except (OSError, socket.timeout):
             return False
         finally:
             sock.close()
+
+    def _ensure_local_mongodb_running(self) -> None:
+        """Start a local ``mongod`` process if one is not already running.
+
+        The database files are stored in a ``.database`` directory located
+        next to ``BLUEPEPPER_ROOT``.  The ``mongod`` executable is expected at
+        ``$BLUEPEPPER_ROOT/bin/mongodb/mongod.exe``.
+
+        The spawned process is registered for automatic termination on
+        interpreter exit.
+
+        Raises:
+            errors.ConnectionFailure: If ``mongod`` does not become reachable
+                within ``_LOCAL_STARTUP_RETRIES`` attempts.
+        """
+        if self._socket_reachable("127.0.0.1", 27017, timeout_s=0.05):
+            logging.info("Local MongoDB server is already running")
+            return
+
+        logging.info("Starting local MongoDB server")
+        root_dir = Path(os.environ["BLUEPEPPER_ROOT"])
+        mongod_path = root_dir / "bin/mongodb/mongod.exe"
+        db_path = root_dir.parent / ".database"
+        db_path.mkdir(parents=True, exist_ok=True)
+
+        command = [str(mongod_path), "--dbpath", str(db_path), "--port", "27017"]
+        proc = subprocess.Popen(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        register(lambda: proc.terminate() if proc.poll() is None else None)
+
+        for attempt in range(1, _LOCAL_STARTUP_RETRIES + 1):
+            logging.debug(f"Waiting for local mongod (attempt {attempt}/{_LOCAL_STARTUP_RETRIES})")
+            if self._socket_reachable("127.0.0.1", 27017, _LOCAL_STARTUP_TIMEOUT_S):
+                logging.info("Local MongoDB server is ready")
+                return
+
+        raise errors.ConnectionFailure(f"Local mongod did not become reachable after {_LOCAL_STARTUP_RETRIES} attempts")
 
     @cached_property
     def db(self) -> Database:
@@ -191,12 +278,8 @@ class BigMongoClient(MongoClient):
 
     @property
     def is_local_server(self) -> bool:
-        """Check if MongoDB server is configured as local.
-
-        Returns:
-            True if configured host is localhost or 127.0.0.1, False otherwise.
-        """
-        return self.settings.host in ("127.0.0.1", "localhost")
+        """Check if MongoDB server is configured as local."""
+        return self.settings.mode == "local"
 
     def get_asset_document_by_id(self, document_id: str) -> dict[str, Any]:
         """Retrieve asset document by ObjectId.
@@ -382,7 +465,7 @@ class BigMongoClient(MongoClient):
             AssetTag document dictionary with _id converted to string.
 
         Raises:
-            AssetTagNotFoundError: If no asset with the given ID exists.
+            AssetTagNotFoundError: If no asset tag with the given ID exists.
         """
         document = self.asset_tags.find_one(ObjectId(document_id))
         if not document:
@@ -399,7 +482,7 @@ class BigMongoClient(MongoClient):
             AssetTag document dictionary with _id converted to string.
 
         Raises:
-            AssetTagNotFoundError: If no asset with the given name exists.
+            AssetTagNotFoundError: If no asset tag with the given name exists.
         """
         document = self.asset_tags.find_one({"tag": tag})
         if not document:
@@ -416,7 +499,7 @@ class BigMongoClient(MongoClient):
             ShotTag document dictionary with _id converted to string.
 
         Raises:
-            ShotTagNotFoundError: If no shot with the given ID exists.
+            ShotTagNotFoundError: If no shot tag with the given ID exists.
         """
         document = self.shot_tags.find_one(ObjectId(document_id))
         if not document:
@@ -433,7 +516,7 @@ class BigMongoClient(MongoClient):
             ShotTag document dictionary with _id converted to string.
 
         Raises:
-            ShotTagNotFoundError: If no shot with the given name exists.
+            ShotTagNotFoundError: If no shot tag with the given name exists.
         """
         document = self.shot_tags.find_one({"tag": tag})
         if not document:
@@ -454,46 +537,6 @@ class BigMongoClient(MongoClient):
         """
         document["_id"] = str(document["_id"])
         return document
-
-    def start_local_mongodb_server(self) -> None:
-        """Start local MongoDB server if not already running.
-
-        Only executes if the server is configured as local (localhost or
-        127.0.0.1). Starts the MongoDB daemon from BLUEPEPPER_ROOT/bin/mongodb
-        and registers cleanup to terminate the process on exit.
-
-        Raises:
-            ConnectionFailure: If unable to connect to MongoDB after startup
-                attempts, or if mongod executable is not found.
-        """
-        if not self.is_local_server:
-            return
-
-        # Skip if server already running
-        if self.test_connection(0.02):
-            logging.info("MongoDB Server is already running")
-            return
-
-        logging.info("Starting local MongoDB Server")
-        root_dir = Path(os.environ["BLUEPEPPER_ROOT"])
-        mongod_path = root_dir / "bin/mongodb/mongod.exe"
-        db_path = root_dir.parent / ".database"
-        db_path.mkdir(parents=True, exist_ok=True)
-
-        command = [
-            str(mongod_path),
-            "--dbpath",
-            str(db_path),
-            "--port",
-            str(self.settings.port),
-        ]
-
-        proc = subprocess.Popen(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        register(lambda: proc.terminate() if proc.poll() is None else None)
-
-        if not self.test_connection_retries(timeout_s=0.2, retries=20):
-            msg = f"Failed to connect to MongoDB server {self.settings.host}:{self.settings.port}"
-            raise errors.ConnectionFailure(msg)
 
 
 database = BigMongoClient()
