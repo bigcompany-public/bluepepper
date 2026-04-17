@@ -220,11 +220,9 @@ __marimo__/
 .logs/
 .temp/
 
-# Local mongodb database
-.bluepepper_database/
 
 # Local project_root
 .project_root/
 
-# User preferences
-bluepepper_userprefs/
+# Sandbox files
+sandbox.py
