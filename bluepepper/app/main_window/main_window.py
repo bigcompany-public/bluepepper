@@ -83,7 +83,7 @@ class BluePepperApp(FramelessMainWindow):
         self.central_widget = QWidget()
         self.central_widget.setStyleSheet(get_stylesheet())
         self.setWindowTitle("BluePepper")
-        self.setWindowIcon(QIcon((root_dir / "icon.ico").as_posix()))
+        self.setWindowIcon(QIcon((root_dir.joinpath("bluepepper/gui/icons/bluepepper.ico")).as_posix()))
         self.setCentralWidget(self.central_widget)
 
     def _setup_signals(self) -> None:
