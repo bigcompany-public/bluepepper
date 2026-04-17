@@ -461,7 +461,7 @@ class BluePepperInstaller:
             shortcut_path=console_shortcut_path,
             icon_path=self.root_path / "bluepepper/gui/icons/console.ico",
             target=self.core_python_exe,
-            arguments=str(self.root_path / "main.py"),
+            arguments=f'{str(self.root_path / "main.py")} --shell',
         )
 
         # Create user-friendly shortcut
@@ -470,9 +470,9 @@ class BluePepperInstaller:
         self._create_shortcut(
             script_path=script_path,
             shortcut_path=shortcut_path,
-            icon_path=self.root_path / "bluepepper/gui/icons/icon.ico",
-            target=Path("powershell.exe"),
-            arguments=f'-WindowStyle hidden -command & "{console_shortcut_path}"',
+            icon_path=self.root_path / "bluepepper/gui/icons/bluepepper.ico",
+            target=self.core_python_exe,
+            arguments=str(self.root_path / "main.py"),
         )
 
     def _create_shortcut(
