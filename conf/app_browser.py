@@ -1,7 +1,5 @@
 from pathlib import Path
 
-from conf.project import ProjectSettings
-
 from bluepepper.core import codex
 from bluepepper.tools.browser.browser_config import (
     AppConfig,
@@ -10,6 +8,7 @@ from bluepepper.tools.browser.browser_config import (
     MenuAction,
     Task,
 )
+from conf.project import ProjectSettings
 
 PROJECT_SETTINGS = ProjectSettings()
 
@@ -123,22 +122,6 @@ def get_tool_config() -> AppConfig:
         convention=codex.convs.asset_assembly_workfile_blender,
     )
     asset_assembly_task.add_kind(kind)
-
-    # blocks
-    asset_blocks_task = Task("blocks")
-    asset_entity.add_task(asset_blocks_task)
-    kind = Kind(
-        name="asset_staticmesh",
-        label="StaticMesh",
-        convention=codex.convs.asset_staticmesh,
-    )
-    asset_blocks_task.add_kind(kind)
-    kind = Kind(
-        name="asset_material",
-        label="Materials",
-        convention=codex.convs.asset_material,
-    )
-    asset_blocks_task.add_kind(kind)
 
     # Shots
     shot_entity = Entity(name="shot", collection="shots", filters=["season", "episode", "sequence"])
