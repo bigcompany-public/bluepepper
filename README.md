@@ -111,11 +111,18 @@ MongoDB Atlas allows you to host one database for free per account. Since BluePe
     - Click **"Create Deployment"**.
 
 - MongoDB will ask for an admin password. Set it and store it somewhere safe.
+![MongoDB Admin User](docs/img/mongodb_admin_user.jpg)
 - Next, MongoDB will ask for a connection method. Select **Drivers → Python**, uncheck **"SRV Connection String"** and **Show Password**, then copy the **Connection String** and keep it somewhere safe. (Note: the SRV connection string relies on a DNS server, which may fail on VPN networks.)
-- You may create an additional user if you wish to fine-tune permissions  
-  (Under the **Security** section, go to **Database & Network Access**, where you can create a new database user and set its privileges to **"Read and write any database"** instead of **"Admin"**).
+![MongoDB Connection String](docs/img/mongodb_connection_string.jpg)
+- You may create an additional user if you wish to fine-tune permissions. Under the **Security** section, go to **Database & Network Access**, where you can create a new database user and set its privileges to **"Read and write any database"** instead of **"Admin"**.
+![MongoDB User1](docs/img/mongodb_network_access.jpg)
+![MongoDB User1](docs/img/mongodb_new_user.jpg)
+![MongoDB User1](docs/img/mongodb_new_user2.jpg)
 - For now the database will only be allowed for your IP address. To allow the database to be accessed from anywhere on the internet:
-    - Add the IP address `0.0.0.0/0` 
+    - In **Database & Network Access**, go to **IP Access List**
+    - Add the IP address `0.0.0.0/0`
+![MongoDB User1](docs/img/mongodb_new_ip.jpg)
+![MongoDB User1](docs/img/mongodb_new_ip2.jpg)
 
 Now that your database is now up and running, open `conf/mongodb.py`.
 - Set the mode to `"uri"`.
@@ -137,6 +144,9 @@ class DatabaseSettings:
 BluePepper should now be able to connect to your MongoDB Atlas database.
 
 Feel free to create an asset and a shot in BluePepper to see how the database is structured. You can browse your database via **MongoDB Atlas → Clusters → Browse Collections**, or use a dedicated application such as [MongoDB Compass](https://www.mongodb.com/products/tools/compass).
+![MongoDB User1](docs/img/mongodb_create_asset.jpg)
+![MongoDB User1](docs/img/mongodb_create_asset2.jpg)
+![MongoDB User1](docs/img/mongodb_create_asset3.jpg)
 
 ## Configuring the Naming Conventions
 
