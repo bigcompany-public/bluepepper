@@ -197,7 +197,7 @@ First, `Entities` define which database collections that the user should be able
 
 ### Entities
 
-The base point here is to create a new config
+The base point here is to create a new config object, and fill it.
 
 ```python
 config = AppConfig("bigBrowserMainApp")
@@ -248,15 +248,15 @@ Contextual menu actions can be added to documents, kinds, and files, allowing yo
 
 For example:
 
-1. Create a new file in `conf/scripts` (for example, `print_stuff.py`)
-2. Create a new function in this file:
+- Create a new file in `conf/scripts` (for example, `print_stuff.py`)
+- Create a new function in this file:
 
 ```python
 def say_hello() -> None:
     print("Hello World")
 ```
 
-3. Add an action that runs this function using this code:
+- Add an action that runs this function using this code:
 
 ```python
 action = MenuAction(
@@ -331,6 +331,32 @@ action = MenuAction(
 ```
 
 What if you have both a character and a prop selected? The Browser handles this intelligently—the menu action will show, but it will only execute on documents that match your filter.
+
+#### Adding icons to menu actions
+
+BluePepper uses QTAwesome for its menu icons, which comes with a handy browser
+to open it, go to your terminal : 
+
+```powershell
+python main.py --shell
+qta-browser
+```
+
+from there, you'll be able to copy the icon code, that you can use when declaring you MenuAction. You can also set a color if you wish.
+
+```
+action = MenuAction(
+    label="say hello",
+    module="conf.scripts.print_stuff",
+    callable="say_hello",
+    qta_icon="mdi6.hand-wave"
+    qta_icon_color="#FF000"
+)
+```
+
+#### Creating a Batcher Job through a MenuAction
+
+(Coming soon) the Batcher feature is not released yet
 
 # Design Philosophy
 
