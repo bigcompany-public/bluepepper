@@ -181,12 +181,12 @@ class BluePepperConventions(Conventions):
     # Assets
     asset_work_dir = Convention("{@project_root}/assetWorkspace/{type}/{asset}")
     asset_workfile = Convention("{@asset_work_dir}/{asset}_{task}_v{version}.{extension}")
-    asset_modeling_workfile = Convention("{@asset_workfile}", fixed_fields={"task": "mdl", "extension" : ".blend"})
+    asset_modeling_workfile = Convention("{@asset_workfile}", fixed_fields={"task": "mdl", "extension" : "blend"})
 
     # Shots
     shot_work_dir = Convention("{@project_root}/shots/{shot}")
     shot_workfile = Convention("{@shot_work_dir}/{shot}_{task}_v{version}.{extension}")
-    shot_animation_workfile = Convention("{@shot_workfile}", fixed_fields={"task": "anim", "extension": ".blend"})
+    shot_animation_workfile = Convention("{@shot_workfile}", fixed_fields={"task": "anim", "extension": "blend"})
 
 
 class BluePepperCodex(Codex):
@@ -213,13 +213,28 @@ The Browser is structured as follows:
 
 **Files** are the result of a file discovery that matches the selected `Documents` against the selected `FileKind`.
 
-### Entities
+The Browser is configured through the file `conf/app_browser.py`. Similar to the file `conf/naming_conventions.py`, it will contain a lot of examples for demonstration purposes. In the following sections, we'll see how to create it from scratch.
 
-Start by creating a new config object and populating it:
+Clear out the file `conf/app_browser.py` and create a blank AppConfig inside a function `get_tool_config()`. We will also import everything we need later on.
 
 ```python
-config = AppConfig("bigBrowserMainApp")
+from pathlib import Path
+from bluepepper.core import codex
+from bluepepper.tools.browser.browser_config import (
+    AppConfig,
+    Entity,
+    FileKind,
+    MenuAction,
+    Task,
+)
+
+
+def get_tool_config() -> AppConfig:
+    config = AppConfig("bigBrowserMainApp")
+    return config
 ```
+
+### Entities
 
 Declare the entities you want to access (typically assets and shots). Adding an entity automatically adds a tab to the interface:
 
@@ -251,14 +266,52 @@ Populate your tasks with file kinds. A `FileKind` provides access to files match
 
 ```python
 kind = FileKind(
-    name="asset_modeling_workfile_blender",
-    label="Workfile (blender)",
-    convention=codex.convs.asset_modeling_workfile_blender,
+    name="asset_modeling_workfile",
+    label="Workfile",
+    convention=codex.convs.asset_modeling_workfile,
 )
 asset_modeling_task.add_kind(kind)
 ```
 
-FileKinds appear in the third column of the interface.
+FileKinds appear in the third column of the interface. When selecting a `Document` and a `FileFind` the result of a file discovery appears in the fourth column of the interface.
+
+#### Result
+Before going further, we should take a look at the result. Here is the full code so far:
+
+```python
+from bluepepper.core import codex
+from bluepepper.tools.browser.browser_config import (
+    AppConfig,
+    Entity,
+    FileKind,
+    Task,
+    MenuAction
+)
+
+
+def get_tool_config() -> AppConfig:
+    config = AppConfig("bigBrowserMainApp")
+    asset_entity = Entity(name="asset", collection="assets", filters=["type"])
+    config.add_entity(asset_entity)
+    asset_modeling_task = Task("modeling")
+    asset_entity.add_task(asset_modeling_task)
+    kind = FileKind(
+        name="asset_modeling_workfile",
+        label="Workfile (blender)",
+        convention=codex.convs.asset_modeling_workfile,
+    )
+    asset_modeling_task.add_kind(kind)
+    return config
+```
+
+When opening the Browser, you can see the result:
+1. There is a single "Asset" tab
+2. Assets can be filtered by type
+3. The first column displays the available assets
+4. The Modeling task is available
+5. And contains a Workfile task
+6. While there is still no file on the server right now, the console shows that the Browser is actively looking for files that match the naming convention.
+![Browser Config](docs/img/browser_config.jpg)
 
 #### Actions
 
@@ -274,7 +327,7 @@ def say_hello() -> None:
     print("Hello World")
 ```
 
-- Add an action that calls this function:
+- In `conf/app_browser.py`, add an action that calls this function:
 
 ```python
 action = MenuAction(
@@ -287,11 +340,36 @@ asset_entity.add_document_action(action)
 
 When you right-click on an asset document, the "say hello" action should appear, and "Hello World" will be printed to the console when you click it.
 
+![Browser Config](docs/img/browser_action.jpg)
+
 #### Passing Arguments to Actions
 
 Printing "Hello World" is a fine start, but what if you need to pass the selected documents or files as arguments?
 
-You can use the `kwargs` attribute with the following special keywords, which are automatically substituted when passed to your functions:
+As an example, we will add a new function to `print_stuff.py`
+
+```python
+def print_document_selection(selection):
+    print(selection)
+```
+
+And add these lines to `app_browser.py`
+
+```python
+action = MenuAction(
+    label="print document",
+    module="conf.scripts.print_stuff",
+    callable="print_document_selection",
+    kwargs={"selection": "<document>"}
+)
+asset_entity.add_document_action(action)
+```
+
+Now, see the result, with two documents selected:
+
+![Browser Config](docs/img/browser_action2.jpg)
+
+You can use the `kwargs` attribute with all the following special keywords, which are automatically substituted when passed to your functions:
 
 - `<document>`: Each of the selected documents (triggers the function once per document)
 - `<documents>`: List of all selected documents (triggers the function once)
@@ -310,6 +388,22 @@ You may wonder why there are both singular and plural variants like `<document>`
 - `<documents>` triggers the function once, passing the entire list as an argument (assuming your function contains a loop)
 
 The same logic applies to `<document_name(s)>`, `<document_id(s)>`, and `<path(s)>`.
+
+Let's show this subtle difference with an example
+
+```python
+action = MenuAction(
+    label="print documentS",
+    module="conf.scripts.print_stuff",
+    callable="print_document_selection",
+    kwargs={"selection": "<documents>"}
+)
+asset_entity.add_document_action(action)
+```
+
+As explained, the result is now printed as a list, instead of printing the documents one by one.
+
+![Browser Config](docs/img/browser_action2.jpg)
 
 #### Filtering Tasks and Actions
 
