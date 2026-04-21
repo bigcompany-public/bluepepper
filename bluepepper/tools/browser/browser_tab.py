@@ -174,7 +174,7 @@ class FilterComboBox(QComboBox):
         # Get only values that are possible, given the previous fields
         query = self.get_previous_fields_query()
         result = list(self.collection.find(query)) or []
-        items = list(set([item[self.filter] for item in result]))
+        items = list(set([item.get(self.filter, "") for item in result]))
         items = sorted(items, key=str.lower)
         items = [item for item in items if item.strip()]  # remove if field is empty
         items.insert(0, "*")
