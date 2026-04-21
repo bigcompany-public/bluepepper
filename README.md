@@ -104,11 +104,11 @@ MongoDB Atlas allows you to host one database for free per account. Since BluePe
 - Follow the welcome instructions, or navigate to
   **Account → Organizations → {your organization} → All Projects → Project 0 → Project Overview → Create**
 - On the next page:
-![MongoDB Free Plan](docs/img/mongodb_free.jpg)
     - Choose the **Free** tier.
     - Give your cluster a name (for example, `bluepepperDB`).
     - Uncheck **"Preload sample dataset"**.
     - Click **"Create Deployment"**.
+![MongoDB Free Plan](docs/img/mongodb_free.jpg)
 
 - MongoDB will ask for an admin password. Set it and store it somewhere safe.
 ![MongoDB Admin User](docs/img/mongodb_admin_user.jpg)
@@ -144,6 +144,7 @@ class DatabaseSettings:
 BluePepper should now be able to connect to your MongoDB Atlas database.
 
 Feel free to create an asset and a shot in BluePepper to see how the database is structured. You can browse your database via **MongoDB Atlas → Clusters → Browse Collections**, or use a dedicated application such as [MongoDB Compass](https://www.mongodb.com/products/tools/compass).
+
 ![MongoDB User1](docs/img/mongodb_create_asset.jpg)
 ![MongoDB User1](docs/img/mongodb_create_asset2.jpg)
 ![MongoDB User1](docs/img/mongodb_create_asset3.jpg)
