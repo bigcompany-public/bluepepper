@@ -104,11 +104,12 @@ MongoDB Atlas allows you to host one database for free per account. Since BluePe
 - Follow the welcome instructions, or navigate to
   **Account → Organizations → {your organization} → All Projects → Project 0 → Project Overview → Create**
 - On the next page:
+![MongoDB Free Plan](docs/img/mongodb_free.jpg)
     - Choose the **Free** tier.
     - Give your cluster a name (for example, `bluepepperDB`).
     - Uncheck **"Preload sample dataset"**.
     - Click **"Create Deployment"**.
-![MongoDB Free Plan](docs/img/free.jpg)
+
 - MongoDB will ask for an admin password. Set it and store it somewhere safe.
 - Next, MongoDB will ask for a connection method. Select **Drivers → Python**, uncheck **"SRV Connection String"** and **Show Password**, then copy the **Connection String** and keep it somewhere safe. (Note: the SRV connection string relies on a DNS server, which may fail on VPN networks.)
 - You may create an additional user if you wish to fine-tune permissions  
