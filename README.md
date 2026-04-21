@@ -100,22 +100,25 @@ MongoDB Atlas allows you to host one database for free per account. Since BluePe
 
 **Warning:** Keep in mind that the free tier does not include backups.
 
-- Create an account at https://www.mongodb.com/products/platform/atlas-database
-- Follow the welcome instructions, or navigate to  
-  **Account → Organizations → {your organization} → All Projects → {your project} → Clusters → Build a Cluster**
-- Choose the **Free** tier.
-- Give your cluster a name (for example, `bluepepperDB`).
-- Uncheck **"Preload sample dataset"**.
-- Click **"Create Deployment"**.
-- Set the admin password and store it somewhere safe.
+- Go to https://www.mongodb.com/products/platform/atlas-database and click `Get Started` to create an account.
+- Follow the welcome instructions, or navigate to
+  **Account → Organizations → {your organization} → All Projects → Project 0 → Project Overview → Create**
+- On the next page:
+    - Choose the **Free** tier.
+    - Give your cluster a name (for example, `bluepepperDB`).
+    - Uncheck **"Preload sample dataset"**.
+    - Click **"Create Deployment"**.
+![MongoDB Free Plan](docs/img/free.jpg)
+- MongoDB will ask for an admin password. Set it and store it somewhere safe.
+- Next, MongoDB will ask for a connection method. Select **Drivers → Python**, uncheck **"SRV Connection String"** and **Show Password**, then copy the **Connection String** and keep it somewhere safe. (Note: the SRV connection string relies on a DNS server, which may fail on VPN networks.)
 - You may create an additional user if you wish to fine-tune permissions  
-  (go to **Clusters → Database & Network Access**, where you can set user privileges to **"Read and write any database"** instead of **"Admin"**).
-- Add the IP address `0.0.0.0/0` to allow the database to be accessed from anywhere on the internet.
-- Your database is now up and running.
-- Go to **Connect → Drivers → Python**, uncheck **"SRV Connection String"**, then copy the **Connection String**. (Note: the SRV connection string relies on a DNS server, which may fail on VPN networks.)
-- Open `conf/mongodb.py`.
+  (Under the **Security** section, go to **Database & Network Access**, where you can create a new database user and set its privileges to **"Read and write any database"** instead of **"Admin"**).
+- For now the database will only be allowed for your IP address. To allow the database to be accessed from anywhere on the internet:
+    - Add the IP address `0.0.0.0/0` 
+
+Now that your database is now up and running, open `conf/mongodb.py`.
 - Set the mode to `"uri"`.
-- Paste the connection string as the value for `"uri"`.
+- Paste the connection string as the value for `"uri"` (don't forget to set the proper username and password).
 - Save the file.
 
 ```python
