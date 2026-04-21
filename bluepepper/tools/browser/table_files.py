@@ -65,9 +65,7 @@ class FileWatcherHandler(FileSystemEventHandler, QObject):
 
         # If so, check if the extracted fields match the selected documents
         relevant_keys = [key for key in fields.keys() if key in self.document]
-        perfect_match = all(
-            (self.document[key] == fields[key] for key in relevant_keys)
-        )
+        perfect_match = all((self.document[key] == fields[key] for key in relevant_keys))
         if perfect_match:
             return True
         return False
@@ -434,23 +432,16 @@ class TableFilesMenu(QMenu):
                 continue
 
             at_least_one_item_matches_doc_filter = not bool(action.doc_filter)
-            at_least_one_item_matches_path_filter = not bool(action.doc_filter)
+            at_least_one_item_matches_path_filter = not bool(action.path_filter)
 
             for item in items:
                 if action.doc_filter and not at_least_one_item_matches_doc_filter:
-                    at_least_one_item_matches_doc_filter = action.doc_filter(
-                        item.document
-                    )
+                    at_least_one_item_matches_doc_filter = action.doc_filter(item.document)
 
                 if action.path_filter and not at_least_one_item_matches_path_filter:
-                    at_least_one_item_matches_path_filter = action.path_filter(
-                        item.path
-                    )
+                    at_least_one_item_matches_path_filter = action.path_filter(item.path)
 
-            if (
-                at_least_one_item_matches_doc_filter
-                and at_least_one_item_matches_path_filter
-            ):
+            if at_least_one_item_matches_doc_filter and at_least_one_item_matches_path_filter:
                 filtered_actions.append(action)
 
         return filtered_actions
@@ -480,9 +471,7 @@ class TableFilesMenu(QMenu):
             # Keep only items that match both document & path filters
             items = self.tab.file_table.selected_items
             if menu_action.doc_filter:
-                items = [
-                    item for item in items if menu_action.doc_filter(item.document)
-                ]
+                items = [item for item in items if menu_action.doc_filter(item.document)]
             if menu_action.path_filter:
                 items = [item for item in items if menu_action.path_filter(item.path)]
 
@@ -515,9 +504,7 @@ class TableFilesMenu(QMenu):
             # Keep only items that match both document & path filters
             items = self.tab.file_table.selected_items
             if menu_action.doc_filter:
-                items = [
-                    item for item in items if menu_action.doc_filter(item.document)
-                ]
+                items = [item for item in items if menu_action.doc_filter(item.document)]
             if menu_action.path_filter:
                 items = [item for item in items if menu_action.path_filter(item.path)]
 
