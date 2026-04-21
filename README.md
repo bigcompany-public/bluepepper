@@ -358,6 +358,115 @@ action = MenuAction(
 
 (Coming soon) the Batcher feature is not released yet
 
+## Launcher Configuration
+
+Let's add a simple icon that opens VLC into the Launcher.
+
+First, you can create a file, wherever you see fit, for instance `conf.scripts.vlc.py`
+
+```python
+import os
+
+def open_vlc():
+    os.startfile("C:/Program Files/VideoLAN/VLC/vlc.exe")
+```
+
+Go to the file `conf/app_launcher.py` and append an item to the `apps` : 
+
+```python
+class DefaultLauncherConfig(LauncherConfig):
+    apps: list[LauncherItem] = [
+        LauncherItem(
+            label="VLC",
+            icon="software_vlc.png",  # all icons are stored in bluepepper/gui/icons
+            module="conf.scripts.vlc",
+            function="open_vlc",
+            tooltip="Opens VLC",
+        ),
+    ]
+```
+
+Congratulations, a new app icon will be added to the Apps layout, and VLC will open when you double click on it. Note that there is no technical difference between apps and tools, it is just a convenient way to organise your icons : if we wanted VLC icon to appear on the bottom of the launcher, just add the LauncherItem to the tools instead of adding it to the apps.
+
+Please note that this way of using custom functions to open applications gives you a lot of freedom, so you can make very simple ones but also very intricate ones. Please see `maya_launcher.py` for a more complex example.
+
+### About Qt Dialogs
+
+BluePepper uses PySide6 for its interface, so it is possible to open your own Qt Dialogs from the Launcher. Let's create a Qt Dialog in a new file `conf/scripts/open_dialog.py`
+
+```python
+# BluePepper uses qtpy to wrap around PySide6 and PySide2
+from qtpy.QtWidgets import QDialog, QPushButton, QVBoxLayout
+
+class HelloDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        layout = QVBoxLayout()
+        self.setLayout(layout)
+        self.button = QPushButton("Say Hello")
+        layout.addWidget(self.button)
+        self.button.clicked.connect(self.say_hello)
+
+    def say_hello(self):
+        print("hello")
+
+def show_dialog():
+    dialog = HelloDialog()
+    dialog.exec()
+```
+And add it to the Launcher
+```python
+apps: list[LauncherItem] = [
+    LauncherItem(
+        label="Hello Dialog",
+        icon="console.png",
+        module="conf.scripts.open_dialog",
+        function="show_dialog",
+        tooltip="Demo Qt Dialog",
+    )
+]
+```
+
+### About beautiful Qt Dialogs
+
+The dialog was dull and sad, isn't it? BluePepper provides custom Qt widgets and dialogs to properly manage the stylesheet, and ensure a coherent look across all widgets.
+
+Here is the new version of `open_dialog.py`
+```
+from qtpy.QtWidgets import QPushButton, QVBoxLayout, QWidget
+
+from bluepepper.gui.utils import get_qta_icon
+from bluepepper.gui.widgets.container import (
+    ContainerDialog,
+    ContainerWidget,
+    get_qt_app,
+)
+
+
+class HelloWidget(QWidget):  # QWidget instead of QDialog
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        layout = QVBoxLayout()
+        self.setLayout(layout)
+        self.button = QPushButton("Say Hello")
+        layout.addWidget(self.button)
+        self.button.clicked.connect(self.say_hello)
+
+    def say_hello(self):
+        print("hello")
+
+
+def show_dialog():
+    app = get_qt_app()
+    icon = get_qta_icon(name="mdi.tag-text", scale_factor=1.25)
+    widget = HelloWidget()
+    container = ContainerWidget(widget=widget, icon=icon, title="Tag Manager")
+    dialog = ContainerDialog(container)
+    dialog.exec()
+```
+The result will be the same, but with extra style points.
+If you forgot, how to use QTAwesome icons, see [Adding icons to menu actions][#adding-icons-to-menu-actions]
+
 # Design Philosophy
 
 BluePepper makes minimal use of complex software architecture, which is generally considered a best practice. However, modular architectures can be difficult to code, test, update, and deploy.
