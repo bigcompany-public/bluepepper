@@ -50,12 +50,12 @@ The various components of BluePepper can be accessed through the left sidebar.
 
 ![pages](docs/img/bluepepper_pages.jpg)
 
-1. The Launcher, which contains shortcuts to your software and tools.
-2. The Browser, which allows you to browse files related to assets and shots.
-3. The Batcher, where background jobs can be monitored.
-4. The EntityCreator, which allows you to create new assets and shots.
-5. There is also a link to the official BluePepper documentation
-6. and a button to toggle the system console.
+1. The `Launcher`, which contains shortcuts to your software and tools.
+2. The `Browser`, which allows you to browse files related to assets and shots.
+3. The `Batcher`, where background jobs can be monitored.
+4. The `EntityCreator`, which allows you to create new assets and shots.
+5. There is also a link to the official `BluePepper documentation`
+6. and a button to toggle the `System Console`.
 
 From here, we advise you to create a few assets and shots using the EntityCreator, and play around in the Browser to see what you can do with it.
 
