@@ -512,6 +512,8 @@ class DefaultLauncherConfig(LauncherConfig):
 
 A new app icon will appear in the Apps section of the Launcher, and VLC will open when you double-click it. Note that there is no technical difference between apps and tools, it is simply a convenient way to organise your icons. If you wanted the VLC icon to appear at the bottom of the Launcher, you would add the `LauncherItem` to `tools` instead of `apps`.
 
+![launcher app](docs/img/launcher_app.jpg)
+
 This approach to launching applications through custom functions gives you a great deal of flexibility from simple one-liners to complex launch sequences. See `maya_launcher.py` for a more involved example.
 
 ### About Qt Dialogs
@@ -542,7 +544,7 @@ def show_dialog():
 Then add it to the Launcher:
 
 ```python
-apps: list[LauncherItem] = [
+tools: list[LauncherItem] = [
     LauncherItem(
         label="Hello Dialog",
         icon="console.png",
@@ -552,6 +554,8 @@ apps: list[LauncherItem] = [
     )
 ]
 ```
+
+![launcher qt](docs/img/launcher_qt.jpg)
 
 ### About Beautiful Qt Dialogs
 
@@ -585,14 +589,18 @@ class HelloWidget(QWidget):  # QWidget instead of QDialog
 
 def show_dialog():
     app = get_qt_app()
-    icon = get_qta_icon(name="mdi.tag-text", scale_factor=1.25)
+    icon = get_qta_icon(name="mdi6.hand-wave", scale_factor=1.25)
     widget = HelloWidget()
-    container = ContainerWidget(widget=widget, icon=icon, title="Tag Manager")
+    container = ContainerWidget(widget=widget, icon=icon, title="Hello Button")
     dialog = ContainerDialog(container)
     dialog.exec()
 ```
 
-The result will be identical in functionality, but with considerably more style. If you need a reminder on how to use QtAwesome icons, see [Adding Icons to Menu Actions](#adding-icons-to-menu-actions).
+The result will be identical in functionality, but with considerably more style (the BluePepper stylesheet, an icon, and a proper window title).
+
+![launcher qt](docs/img/launcher_qt.jpg)
+
+If you need a reminder on how to use QtAwesome icons, see [Adding Icons to Menu Actions](#adding-icons-to-menu-actions).
 
 # Design Philosophy
 
