@@ -4,11 +4,12 @@ import sys
 from pathlib import Path
 
 import qtawesome
-from bluepepper.core import root_dir
 from qtpy import QtGui, QtWidgets
 from qtpy.QtCore import Qt
 from qtpy.QtGui import QIcon
 from qtpy.QtWidgets import QApplication
+
+from bluepepper.core import root_dir
 
 
 def get_qt_app():
@@ -34,18 +35,14 @@ def get_qt_app():
 
         policy = os.getenv("QT_SCALE_FACTOR_ROUNDING_POLICY")
         if hasattr(QApplication, "setHighDpiScaleFactorRoundingPolicy") and not policy:
-            QApplication.setHighDpiScaleFactorRoundingPolicy(
-                Qt.HighDpiScaleFactorRoundingPolicy.PassThrough
-            )
+            QApplication.setHighDpiScaleFactorRoundingPolicy(Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
 
         app = QApplication(sys.argv)
 
     return app
 
 
-def get_qta_icon(
-    name: str, scale_factor: float = 1.0, color: str | None = None
-) -> QIcon:
+def get_qta_icon(name: str, scale_factor: float = 1.0, color: str | None = None) -> QIcon:
     if not color:
         color = get_theme()["active"]
     return qtawesome.icon(name, scale_factor=scale_factor, color=color)
@@ -338,6 +335,7 @@ def get_stylesheet(theme: str = "dark"):
     }}
     QComboBox QAbstractItemView::item::hover {{
         padding-left:5px;
+        background-color: {colors["bg_four"]};
     }}
     QComboBox QAbstractItemView::item:selected {{
         padding-left:5px;
