@@ -407,7 +407,7 @@ As explained, the result is now printed as a list, instead of printing the docum
 
 #### Filtering Tasks and Actions
 
-What if the rigging task should only appear for character assets? What if an action should only work on MP4 files? Filters have you covered.
+What if a task should only appear for a specific type of assets? What if an action should only be available for some specific files? Filters have you covered.
 
 There are two types of filters:
 
@@ -419,30 +419,40 @@ Create a function that returns `True` if your condition is met, `False` otherwis
 ```python
 # Task "Rigging" will only appear if a character asset is selected
 def is_chr(doc: dict) -> bool:
-    if not is_asset(doc):
-        return False
-    return doc["type"] == "chr"
-
+    return doc.get("type") == "chr"
 
 asset_rigging_task = Task("rigging", doc_filter=is_chr)
 asset_entity.add_task(asset_rigging_task)
-
-
-# Action "Open in VLC" will only appear on MP4 files
-def is_mp4(path: Path) -> bool:
-    return path.suffix == ".mp4"
-
-
-action = MenuAction(
-    label="Show in VLC",
-    module="...",
-    callable="...",
-    kwargs={"path": "<path>"},
-    path_filter=is_mp4,
-)
 ```
 
-What if you have both a character and a prop selected? The Browser handles this gracefully. The menu action will appear, but it will only execute on documents that match your filter.
+The rigging task should appear for `chr` assets only:
+
+![Browser Filter](docs/img/browser_filter_chr.jpg)
+![Browser Filter](docs/img/browser_filter_set.jpg)
+
+The same logic applies to files.
+
+```python
+def is_version_one(path: Path) -> bool:
+    return path.stem.endswith("v001")
+
+action = MenuAction(
+    label="Print if v001",
+    module="conf.scripts.print_stuff",
+    callable="print_selection",
+    kwargs={"selection": "<path>"},
+    path_filter=is_version_one,
+)
+kind.add_file_action(action)
+```
+
+In this example, the context menu is only available for v001 files:
+
+![Browser Filter](docs/img/browser_filter_v001.jpg)
+
+What if you have both a v001 and a v002 selected? The Browser handles this gracefully. The menu action will appear, but it will only execute on documents/files that match your filter.
+
+![Browser Filter](docs/img/browser_filter_multiple.jpg)
 
 #### Adding Icons to Menu Actions
 
