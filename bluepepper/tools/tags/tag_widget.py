@@ -47,9 +47,7 @@ class TagWidget(QFrame):
         if self._tag_icon:
             try:
                 icon = qtawesome.icon(self._tag_icon, color=self._tag_icon_color)
-                self.icon_label.setPixmap(
-                    icon.pixmap(int(self._size * 0.75), int(self._size * 0.75))
-                )
+                self.icon_label.setPixmap(icon.pixmap(int(self._size * 0.75), int(self._size * 0.75)))
                 self.icon_label.setHidden(False)
             except Exception:
                 self.icon_label.setHidden(True)
@@ -57,9 +55,7 @@ class TagWidget(QFrame):
             self.icon_label.setHidden(True)
 
         right_padding = self._size / 2
-        left_padding = (
-            right_padding if self.icon_label.isHidden() else right_padding / 2
-        )
+        left_padding = right_padding if self.icon_label.isHidden() else right_padding / 2
 
         self.setStyleSheet(
             f"""
