@@ -11,7 +11,7 @@
         "name" : "Documentation",
         "icon" : "mdi.book-information-variant",
         "icon_size" : 1.0,
-        "module" : "bluepepper",
+        "module" : "bluepepper.docs",
         "function" : "open_documentation",
         "tooltip" : "Wanna be stylish ? Read the manual !",
         "is_widget" : false
