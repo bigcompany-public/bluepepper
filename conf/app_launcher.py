@@ -54,6 +54,13 @@ class DefaultLauncherConfig(LauncherConfig):
             function="open",
             tooltip="Opens Blender",
         ),
+        LauncherItem(
+            label="Powershell",
+            icon="software_powershell.png",
+            module="bluepepper.softwares.powershell_launcher",
+            function="open",
+            tooltip="Opens Powershell with BluePepper venv activated",
+        ),
     ]
 
     tools: list[LauncherItem] = [
