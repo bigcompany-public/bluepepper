@@ -243,10 +243,13 @@ class EntityTab(QWidget):
                 # Reset lineedit
                 self._rows[-1].lineedit.reset()
 
-                # # Update Browser
+                # Update Browser
                 self.update_browser_widgets()
 
     def update_browser_widgets(self):
+        """
+        Find the browserwidget in the main bigpipe app, and iterate over entity tabs to update the available documents
+        """
         if not hasattr(self.entitycreator, "bluepepper_app"):
             return
 
