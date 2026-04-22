@@ -1,13 +1,5 @@
 [
     {
-        "name" : "Settings",
-        "icon" : "ri.settings-4-fill",
-        "icon_size" : 1.0,
-        "module" : "bluepepper.tools.demo.demo_widgets",
-        "class" : "DemoWidgetQtDesigner",
-        "tooltip" : "Edit BluePepper's settings"
-    },
-    {
         "name" : "Documentation",
         "icon" : "mdi.book-information-variant",
         "icon_size" : 1.0,
