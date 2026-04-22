@@ -48,7 +48,7 @@ Coming soon (hopefully).
 
 The various components of BluePepper can be accessed through the left sidebar.
 
-![qta browser](docs/img/bluepepper_pages.jpg)
+![pages](docs/img/bluepepper_pages.jpg)
 
 1. The Launcher, which contains shortcuts to your software and tools.
 2. The Browser, which allows you to browse files related to assets and shots.
@@ -59,9 +59,9 @@ The various components of BluePepper can be accessed through the left sidebar.
 
 From here, we advise you to create a few assets and shots using the EntityCreator, and play around in the Browser to see what you can do with it.
 
-![qta browser](docs/img/quickstart_entitycreator.jpg)
+![quickstart entitycreator](docs/img/quickstart_entitycreator.jpg)
 
-![qta browser](docs/img/quickstart_browser.jpg)
+![quickstart browser](docs/img/quickstart_browser.jpg)
 
 If you're feeling adventurous, you can explore the files in the `conf` folder and get a sneak peek at the inner workings of BluePepper.
 
