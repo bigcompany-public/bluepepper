@@ -403,8 +403,6 @@ asset_entity.add_document_action(action)
 
 As explained, the result is now printed as a list, instead of printing the documents one by one.
 
-![Browser Config](docs/img/browser_action2.jpg)
-
 #### Filtering Tasks and Actions
 
 What if the rigging task should only appear for character assets? What if an action should only work on MP4 files? Filters have you covered.
@@ -446,12 +444,13 @@ What if you have both a character and a prop selected? The Browser handles this 
 
 #### Adding Icons to Menu Actions
 
-BluePepper uses QtAwesome for its menu icons. To browse available icons, open your terminal and run:
+BluePepper uses QtAwesome for its menu icons. To browse available icons, open a powershell terminal from the Launcher and run the command:
 
 ```powershell
-python main.py --shell
 qta-browser
 ```
+
+![qta-browser](docs/img/qta_browser.jpg)
 
 From there, you can copy the icon code and use it when declaring your `MenuAction`. You can also set a custom colour if you wish:
 
@@ -464,6 +463,8 @@ action = MenuAction(
     qta_icon_color="#FF0000"
 )
 ```
+
+![qta-browser](docs/img/browser_icon.jpg)
 
 #### Creating a Batcher Job through a MenuAction
 
