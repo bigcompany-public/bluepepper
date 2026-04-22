@@ -5,15 +5,23 @@
         "icon_size" : 1.0,
         "module" : "bluepepper.tools.launcher.launcher_widget",
         "class" : "LauncherWidget",
-        "tooltip" : "Open you applications and tools"
+        "tooltip" : "Open your applications and tools"
     },
     {
-        "name" : "Browse",
+        "name" : "Browser",
         "icon" : "ph.browsers-fill",
         "icon_size" : 1.0,
         "module" : "bluepepper.tools.browser.browser_main_app_widget",
         "class" : "MainAppBrowserWidget",
         "tooltip" : "Browse your files"
+    },
+    {
+        "name" : "Batcher",
+        "icon" : "mdi6.factory",
+        "icon_size" : 1.0,
+        "module" : "bluepepper.gui.widgets.lab_widget.labwidget",
+        "class" : "LabWidget",
+        "tooltip" : "Behold your jobs"
     },
     {
         "name" : "EntityCreator",

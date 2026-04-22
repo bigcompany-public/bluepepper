@@ -16,8 +16,8 @@ from bluepepper.gui.widgets.lab_widget.ui_labwidget import Ui_LabWidget
 
 
 class LabWidget(QWidget):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent=None):
+        super().__init__(parent)
         ui = Ui_LabWidget()
         ui.setupUi(self)
 
