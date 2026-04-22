@@ -151,6 +151,10 @@ class TableFileKindsMenu(QMenu):
             self.register_action(action)
 
     def get_actions_to_register(self):
+        # Do noting if no FileKind is selected
+        if not self.kind:
+            return []
+
         # Only register action if the selected documents respect the filter
         documents = self.tab.document_table.selected_documents
         filtered_actions = []
@@ -172,9 +176,7 @@ class TableFileKindsMenu(QMenu):
         if menu_action.icon:
             icon = QIcon(get_icon(menu_action.icon).as_posix())
         elif menu_action.qta_icon:
-            icon = qtawesome.icon(
-                menu_action.qta_icon, scale_factor=1.1, color=menu_action.qta_icon_color
-            )
+            icon = qtawesome.icon(menu_action.qta_icon, scale_factor=1.1, color=menu_action.qta_icon_color)
 
         if icon:
             action.setIcon(icon)

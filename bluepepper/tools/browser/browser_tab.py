@@ -58,6 +58,7 @@ class EntityTab(QWidget):
         self.add_file_table()
         self.add_filter_widgets()
         self.setup_initial_state()
+        self.setup_signals()
 
     def setup_ui(self) -> None:
         self.setObjectName(f"tab_{self.entity.name}")
@@ -69,9 +70,7 @@ class EntityTab(QWidget):
         # Frame for filters
         self.frame_filters_and_tags = QFrame(self)
         self.frame_filters_and_tags.setObjectName(f"frame_filters_{self.entity.name}")
-        self.frame_filters_and_tags.setSizePolicy(
-            QSizePolicy.Expanding, QSizePolicy.Fixed
-        )
+        self.frame_filters_and_tags.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         # self.frame_filters_and_tags.setProperty("depth", "0")
         self.layout_filters_and_tags = QVBoxLayout(self.frame_filters_and_tags)
         self.tab_layout.addWidget(self.frame_filters_and_tags)
@@ -159,6 +158,12 @@ class EntityTab(QWidget):
         self.filter_comboboxes[0].update_items()
         self.task_table.update_items()
         self.kind_table.update_items()
+
+    def setup_signals(self):
+        self.update_files_button.clicked.connect(self.update_files_clicked)
+
+    def update_files_clicked(self):
+        self.file_table.update_items(force=True)
 
 
 class FilterComboBox(QComboBox):

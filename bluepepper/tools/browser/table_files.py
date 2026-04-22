@@ -185,11 +185,13 @@ class TableFiles(QTableWidget):
                 pass
         return paths
 
-    def update_items(self):
+    def update_items(self, force: bool = False):
+        if self.tab.pause_update_checkbox.isChecked() and not force:
+            return
         self.clear_items()
-        self.kill_watchdog_observers()
+        # self.kill_watchdog_observers()
         self.add_file_items()
-        self.start_watchdog_observers()
+        # self.start_watchdog_observers()
 
     def add_file_items(self):
         path_tuples = self.get_paths()

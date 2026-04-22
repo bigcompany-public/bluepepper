@@ -100,16 +100,12 @@ class TableDocuments(QTableWidget):
 
         # Construct name query
         search = self.tab.search_bar.text()
-        name_search_list = [
-            string.strip() for string in search.split(";") if string.strip()
-        ]
+        name_search_list = [string.strip() for string in search.split(";") if string.strip()]
         if name_search_list:
             # Compose name query
             name_query = []
             for string in name_search_list:
-                name_query.append(
-                    {self.entity.name: {"$regex": string, "$options": "i"}}
-                )
+                name_query.append({self.entity.name: {"$regex": string, "$options": "i"}})
             query["$or"] = name_query
 
         return query
@@ -219,9 +215,7 @@ class DocumentItem(QTableWidgetItem):
             self.setToolTip(json.dumps(self.document, indent=4))
 
     def set_label(self):
-        label = (
-            self.document[self.entity.name] if self.document else "No documents found"
-        )
+        label = self.document[self.entity.name] if self.document else "No documents found"
         self.setText(label)
 
     def set_enabled(self):
@@ -244,6 +238,9 @@ class TableDocumentsMenu(QMenu):
     def get_actions_to_register(self):
         # Only register action if the selected documents respect the filter
         documents = self.tab.document_table.selected_documents
+        if not documents:
+            return []
+
         filtered_actions = []
         for action in self.entity.document_actions:
             if not action.doc_filter:
@@ -263,9 +260,7 @@ class TableDocumentsMenu(QMenu):
         if menu_action.icon:
             icon = QIcon(get_icon(menu_action.icon).as_posix())
         elif menu_action.qta_icon:
-            icon = qtawesome.icon(
-                menu_action.qta_icon, scale_factor=1.1, color=menu_action.qta_icon_color
-            )
+            icon = qtawesome.icon(menu_action.qta_icon, scale_factor=1.1, color=menu_action.qta_icon_color)
 
         if icon:
             action.setIcon(icon)
