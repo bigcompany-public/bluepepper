@@ -349,7 +349,7 @@ Printing "Hello World" is a fine start, but what if you need to pass the selecte
 As an example, we will add a new function to `print_stuff.py`
 
 ```python
-def print_document_selection(selection):
+def print_selection(selection):
     print(selection)
 ```
 
@@ -359,7 +359,7 @@ And add these lines to `app_browser.py`
 action = MenuAction(
     label="print document",
     module="conf.scripts.print_stuff",
-    callable="print_document_selection",
+    callable="print_selection",
     kwargs={"selection": "<document>"}
 )
 asset_entity.add_document_action(action)
@@ -395,13 +395,15 @@ Let's show this subtle difference with an example
 action = MenuAction(
     label="print documentS",
     module="conf.scripts.print_stuff",
-    callable="print_document_selection",
+    callable="print_selection",
     kwargs={"selection": "<documents>"}
 )
 asset_entity.add_document_action(action)
 ```
 
 As explained, the result is now printed as a list, instead of printing the documents one by one.
+
+![Browser Config](docs/img/browser_action3.jpg)
 
 #### Filtering Tasks and Actions
 
@@ -450,7 +452,7 @@ BluePepper uses QtAwesome for its menu icons. To browse available icons, open a 
 qta-browser
 ```
 
-![qta-browser](docs/img/qta_browser.jpg)
+![qta browser](docs/img/qta_browser.jpg)
 
 From there, you can copy the icon code and use it when declaring your `MenuAction`. You can also set a custom colour if you wish:
 
@@ -464,7 +466,7 @@ action = MenuAction(
 )
 ```
 
-![qta-browser](docs/img/browser_icon.jpg)
+![qta browser](docs/img/browser_icon.jpg)
 
 #### Creating a Batcher Job through a MenuAction
 
