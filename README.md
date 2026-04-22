@@ -598,7 +598,7 @@ def show_dialog():
 
 The result will be identical in functionality, but with considerably more style (the BluePepper stylesheet, an icon, and a proper window title).
 
-![launcher qt](docs/img/launcher_qt.jpg)
+![launcher qt](docs/img/launcher_qt_style.jpg)
 
 If you need a reminder on how to use QtAwesome icons, see [Adding Icons to Menu Actions](#adding-icons-to-menu-actions).
 
