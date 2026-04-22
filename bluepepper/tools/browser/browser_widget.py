@@ -21,6 +21,7 @@ class BrowserWidget(QWidget):
         self._parent = parent
         self._layout: QLayout
         self.tool_config = tool_config
+        self.entity_tab_widgets: list[EntityTab] = []
         self.attach_to_parent()
         self.init_ui()
         self.apply_stylesheet()
@@ -57,6 +58,7 @@ class BrowserWidget(QWidget):
         for entity in self.tool_config.entities.values():
             tab = EntityTab(browser=self, entity=entity)
             self.tab_widget.addTab(tab, entity.label)
+            self.entity_tab_widgets.append(tab)
 
     def apply_stylesheet(self):
         stylesheet = get_stylesheet()

@@ -21,12 +21,14 @@ from qtpy.QtWidgets import (
     QWidget,
 )
 
+from bluepepper.app.main_window.main_window import BluePepperApp
 from bluepepper.asset_creator import AssetCreator
 from bluepepper.core import codex, database
 from bluepepper.database import Collection
 from bluepepper.gui.utils import format_widgets, stylesheet
 from bluepepper.gui.widgets.outcome_popups.outcome_popups import OutcomePopup
 from bluepepper.shot_creator import ShotCreator
+from bluepepper.tools.browser.browser_widget import BrowserWidget
 
 
 class FieldLabel(QLabel):
@@ -69,9 +71,7 @@ class FieldLineEdit(QLineEdit):
 
 
 class FieldComboBox(QComboBox):
-    def __init__(
-        self, entity_tab: EntityTab, field: str, row_index: int, collection: Collection
-    ):
+    def __init__(self, entity_tab: EntityTab, field: str, row_index: int, collection: Collection):
         super().__init__()
         self.entity_tab = entity_tab
         self.entity = entity_tab.entity
@@ -103,9 +103,7 @@ class FieldComboBox(QComboBox):
     def get_possible_values(self) -> list[str]:
         # If the previous field is set to "Custom", all subsequent fields should be custom as well
         if self.row_index != 0:
-            previous_combobox_value = self.entity_tab._rows[
-                self.row_index - 1
-            ].combobox.currentText()
+            previous_combobox_value = self.entity_tab._rows[self.row_index - 1].combobox.currentText()
             if previous_combobox_value == "Custom":
                 return []
 
@@ -148,12 +146,15 @@ class EntityTab(QWidget):
     def __init__(
         self,
         parent: QWidget,
+        entitycreator: EntityCreatorWidget,
         entity: str,
         collection: Collection,
         required_fields: List[str],
         create_callback: Callable[[Dict[str, str]], None],
     ):
         super().__init__(parent)
+        self._parent = parent
+        self.entitycreator = entitycreator
         self.entity = entity
         self.collection = collection
         self.required_fields = required_fields
@@ -242,6 +243,25 @@ class EntityTab(QWidget):
                 # Reset lineedit
                 self._rows[-1].lineedit.reset()
 
+                # # Update Browser
+                self.update_browser_widgets()
+
+    def update_browser_widgets(self):
+        if not hasattr(self.entitycreator, "bluepepper_app"):
+            return
+
+        bluepapper_app: BluePepperApp = getattr(self.entitycreator, "bluepepper_app")
+        for widget in bluepapper_app.page_widgets:
+            if isinstance(widget, BrowserWidget):
+                self.update_browser_widget(widget)
+
+    def update_browser_widget(self, browser_widget: BrowserWidget):
+        for tab in browser_widget.entity_tab_widgets:
+            if tab.entity.name != self.entity:
+                continue
+
+            tab.document_table.update_items()
+
     def _previous_query(self, row: int) -> dict[str, str]:
         if row == 0:
             return {}
@@ -296,6 +316,7 @@ class EntityCreatorWidget(QWidget):
 
         asset_tab = EntityTab(
             parent=tabs,
+            entitycreator=self,
             entity="asset",
             collection=database.assets,
             required_fields=codex.convs.asset_fields.required_fields,
@@ -305,6 +326,7 @@ class EntityCreatorWidget(QWidget):
 
         shot_tab = EntityTab(
             parent=tabs,
+            entitycreator=self,
             entity="shot",
             collection=database.shots,
             required_fields=codex.convs.shot_fields.required_fields,

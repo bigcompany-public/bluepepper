@@ -41,6 +41,7 @@ class BluePepperApp(FramelessMainWindow):
     def __init__(self) -> None:
         super().__init__()
         self.page_buttons: list[PageWidgetButton] = []
+        self.page_widgets: list[QWidget] = []
         self.dragging = False
         self.click_count = 0
         self.colors = get_theme()
@@ -167,7 +168,7 @@ class BluePepperApp(FramelessMainWindow):
                     page_index=index,
                     icon=icon,
                     tooltip=page.get("tooltip", ""),
-                    module=page.get("module"),
+                    module=page["module"],
                     widget_class=page["class"],
                 )
                 self.page_buttons.append(btn)
@@ -178,7 +179,7 @@ class BluePepperApp(FramelessMainWindow):
                     parent=self,
                     icon=icon,
                     tooltip=page.get("tooltip", ""),
-                    module=page.get("module"),
+                    module=page["module"],
                     func=page["function"],
                 )
             page["destination_layout"].addWidget(btn)
@@ -210,7 +211,7 @@ class MenuButton(QPushButton):
         self,
         parent: BluePepperApp,
         icon: QIcon,
-        module: str | None = None,
+        module: str,
         tooltip: str = "",
     ) -> None:
         super().__init__(parent)
@@ -236,13 +237,14 @@ class PageWidgetButton(MenuButton):
         page_index: int,
         icon: QIcon,
         widget_class: str,
-        module: str | None = None,
+        module: str,
         tooltip: str = "",
     ) -> None:
+        self.bluepepper_app = parent
         self.widget_class = widget_class
         self.page_index = page_index
         self.page_widget: QWidget | None = None
-        super().__init__(parent, icon, module, tooltip)
+        super().__init__(self.bluepepper_app, icon, module, tooltip)
         self._initialize_widget()
 
     def _initialize_widget(self) -> None:
@@ -250,7 +252,9 @@ class PageWidgetButton(MenuButton):
         module = import_module(self.module)
         cls = getattr(module, self.widget_class)
         container = QWidget()
-        self.page_widget = cls(container)
+        self.page_widget: QWidget = cls(container)
+        self.page_widget.bluepepper_app = self._parent
+        self.bluepepper_app.page_widgets.append(self.page_widget)
         self._parent.ui.stackedWidget.addWidget(container)
 
     def button_clicked(self) -> None:
