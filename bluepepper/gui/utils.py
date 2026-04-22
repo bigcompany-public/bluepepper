@@ -773,8 +773,14 @@ def get_stylesheet(theme: str = "dark"):
         border-radius: 1px;
         padding: 3px;
     }}
+    QMenu::item {{
+        padding-left: 2px;
+        padding-right: 10px;
+        padding-top: 3px;
+        padding-bottom: 3px;
+    }}
     QMenu::item:selected {{
-        background-color: {colors["bg_four"]};   
+        background-color: {colors["bg_four"]};
     }}
 
     QListWidget {{
