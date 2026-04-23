@@ -19,8 +19,8 @@
         "name" : "Batcher",
         "icon" : "mdi6.factory",
         "icon_size" : 1.0,
-        "module" : "bluepepper.gui.widgets.lab_widget.labwidget",
-        "class" : "LabWidget",
+        "module" : "bluepepper.tools.batcher.batcher_widget",
+        "class" : "BatcherWidget",
         "tooltip" : "Behold your jobs"
     },
     {
