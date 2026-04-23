@@ -733,9 +733,6 @@ Multiple search strings can be used at once, using the `;` separator:
 
 - `CAT;ry` will return `catherine`, `blackCat`, `terry` and `curry`
 
-:tip: This option is more advanced, but if you know what you are doing, you can write a MondoDB query:
-- `{"asset" : "cat"}` will return `cat` but *not* `blackCat`
-
 #### Field Filter
 
 Field filters are here to filter documents by other attributes than their name.
@@ -747,6 +744,23 @@ The filters are in order: from the less specific to the more specific, which hel
 
 *(Coming soon. the Tag feature has not been released yet.)*
 
+### Actions
+
+Various actions can be performed on the various elements of the Browser. BluePepper comes with a few handy actions out of the box, feel free to try them out.
+
+![browser_action_document](docs/img/browser_action_document.jpg) ![browser_action_file](docs/img/browser_action_file.jpg)
+
+### Tips And Tricks
+
+:tip:You can hover above documents to display the full document.
+
+![browser_hover_document](docs/img/browser_hover_document.jpg)
+
+:tip:This option is more advanced, but if you know what you are doing, you can write a MondoDB query as a filter:
+- `{"asset" : "cat"}` will return `cat` but *not* `blackCat`
+
 ## Batcher
+
+*(Coming soon. the Batcher feature has not been released yet.)*
 
 ## Entity Creator
