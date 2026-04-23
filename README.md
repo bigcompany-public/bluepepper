@@ -759,7 +759,7 @@ Various actions can be performed on the various elements of the Browser. BluePep
 ![browser_hover_document](docs/img/browser_hover_document.jpg)
 
 :bulb:This option is more advanced, but if you know what you are doing, you can write a MondoDB query as a filter:
-- `{"asset" : "cat"}` will return `cat` but *not* `blackCat`
+- `{"asset" : "cat"}` will return `cat` but **not** `blackCat`
 
 ## Batcher
 
