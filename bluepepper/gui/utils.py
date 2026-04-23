@@ -6,7 +6,7 @@ from pathlib import Path
 import qtawesome
 from qtpy import QtGui, QtWidgets
 from qtpy.QtCore import Qt
-from qtpy.QtGui import QIcon
+from qtpy.QtGui import QColor, QIcon
 from qtpy.QtWidgets import QApplication
 
 from bluepepper.core import root_dir
@@ -310,6 +310,11 @@ def get_stylesheet(theme: str = "dark"):
         background-color:{colors["bg_three"]};
         border-radius:5px;
         border:1px solid {colors["outline"]};
+    }}
+    QFrame[depth="4"] {{
+        background-color: rgba({QColor(colors["bg_one"]).red()},{QColor(colors["bg_one"]).green()}, {QColor(colors["bg_one"]).blue()},85%);
+        border-radius:2px;
+        border:1px solid {colors["bg_three"]};
     }}
 
     QComboBox {{
@@ -797,6 +802,9 @@ def get_stylesheet(theme: str = "dark"):
         background-color: none;
     }}
     QListWidget::item::hover {{
+        background-color: {colors["button_hover"]};
+    }}
+    QListWidget::item::selected {{
         background-color: {colors["button_hover"]};
     }}
 
