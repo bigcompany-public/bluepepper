@@ -694,7 +694,58 @@ The Browser allows you to browse files related to assets and shots. To look for 
 - File Kinds (`4`) are regrouped under tasks (`3`)
 - Selecting an asset/shot document and a File Kind triggers a file search: all files matching the naming convention appear in the right hand side (`5`).
 
-:warning:**Warning** This also mean that files that do not strictly match the naming convention will not appear.
+:warning:**Warning:** This also mean that files that do not **strictly** match the naming convention will **not** appear.
+
+![browser_no_match](docs/img/browser_no_match.jpg)
+
+### Selection
+
+Searching for files with a single document selected will reveal **all** the files for this specific document.
+
+![browser_selection_single](docs/img/browser_selection_single.jpg)
+
+On the other hand, looking for files with multiple documents selected will show the **last file** found for each.
+
+![browser_selection_multiple](docs/img/browser_selection_multiple.jpg)
+
+The `Document` and `Files` columns have an extended selection mode, so various shortcuts are available:
+- `Ctrl` + `click` -> additive selection 
+- `Shift` + `click` -> contiguous selection
+- `Ctrl` + `A` -> Select all
+- `Shift` + `up/down arrow` -> Extend selection up/down
+- `Ctrl` + `Space` -> Unselect last selected item
+
+### Filters
+
+The Browser comes with various filtering options to help you find your documents.
+
+#### Name Filter
+
+The name filter looks for documents names that *contain* the search string, and is case insensitive.\
+For instance:
+
+- `CAT` will return `catherine` and `blackCat`
+- `er` will return `terry` and `pepper`
+
+![browser_filter_name](docs/img/browser_filter_name.jpg)
+
+Multiple search strings can be used at once, using the `;` separator:
+
+- `CAT;ry` will return `catherine`, `blackCat`, `terry` and `curry`
+
+:tip: This option is more advanced, but if you know what you are doing, you can write a MondoDB query:
+- `{"asset" : "cat"}` will return `cat` but *not* `blackCat`
+
+#### Field Filter
+
+Field filters are here to filter documents by other attributes than their name.
+The filters are in order: from the less specific to the more specific, which helps you narrow down your query.
+
+![browser_filter_fields](docs/img/browser_filter_fields.jpg)
+
+#### Tag Filter
+
+*(Coming soon. the Tag feature has not been released yet.)*
 
 ## Batcher
 
