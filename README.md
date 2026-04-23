@@ -692,10 +692,9 @@ The Browser allows you to browse files related to assets and shots. To look for 
 - Select the entity type (`1`)
 - Select your asset/shot (`2`)
 - File Kinds (`4`) are regrouped under tasks (`3`)
-- Selecting an asset/shot document and a File Kind triggers a file search: all files matching the naming convention appear in the right hand side.
+- Selecting an asset/shot document and a File Kind triggers a file search: all files matching the naming convention appear in the right hand side (`5`).
 
-[!IMPORTANT] 
-This also mean that files that do not strictly match the naming convention will not appear.
+:warning: **Warning** This also mean that files that do not strictly match the naming convention will not appear.
 
 ## Batcher
 
