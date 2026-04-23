@@ -1,4 +1,4 @@
-from qtpy.QtWidgets import QFrame, QLabel, QListWidgetItem, QPushButton, QSizePolicy, QVBoxLayout, QWidget
+from qtpy.QtWidgets import QFrame, QLabel, QListWidgetItem, QPushButton, QVBoxLayout, QWidget
 
 from bluepepper.gui.utils import get_qta_icon
 from bluepepper.gui.widgets.container import (
@@ -17,18 +17,33 @@ class BatcherWidget(QWidget):
 
     def __init__(self, parent: QWidget | None = None) -> None:
         super().__init__(parent)
+        self._parent = parent
+        self.attach_to_parent()
         self.job_list_widget = JobListWidget(self)
-        # self._manager = JobManager(self)
         self._job_counter = 0
         self._setup_ui()
         self._setup_signals()
-        # self._connect_manager()
+
+    def attach_to_parent(self):
+        self._layout: QVBoxLayout
+        if not self._parent:
+            self._layout = QVBoxLayout()
+            self.setLayout(self._layout)
+        elif not self._parent.layout():
+            self._layout = QVBoxLayout()
+            self._parent.setLayout(self._layout)
+        else:
+            self._layout = self._parent.layout()  # type: ignore
+
+        # Create main widget, who will contain all other widgets and hold the stylesheet
+        self.main_widget = QWidget(self)
+        self._layout.addWidget(self.main_widget)
+
+        # Remove margins
+        self._layout.setContentsMargins(0, 0, 0, 0)
 
     def _setup_ui(self):
-        self.setMinimumWidth(500)
-        self.setMinimumHeight(300)
-
-        main_layout = QVBoxLayout(self)
+        main_layout = QVBoxLayout(self.main_widget)
         label_title = QLabel("Batcher")
         label_title.setProperty("tag", "H2")
         main_layout.addWidget(label_title)
@@ -36,7 +51,6 @@ class BatcherWidget(QWidget):
         # Global options
         options_frame = QFrame()
         options_frame.setProperty("depth", "0")
-        options_frame.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
         main_layout.addWidget(options_frame)
 
         options_layout = QVBoxLayout(options_frame)
@@ -47,14 +61,12 @@ class BatcherWidget(QWidget):
         # Job List
         job_list_frame = QFrame()
         job_list_frame.setProperty("depth", "0")
-        job_list_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         main_layout.addWidget(job_list_frame)
         layout = QVBoxLayout(job_list_frame)
         layout.addWidget(self.job_list_widget)
 
         # Debug helpers
         self._button_demo_job = QPushButton("+ Add Demo Job")
-        self._button_demo_job.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         main_layout.addWidget(self._button_demo_job)
 
     def _setup_signals(self):
