@@ -1,31 +1,3 @@
-# Table of Contents
-
-- [What is BluePepper?](#what-is-bluepepper)
-- [Video Tutorials](#video-tutorials)
-- [Very Quick Start](#very-quick-start)
-- [In-Depth Quick Start](#in-depth-quick-start)
-- [Core Concepts](#core-concepts)
-- [Configuration](#configuration)
-  - [Project Settings](#configuring-the-project)
-  - [Database Configuration](#configuring-the-database)
-    - [MongoDB Atlas Setup](#mongodb-atlas-setup-optional)
-  - [Naming Conventions](#configuring-the-naming-conventions)
-  - [Browser Configuration](#configuring-the-browser)
-    - [Entities](#entities)
-    - [Tasks](#tasks)
-    - [FileKinds](#filekinds)
-    - [Actions](#actions)
-    - [Passing Arguments to Actions](#passing-arguments-to-actions)
-    - [Filtering Tasks and Actions](#filtering-tasks-and-actions)
-    - [Adding Icons to Menu Actions](#adding-icons-to-menu-actions)
-    - [Creating a Batcher Job through a MenuAction](#creating-a-batcher-job-through-a-menuaction)
-  - [Launcher Configuration](#launcher-configuration)
-    - [About Qt Dialogs](#about-qt-dialogs)
-    - [About Beautiful Qt Dialogs](#about-beautiful-qt-dialogs)
-- [Design Philosophy](#design-philosophy)
-
----
-
 # What is BluePepper?
 
 BluePepper is a pipeline application designed for 2D/3D animation studios. The project aims to achieve several key goals:
@@ -35,11 +7,62 @@ BluePepper is a pipeline application designed for 2D/3D animation studios. The p
 - Make navigation and automation efficient and simple to set up
 - Strike the best balance between ease of setup and automation capabilities. You will need basic development skills, but adding new features should be reasonably straightforward
 
+![bluepepper](docs/img/bluepepper_launcher.jpg)
+
+# Table of Contents
+
+<details>
+  <summary>Quick Start</summary>
+
+- [What is BluePepper?](#what-is-bluepepper)
+- [Video Tutorials](#video-tutorials)
+- [Try it for yourself](#try-it-for-yourself)
+
+</details>
+
+<details>
+  <summary>TD/Dev Documentation</summary>
+
+- [Core Concepts](#core-concepts)
+- [Configuration](#configuration)
+- [Project Settings](#configuring-the-project)
+- [Database Configuration](#configuring-the-database)
+  - [MongoDB Atlas Setup](#mongodb-atlas-setup-optional)
+- [Naming Conventions](#configuring-the-naming-conventions)
+- [Browser Configuration](#configuring-the-browser)
+    - [Entities](#entities)
+    - [Tasks](#tasks)
+    - [FileKinds](#filekinds)
+    - [Actions](#actions)
+    - [Passing Arguments to Actions](#passing-arguments-to-actions)
+    - [Filtering Tasks and Actions](#filtering-tasks-and-actions)
+    - [Adding Icons to Menu Actions](#adding-icons-to-menu-actions)
+    - [Creating a Batcher Job through a MenuAction](#creating-a-batcher-job-through-a-menuaction)
+- [Launcher Configuration](#launcher-configuration)
+    - [About Qt Dialogs](#about-qt-dialogs)
+    - [About Beautiful Qt Dialogs](#about-beautiful-qt-dialogs)
+- [Design Philosophy](#design-philosophy)
+
+</details>
+
+<details>
+  <summary>User Documentation</summary>
+
+- [Launcher](#launcher)
+- [Browser](#browser)
+- [Batcher](#batcher)
+- [Entity Creator](#entity-creator)
+- [Getting Help](#getting-help)
+
+</details>
+
+---
+
 # Video Tutorials
 
 Coming soon (hopefully).
 
-# Very Quick Start
+# Try It For Yourself
 
 - Download the source code.
 - Unzip it into a new folder, for example `myProject`.
@@ -64,10 +87,6 @@ From here, we advise you to create a few assets and shots using the EntityCreato
 ![quickstart browser](docs/img/quickstart_browser.jpg)
 
 If you're feeling adventurous, you can explore the files in the `conf` folder and get a sneak peek at the inner workings of BluePepper.
-
-# In-Depth Quick Start
-
-Now that you have had a chance to test BluePepper, let's dive into the details.
 
 ## Core Concepts
 
@@ -637,3 +656,15 @@ These choices aim to:
 - Lower the barrier to entry for development, particularly for technical directors and tech artists who may not have extensive experience with complex software architectures
 - Provide excellent development ergonomics: autocompletion at every level, straightforward configuration
 - Reduce side effects, making it safe to deploy BluePepper to your colleagues without undue risk of breaking anything
+
+---
+
+# User Documentation
+
+## Launcher
+
+## Browser
+
+## Batcher
+
+## Entity Creator
