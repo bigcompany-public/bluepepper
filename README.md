@@ -48,6 +48,7 @@ BluePepper is a pipeline application designed for 2D/3D animation studios. The p
 <details>
   <summary>User Documentation</summary>
 
+- [BluePepper App](#bluepepper-app)
 - [Launcher](#launcher)
 - [Browser](#browser)
 - [Batcher](#batcher)
@@ -661,9 +662,40 @@ These choices aim to:
 
 # User Documentation
 
+## BluePepper App
+
+A shortcut to the BluePepper App is available in the installation folder. You may copy it to your desktop or pin it to the task bar if you wish. 
+
+![bluepepper_shortcut](docs/img/bluepepper_shortcut.jpg)
+
+The various components of BluePepper can be accessed through the left sidebar.
+
+![pages](docs/img/bluepepper_pages.jpg)
+
+1. The `Launcher`, which contains shortcuts to your software and tools.
+2. The `Browser`, which allows you to browse files related to assets and shots.
+3. The `Batcher`, where background jobs can be monitored.
+4. The `EntityCreator`, which allows you to create new assets and shots. (Warning: This tool should only be used by sups/leads)
+5. There is also a link to the official `BluePepper documentation`
+6. and a button to toggle the `System Console`.
+
 ## Launcher
 
+The Launcher is pretty straightforward: double-click on an icon to launch the desired software/tool.
+
 ## Browser
+
+The Browser allows you to browse files related to assets and shots. To look for files :
+
+![browser_structure](docs/img/browser_structure.jpg)
+
+- Select the entity type (`1`)
+- Select your asset/shot (`2`)
+- File Kinds (`4`) are regrouped under tasks (`3`)
+- Selecting an asset/shot document and a File Kind triggers a file search: all files matching the naming convention appear in the right hand side.
+
+[!IMPORTANT] 
+This also mean that files that do not strictly match the naming convention will not appear.
 
 ## Batcher
 
