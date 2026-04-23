@@ -683,6 +683,8 @@ The various components of BluePepper can be accessed through the left sidebar.
 
 The Launcher is pretty straightforward: double-click on an icon to launch the desired software/tool.
 
+![launcher app](docs/img/launcher_app.jpg)
+
 ## Browser
 
 The Browser allows you to browse files related to assets and shots. To look for files :
@@ -708,7 +710,7 @@ On the other hand, looking for files with multiple documents selected will show 
 
 ![browser_selection_multiple](docs/img/browser_selection_multiple.jpg)
 
-The `Document` and `Files` columns have an extended selection mode, so various shortcuts are available:
+The `Documents` and `Files` columns have an extended selection mode, so various shortcuts are available:
 - `Ctrl` + `click` -> additive selection 
 - `Shift` + `click` -> contiguous selection
 - `Ctrl` + `A` -> Select all
@@ -752,11 +754,11 @@ Various actions can be performed on the various elements of the Browser. BluePep
 
 ### Tips And Tricks
 
-:tip:You can hover above documents to display the full document.
+:bulb:You can hover above documents to display the full document.
 
 ![browser_hover_document](docs/img/browser_hover_document.jpg)
 
-:tip:This option is more advanced, but if you know what you are doing, you can write a MondoDB query as a filter:
+:bulb:This option is more advanced, but if you know what you are doing, you can write a MondoDB query as a filter:
 - `{"asset" : "cat"}` will return `cat` but *not* `blackCat`
 
 ## Batcher
