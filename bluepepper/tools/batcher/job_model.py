@@ -9,8 +9,8 @@ from typing import List
 
 
 class JobStatus(Enum):
-    NOT_STARTED = auto()
     WAITING = auto()
+    SUSPENDED = auto()
     RUNNING = auto()
     TERMINATED = auto()
     FINISHED = auto()
@@ -19,8 +19,8 @@ class JobStatus(Enum):
 
 # Human-readable labels & colours for each status
 STATUS_LABEL: dict[JobStatus, str] = {
-    JobStatus.NOT_STARTED: "Not started",
     JobStatus.WAITING: "Waiting",
+    JobStatus.SUSPENDED: "Not started",
     JobStatus.RUNNING: "Running",
     JobStatus.TERMINATED: "Terminated",
     JobStatus.FINISHED: "Finished",
@@ -28,8 +28,8 @@ STATUS_LABEL: dict[JobStatus, str] = {
 }
 
 STATUS_COLOR: dict[JobStatus, str] = {
-    JobStatus.NOT_STARTED: "#888888",
     JobStatus.WAITING: "#E0A030",
+    JobStatus.SUSPENDED: "#888888",
     JobStatus.RUNNING: "#4A9EE0",
     JobStatus.TERMINATED: "#CC6633",
     JobStatus.FINISHED: "#4CAF50",
@@ -46,9 +46,6 @@ class JobData:
     priority: int = 50
     job_id: str = field(default_factory=lambda: str(uuid.uuid4()))
     created_at: datetime = field(default_factory=datetime.now)
-    status: JobStatus = JobStatus.NOT_STARTED
+    status: JobStatus = JobStatus.WAITING
     progress: int = 0
-
-    def scheduling_key(self):
-        """Higher priority first; ties broken by creation time (first in, first out)."""
-        return (-self.priority, self.created_at)
+    notify_when_done: bool = False

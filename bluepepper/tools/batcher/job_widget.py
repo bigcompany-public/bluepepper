@@ -1,15 +1,15 @@
 from __future__ import annotations
 
+from datetime import datetime
 from typing import TYPE_CHECKING
 
 import qtawesome
-from qtpy.QtCore import QSize
-from qtpy.QtGui import QIcon
+from qtpy.QtCore import QSize, QTimer
+from qtpy.QtGui import QIcon, QTextCursor
 from qtpy.QtWidgets import (
     QFrame,
     QHBoxLayout,
     QLabel,
-    QListWidgetItem,
     QPlainTextEdit,
     QProgressBar,
     QPushButton,
@@ -19,11 +19,12 @@ from qtpy.QtWidgets import (
 )
 
 from bluepepper.gui.utils import get_theme
+from bluepepper.tools.batcher.job_model import JobData, JobStatus
+from bluepepper.tools.batcher.job_thread import JobThread
 
 # Imports used only for type checking : these will not be imported at runtime
 if TYPE_CHECKING:
-    from bluepepper.tools.batcher.batcher_widget import BatcherWidget
-    from bluepepper.tools.batcher.job_model import JobData
+    from bluepepper.tools.batcher.batcher_widget import BatcherWidget, JobListItem
 
 SUBWIDGET_HEIGHT = 26
 
@@ -38,11 +39,14 @@ class IconButton(QPushButton):
 
 
 class JobWidget(QFrame):
-    def __init__(self, job_data: JobData, batcher_widget: BatcherWidget, qlist_item: QListWidgetItem):
+    def __init__(self, job_data: JobData, batcher_widget: BatcherWidget, qlist_item: JobListItem):
         super().__init__()
         self.job_data = job_data
         self.batchet_widget = batcher_widget
         self.qlist_item = qlist_item
+
+        # Insert self into the item
+        self.qlist_item.job_widget = self
 
         # Icons
         theme = get_theme()
@@ -58,8 +62,14 @@ class JobWidget(QFrame):
         self.expanded = False
         self.collapsed_size_hint: QSize
 
+        # Internal timer for runtime
+        self._runtime_timer = QTimer(self)
+        self._runtime_timer.setInterval(1000)
+        self._runtime_timer.timeout.connect(self.update_runtime)
+
         # Setup the widget
         self.setup_ui()
+        self.setup_signals()
 
     def setup_ui(self):
         # Add a container with a few pixels of margin to make the selection more visually clear in the JobListWidget
@@ -83,7 +93,6 @@ class JobWidget(QFrame):
 
         # Expand toggle
         self.button_expand = IconButton(self.icon_toggle_collapsed)
-        self.button_expand.clicked.connect(self.toggle_expand)
         main_layout.addWidget(self.button_expand)
 
         # Name
@@ -119,7 +128,6 @@ class JobWidget(QFrame):
         self.spinbox_priority.setRange(1, 100)
         self.spinbox_priority.setValue(self.job_data.priority)
         self.spinbox_priority.setToolTip("Job priority (1 = low, 100 = high)")
-        self.spinbox_priority.valueChanged.connect(self.on_priority_changed)
         self.spinbox_priority.setFixedWidth(50)
         main_layout.addWidget(self.spinbox_priority)
 
@@ -175,6 +183,10 @@ class JobWidget(QFrame):
         sub_expand_layout.addWidget(self.stdout_view)
         self.stdout_view.setPlainText("this is\na multiple line\ntext\n" * 30)
 
+    def setup_signals(self):
+        self.button_expand.clicked.connect(self.toggle_expand)
+        self.spinbox_priority.valueChanged.connect(self.on_priority_changed)
+
     def toggle_expand(self):
         if self.expanded:
             self.collapse()
@@ -193,4 +205,42 @@ class JobWidget(QFrame):
         self.qlist_item.setSizeHint(self.collapsed_size_hint)
 
     def on_priority_changed(self, value: int):
-        print(value)
+        self.job_data.priority = value
+
+    def start(self):
+        # Do nothing if the job is already running
+        if self.job_data.status == JobStatus.RUNNING:
+            return
+
+        self.job_data.status = JobStatus.RUNNING
+        self._start_time = datetime.now()
+        self.reset_stdout()
+
+        # Start timer
+        self._runtime_secs = 0
+        self.update_runtime()
+        self._runtime_timer.start()
+
+        # Start Thread
+        self._thread = JobThread(job_widget=self)
+        self._thread.start()
+
+    def reset_stdout(self) -> None:
+        self.stdout_view.clear()
+
+    def update_runtime(self) -> None:
+        h = self._runtime_secs // 3600
+        m = (self._runtime_secs % 3600) // 60
+        s = self._runtime_secs % 60
+        self.label_runtime.setText(f"Runtime: {h:02d}:{m:02d}:{s:02d}")
+        self._runtime_secs += 1
+
+    def update_log(self, line: str) -> None:
+        self.stdout_view.appendPlainText(line)
+        # Auto-scroll to bottom
+        cursor = self.stdout_view.textCursor()
+        cursor.movePosition(QTextCursor.MoveOperation.End)
+        self.stdout_view.setTextCursor(cursor)
+
+    def update_progress(self, value: int) -> None:
+        self.progress_bar.setValue(value)
