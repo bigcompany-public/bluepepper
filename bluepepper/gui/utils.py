@@ -552,8 +552,8 @@ def get_stylesheet(theme: str = "dark"):
         background-color:{colors["bg_one"]};
         border-color:{colors["outline"]};
         color:{colors["text_color"]};
-        padding-right: 15px;
-        padding-left: 5px;
+        padding-right: 0px;
+        padding-left: 0px;
         border-radius:2px;
     }}
     QSpinBox::up-button {{
@@ -574,8 +574,8 @@ def get_stylesheet(theme: str = "dark"):
         background-color:{colors["bg_one"]};
         border-color:{colors["outline"]};
         color:{colors["text_color"]};
-        padding-right: 15px;
-        padding-left: 5px;
+        padding-right: 0px;
+        padding-left: 0px;
         border-radius:2px;
     }}
     QDoubleSpinBox::up-button {{
