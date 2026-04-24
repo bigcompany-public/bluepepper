@@ -502,6 +502,10 @@ def get_stylesheet(theme: str = "dark"):
         background-color:{colors["error"]};
         border-color:transparent;
     }}
+    QPushButton[status="invisible"] {{
+        border: none;
+        background-color: none;
+    }}
 
     QRadioButton {{
         color:{colors["text_color"]};
