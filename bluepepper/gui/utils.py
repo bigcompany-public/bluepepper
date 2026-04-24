@@ -556,12 +556,12 @@ def get_stylesheet(theme: str = "dark"):
         padding-left: 5px;
         border-radius:2px;
     }}
-    SpinBox::up-button {{
+    QSpinBox::up-button {{
         width:16;
         height:10;
         margin:1;
     }}
-    SpinBox::down-button {{
+    QSpinBox::down-button {{
         width:16;
         height:10;
         margin:1;
