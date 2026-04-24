@@ -116,7 +116,7 @@ def format_widgets(widget: QtWidgets.QWidget):
 
         # Progress bar
         elif isinstance(child_widget, QtWidgets.QProgressBar):
-            child_widget.setMinimumHeight(20)
+            child_widget.setFixedHeight(20)
             child_widget.setMinimumWidth(minimum_width)
 
         # QSpinBox
@@ -259,6 +259,15 @@ def get_stylesheet(theme: str = "dark"):
     QLabel[status="code"] {{
         border-radius: 2px;
         border:1px solid {colors["bg_three"]};
+        color:{colors["text_color"]};
+        font-size:12px;
+        background-color:{colors["bg_two"]};
+        padding: 5px;
+    }}
+
+    QPlainTextEdit[status="code"] {{
+        border-radius: 2px;
+        border:1px solid {colors["outline"]};
         color:{colors["text_color"]};
         font-size:12px;
         background-color:{colors["bg_two"]};
@@ -505,6 +514,9 @@ def get_stylesheet(theme: str = "dark"):
     QPushButton[status="invisible"] {{
         border: none;
         background-color: none;
+    }}
+    QPushButton[status="invisible"]::hover {{
+        background-color:{colors["disabled3"]}
     }}
 
     QRadioButton {{

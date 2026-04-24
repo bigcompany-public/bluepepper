@@ -83,10 +83,9 @@ class BatcherWidget(QWidget):
 
     def add_job(self, job_data: JobData):
         item = QListWidgetItem()
-        job_widget = JobWidget(job_data=job_data, batcher_widget=self)
+        job_widget = JobWidget(job_data=job_data, batcher_widget=self, qlist_item=item)
         self.job_list_widget.addItem(item)
         self.job_list_widget.setItemWidget(item, job_widget)
-        item.setSizeHint(job_widget.sizeHint())
 
 
 if __name__ == "__main__":
