@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from qtpy.QtWidgets import QFrame, QLabel, QListWidgetItem, QPushButton, QVBoxLayout, QWidget
 
 from bluepepper.gui.utils import get_qta_icon
@@ -7,6 +9,7 @@ from bluepepper.gui.widgets.container import (
     get_qt_app,
 )
 from bluepepper.tools.batcher.job_list_widget import JobListWidget
+from bluepepper.tools.batcher.job_model import JobData
 from bluepepper.tools.batcher.job_widget import JobWidget
 
 
@@ -73,10 +76,14 @@ class BatcherWidget(QWidget):
         self._button_demo_job.clicked.connect(self._button_domo_job_clicked)
 
     def _button_domo_job_clicked(self):
-        print(self.job_list_widget.selectedItems())
+        job_data = JobData(
+            name="Test", description="Just for testing purposes", script_path=Path(__file__).with_name("demo_script.py")
+        )
+        self.add_job(job_data)
 
+    def add_job(self, job_data: JobData):
         item = QListWidgetItem()
-        job_widget = JobWidget()
+        job_widget = JobWidget(job_data=job_data, batcher_widget=self)
         self.job_list_widget.addItem(item)
         self.job_list_widget.setItemWidget(item, job_widget)
         item.setSizeHint(job_widget.sizeHint())
