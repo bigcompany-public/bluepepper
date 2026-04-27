@@ -554,6 +554,9 @@ def get_stylesheet(theme: str = "dark"):
     QProgressBar[status="suspended"]::chunk {{
         background:{colors["suspended"]}
     }}
+    QProgressBar[status="terminated"]::chunk {{
+        background:{colors["terminated"]}
+    }}
 
     QSpinBox {{
         border: 1px solid;

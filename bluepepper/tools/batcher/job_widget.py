@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+import math
 from datetime import datetime
 from typing import TYPE_CHECKING
 
 import qtawesome
 from qtpy.QtCore import QSize, QTimer
-from qtpy.QtGui import QIcon, QTextCursor
+from qtpy.QtGui import QIcon
 from qtpy.QtWidgets import (
     QFrame,
     QHBoxLayout,
@@ -54,22 +55,24 @@ class ProgressBar(QProgressBar):
         self.setFormat(status.capitalize())
         self.setProperty("status", status)  # The property drives the stylesheet
 
-        match self.job_widget.job_data.status:
-            case JobStatus.RUNNING | JobStatus.FINISHED:
-                self.setFormat("%p%")
-
         # Re-apply stylesheet to force a redraw
         self.setStyleSheet(stylesheet)
 
     def update_progress(self, value: int) -> None:
+        value = int(value)
+        margin = 7
+
         # progress bar value and actual value differ,
         # because the rounded borders cause issue with small values
-        if value in [0, 100]:
-            visual_value = value
+        if value >= 100:
+            visual_value = 100
+        if value <= 0 and self.job_widget.job_data.status != JobStatus.RUNNING:
+            visual_value = 0
         else:
-            # Map 1–99
-            margin = 7
-            visual_value = int(margin + (value - 1) * ((100 - 2 * margin) / 98))
+            number_of_parts = 100 - margin * 2
+            part = number_of_parts / 100
+            visual_value = margin + (part * value)
+            visual_value = math.ceil(visual_value)
 
         self.setFormat(f"{str(value)}%")
         self.setValue(visual_value)
@@ -217,6 +220,10 @@ class JobWidget(QFrame):
     def setup_signals(self):
         self.button_expand.clicked.connect(self.toggle_expand)
         self.spinbox_priority.valueChanged.connect(self.on_priority_changed)
+        self.button_start.clicked.connect(self.on_button_start_clicked)
+        self.button_stop.clicked.connect(self.on_button_stop_clicked)
+        self.button_restart.clicked.connect(self.on_button_restart_clicked)
+        self.button_delete.clicked.connect(self.on_button_delete_clicked)
 
     def toggle_expand(self):
         if self.expanded:
@@ -238,6 +245,32 @@ class JobWidget(QFrame):
     def on_priority_changed(self, value: int):
         self.job_data.priority = value
 
+    def on_button_start_clicked(self):
+        self.progress_bar.update_progress(0)
+        self.set_status(JobStatus.WAITING)
+
+    def on_button_restart_clicked(self):
+        self.terminate_job()
+        self.progress_bar.update_progress(0)
+        self.set_status(JobStatus.WAITING)
+
+    def on_button_delete_clicked(self):
+        self.delete_job()
+
+    def delete_job(self):
+        self.terminate_job()
+        row = self.batchet_widget.job_list_widget.row(self.qlist_item)
+        self.batchet_widget.job_list_widget.takeItem(row)
+
+    def on_button_stop_clicked(self):
+        if self.job_data.status == JobStatus.RUNNING:
+            self.terminate_job_from_user()
+            return
+
+        if self.job_data.status == JobStatus.WAITING:
+            self.suspend_job()
+            return
+
     def start(self):
         # Do nothing if the job is already running
         if self.job_data.status == JobStatus.RUNNING:
@@ -257,8 +290,8 @@ class JobWidget(QFrame):
         self._thread.start()
 
         # Update Progress bar
-        self.progress_bar.setValue(1)  # Add 1% progress to give a visual feedback
         self.progress_bar.redraw()
+        self.progress_bar.update_progress(0)
 
     def reset_stdout(self) -> None:
         self.stdout_view.clear()
@@ -272,18 +305,35 @@ class JobWidget(QFrame):
 
     def update_log(self, line: str) -> None:
         self.stdout_view.appendPlainText(line)
-        cursor = self.stdout_view.textCursor()
-        cursor.movePosition(QTextCursor.MoveOperation.End)
-        self.stdout_view.setTextCursor(cursor)
 
     def job_finished(self):
+        self.stdout_view.appendPlainText("Batcher job finished successfully")
         self.set_status(JobStatus.FINISHED)
+        if self.batchet_widget.cb_delete_finished.isChecked():
+            self.delete_job()
+
+    def terminate_job_from_script(self):
+        self.stdout_view.appendPlainText("Batcher job terminated from within the script")
+        self.terminate_job()
+
+    def terminate_job_from_user(self):
+        self.stdout_view.appendPlainText("Batcher job terminated by the user")
+        self.terminate_job()
+
+    def terminate_job(self):
+        self._thread.terminate()
+        self.set_status(JobStatus.TERMINATED)
+
+    def suspend_job(self):
+        self._thread.terminate()
+        self.set_status(JobStatus.SUSPENDED)
 
     def error_encountered(self):
+        self.stdout_view.appendPlainText("Batcher job encountered an error")
         self.set_status(JobStatus.ERROR)
 
     def set_status(self, status: JobStatus) -> None:
-        if self.job_data.status != JobStatus.RUNNING:
+        if status != JobStatus.RUNNING:
             self._runtime_timer.stop()
         self.job_data.status = status
         self.progress_bar.redraw()

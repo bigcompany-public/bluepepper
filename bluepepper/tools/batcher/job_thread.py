@@ -20,6 +20,7 @@ class JobThread(QThread):
     _error = Signal()
     _progress = Signal(int)
     _log = Signal(str)
+    _terminate = Signal()
 
     def __init__(self, job_widget: JobWidget):
         self.job_widget = job_widget
@@ -31,7 +32,7 @@ class JobThread(QThread):
         self._progress.connect(self.job_widget.progress_bar.update_progress)
         self._finished.connect(self.job_widget.job_finished)
         self._error.connect(self.job_widget.error_encountered)
-        pass
+        self._terminate.connect(self.job_widget.terminate_job_from_script)
 
     def run(self):
         self._log.emit(f"Starting job {self.job_widget.job_data.name}")
@@ -55,12 +56,14 @@ class JobThread(QThread):
 
             # This log line can be used to avoid stalling
             if "BLUEPEPPER_BATCHER_TERMINATE" in line:
-                process.terminate()
-                self._error.emit()
-                break
+                self._terminate.emit()
+                return
 
         stdout.close()
         returncode = process.wait()
 
         if returncode != 0:
             self._error.emit()
+            return
+
+        self._finished.emit()

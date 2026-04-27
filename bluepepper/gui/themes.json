@@ -31,7 +31,7 @@
         "running" : "blue",
         "finished" : "green",
         "suspended" : "grey_light",
-        "terminated" : "orange",
+        "terminated" : "grey_dark",
         "warning" : "orange",
         "error" : "red",
         "danger" : "red",

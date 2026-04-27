@@ -7,7 +7,7 @@ import sys
 import time
 
 STEPS = 100
-time.sleep(3)
+time.sleep(0.2)
 
 print("Starting demo job...")
 for step in range(1, STEPS + 1):
@@ -15,8 +15,8 @@ for step in range(1, STEPS + 1):
     pct = int(step / STEPS * 100)
     print(f"Step {step}/{STEPS} complete.")
     print(f"BLUEPEPPER_BATCHER_PROGRESS={pct}")
-    if pct > 50:
-        raise RuntimeError("JAJ")
+    # if pct == 53:
+    #     print("BLUEPEPPER_BATCHER_TERMINATE")
 
 
 print("[Job Done.")

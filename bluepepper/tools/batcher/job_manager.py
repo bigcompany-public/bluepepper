@@ -29,7 +29,7 @@ class JobManager(QObject):
 
         # Configure timer
         self._timer = QTimer(self)
-        self._timer.setInterval(2000)
+        self._timer.setInterval(500)
         self._timer.timeout.connect(self._tick)
 
     def start_event_loop(self):
@@ -43,12 +43,11 @@ class JobManager(QObject):
         # Stop if no jobs
         widgets = self.batcher.job_widgets
         if not widgets:
-            print("no jobs")
+            return
 
         # Stop if the current running jobs exceed the max thread limit
         running_jobs_count = len([widget for widget in widgets if widget.job_data.status == JobStatus.RUNNING])
         if running_jobs_count >= self.max_threads:
-            print("max thread limit exceeded")
             return
 
         # Get jobs to start

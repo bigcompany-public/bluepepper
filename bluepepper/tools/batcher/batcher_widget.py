@@ -61,6 +61,7 @@ class BatcherWidget(QWidget):
         self._layout.setContentsMargins(0, 0, 0, 0)
 
     def _setup_ui(self):
+        self.setMinimumHeight(550)
         main_layout = QVBoxLayout(self.main_widget)
         label_title = QLabel("Batcher")
         label_title.setProperty("tag", "H2")
@@ -154,7 +155,6 @@ class BatcherWidget(QWidget):
 
     def button_sandbox_clicked(self):
         widgets = self.sorted_job_widgets
-        print("#" * 30)
         for w in widgets:
             print(w.job_data.name, w.job_data.priority, w.job_data.created_at)
 
