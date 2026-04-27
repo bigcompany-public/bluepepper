@@ -536,27 +536,23 @@ def get_stylesheet(theme: str = "dark"):
     }}
     QProgressBar::chunk {{
         border-radius:5px;
-        background:{colors["ok"]}
+        background:{colors["ok"]};
+        margin:0px
     }}
-    QProgressBar[status="in_progress"]::chunk {{
-        border-radius:5px;
-        background:{colors["in_progress"]}
+    QProgressBar[status="waiting"]::chunk {{
+        background:{colors["waiting"]}
     }}
-    QProgressBar[status="done"]::chunk {{
-        border-radius:5px;
+    QProgressBar[status="running"]::chunk {{
+        background:{colors["running"]}
+    }}
+    QProgressBar[status="finished"]::chunk {{
         background:{colors["done"]}
     }}
     QProgressBar[status="error"]::chunk {{
-        border-radius:5px;
         background:{colors["error"]}
     }}
-    QProgressBar[status="stuck"]::chunk {{
-        border-radius:5px;
-        background:{colors["stuck"]}
-    }}
-    QProgressBar[status="cancelled"]::chunk {{
-        border-radius:5px;
-        background:{colors["cancelled"]}
+    QProgressBar[status="suspended"]::chunk {{
+        background:{colors["suspended"]}
     }}
 
     QSpinBox {{

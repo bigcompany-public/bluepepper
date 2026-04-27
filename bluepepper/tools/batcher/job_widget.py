@@ -18,7 +18,7 @@ from qtpy.QtWidgets import (
     QVBoxLayout,
 )
 
-from bluepepper.gui.utils import get_theme
+from bluepepper.gui.utils import get_theme, stylesheet
 from bluepepper.tools.batcher.job_model import JobData, JobStatus
 from bluepepper.tools.batcher.job_thread import JobThread
 
@@ -36,6 +36,42 @@ class IconButton(QPushButton):
         self.setProperty("status", "invisible")
         self.setFixedHeight(SUBWIDGET_HEIGHT)
         self.setFixedWidth(25)
+
+
+class ProgressBar(QProgressBar):
+    def __init__(self, job_widget: JobWidget):
+        super().__init__()
+        self.job_widget = job_widget
+        self.setRange(0, 100)
+        self.setValue(0)
+        self.setFixedWidth(160)
+        self.setFixedHeight(20)
+        self.setTextVisible(True)
+        self.redraw()
+
+    def redraw(self):
+        status = self.job_widget.job_data.status.value
+        self.setFormat(status)
+        self.setProperty("status", status)
+
+        if self.job_widget.job_data.status == JobStatus.RUNNING:
+            self.setFormat("%p%")
+
+        # Re-apply stylesheet to force a redraw
+        self.setStyleSheet(stylesheet)
+
+    def update_progress(self, value: int) -> None:
+        # progress bar value and actual value differ,
+        # because the rounded borders cause issue with small values
+        if value in [0, 100]:
+            visual_value = value
+        else:
+            # Map 1–99
+            margin = 7
+            visual_value = int(margin + (value - 1) * ((100 - 2 * margin) / 98))
+
+        self.setFormat(f"{str(value)}%")
+        self.setValue(visual_value)
 
 
 class JobWidget(QFrame):
@@ -110,13 +146,7 @@ class JobWidget(QFrame):
         main_layout.addStretch()
 
         # Progress bar
-        self.progress_bar = QProgressBar()
-        self.progress_bar.setRange(0, 100)
-        self.progress_bar.setValue(self.job_data.progress)
-        self.progress_bar.setFixedWidth(160)
-        self.progress_bar.setFixedHeight(20)
-        self.progress_bar.setTextVisible(True)
-        self.progress_bar.setFormat("%p%")
+        self.progress_bar = ProgressBar(self)
         main_layout.addWidget(self.progress_bar)
 
         # Spacer
@@ -225,6 +255,10 @@ class JobWidget(QFrame):
         self._thread = JobThread(job_widget=self)
         self._thread.start()
 
+        # Update Progress bar
+        self.progress_bar.setValue(0)
+        self.progress_bar.redraw()
+
     def reset_stdout(self) -> None:
         self.stdout_view.clear()
 
@@ -242,5 +276,34 @@ class JobWidget(QFrame):
         cursor.movePosition(QTextCursor.MoveOperation.End)
         self.stdout_view.setTextCursor(cursor)
 
-    def update_progress(self, value: int) -> None:
-        self.progress_bar.setValue(value)
+    def error_encountered(self):
+        self._runtime_timer.stop()
+        self.set_status(JobStatus.ERROR)
+
+    def set_status(self, status: JobStatus) -> None:
+        self.job_data.status = status
+
+    def _apply_status(self, status: JobStatus) -> None:
+        return
+        label = STATUS_LABEL[status]
+        color = STATUS_COLOR[status]
+        self._status_lbl.setText(label)
+        self._status_lbl.setStyleSheet(
+            f"color: {color}; border: 1px solid {color}; border-radius: 3px; padding: 1px 4px; font-size: 10px;"
+        )
+        can_start = status in (
+            JobStatus.NOT_STARTED,
+            JobStatus.WAITING,
+            JobStatus.TERMINATED,
+            JobStatus.ERROR,
+        )
+        can_stop = status == JobStatus.RUNNING
+        can_restart = status in (
+            JobStatus.RUNNING,
+            JobStatus.FINISHED,
+            JobStatus.TERMINATED,
+            JobStatus.ERROR,
+        )
+        self._btn_start.setEnabled(can_start)
+        self._btn_stop.setEnabled(can_stop)
+        self._btn_restart.setEnabled(can_restart)

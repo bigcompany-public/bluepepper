@@ -28,7 +28,7 @@ class JobThread(QThread):
 
     def setup_signals(self):
         self.log.connect(self.job_widget.update_log)
-        self.progress.connect(self.job_widget.update_progress)
+        self.progress.connect(self.job_widget.progress_bar.update_progress)
         # self.finished.connect(self.job_widget.job_finished)
         self.error.connect(self.job_widget.error_encountered)
 

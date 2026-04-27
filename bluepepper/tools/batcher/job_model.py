@@ -3,38 +3,18 @@ from __future__ import annotations
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
-from enum import Enum, auto
+from enum import StrEnum, auto
 from pathlib import Path
 from typing import List
 
 
-class JobStatus(Enum):
+class JobStatus(StrEnum):
     WAITING = auto()
-    SUSPENDED = auto()
     RUNNING = auto()
-    TERMINATED = auto()
     FINISHED = auto()
+    SUSPENDED = auto()
+    TERMINATED = auto()
     ERROR = auto()
-
-
-# Human-readable labels & colours for each status
-STATUS_LABEL: dict[JobStatus, str] = {
-    JobStatus.WAITING: "Waiting",
-    JobStatus.SUSPENDED: "Not started",
-    JobStatus.RUNNING: "Running",
-    JobStatus.TERMINATED: "Terminated",
-    JobStatus.FINISHED: "Finished",
-    JobStatus.ERROR: "Error",
-}
-
-STATUS_COLOR: dict[JobStatus, str] = {
-    JobStatus.WAITING: "#E0A030",
-    JobStatus.SUSPENDED: "#888888",
-    JobStatus.RUNNING: "#4A9EE0",
-    JobStatus.TERMINATED: "#CC6633",
-    JobStatus.FINISHED: "#4CAF50",
-    JobStatus.ERROR: "#E05050",
-}
 
 
 @dataclass
