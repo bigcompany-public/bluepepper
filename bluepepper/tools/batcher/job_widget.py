@@ -51,11 +51,12 @@ class ProgressBar(QProgressBar):
 
     def redraw(self):
         status = self.job_widget.job_data.status.value
-        self.setFormat(status)
-        self.setProperty("status", status)
+        self.setFormat(status.capitalize())
+        self.setProperty("status", status)  # The property drives the stylesheet
 
-        if self.job_widget.job_data.status == JobStatus.RUNNING:
-            self.setFormat("%p%")
+        match self.job_widget.job_data.status:
+            case JobStatus.RUNNING | JobStatus.FINISHED:
+                self.setFormat("%p%")
 
         # Re-apply stylesheet to force a redraw
         self.setStyleSheet(stylesheet)
@@ -256,7 +257,7 @@ class JobWidget(QFrame):
         self._thread.start()
 
         # Update Progress bar
-        self.progress_bar.setValue(0)
+        self.progress_bar.setValue(1)  # Add 1% progress to give a visual feedback
         self.progress_bar.redraw()
 
     def reset_stdout(self) -> None:
@@ -271,39 +272,18 @@ class JobWidget(QFrame):
 
     def update_log(self, line: str) -> None:
         self.stdout_view.appendPlainText(line)
-        # Auto-scroll to bottom
         cursor = self.stdout_view.textCursor()
         cursor.movePosition(QTextCursor.MoveOperation.End)
         self.stdout_view.setTextCursor(cursor)
 
+    def job_finished(self):
+        self.set_status(JobStatus.FINISHED)
+
     def error_encountered(self):
-        self._runtime_timer.stop()
         self.set_status(JobStatus.ERROR)
 
     def set_status(self, status: JobStatus) -> None:
+        if self.job_data.status != JobStatus.RUNNING:
+            self._runtime_timer.stop()
         self.job_data.status = status
-
-    def _apply_status(self, status: JobStatus) -> None:
-        return
-        label = STATUS_LABEL[status]
-        color = STATUS_COLOR[status]
-        self._status_lbl.setText(label)
-        self._status_lbl.setStyleSheet(
-            f"color: {color}; border: 1px solid {color}; border-radius: 3px; padding: 1px 4px; font-size: 10px;"
-        )
-        can_start = status in (
-            JobStatus.NOT_STARTED,
-            JobStatus.WAITING,
-            JobStatus.TERMINATED,
-            JobStatus.ERROR,
-        )
-        can_stop = status == JobStatus.RUNNING
-        can_restart = status in (
-            JobStatus.RUNNING,
-            JobStatus.FINISHED,
-            JobStatus.TERMINATED,
-            JobStatus.ERROR,
-        )
-        self._btn_start.setEnabled(can_start)
-        self._btn_stop.setEnabled(can_stop)
-        self._btn_restart.setEnabled(can_restart)
+        self.progress_bar.redraw()

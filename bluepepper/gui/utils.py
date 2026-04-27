@@ -546,7 +546,7 @@ def get_stylesheet(theme: str = "dark"):
         background:{colors["running"]}
     }}
     QProgressBar[status="finished"]::chunk {{
-        background:{colors["done"]}
+        background:{colors["finished"]}
     }}
     QProgressBar[status="error"]::chunk {{
         background:{colors["error"]}
