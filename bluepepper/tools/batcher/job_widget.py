@@ -232,10 +232,10 @@ class JobWidget(QFrame):
     def toggle_expand(self):
         to_do = "collapse" if self.expanded else "expand"
         selection = self.job_list_widget.selectedItems()
-        if not self.qlist_item in selection:
+        if self.qlist_item not in selection:
             self.job_list_widget.clearSelection()
             self.qlist_item.setSelected(True)
-        
+
         for item in self.batchet_widget.job_list_widget.selectedItems():
             if to_do == "collapse":
                 item.job_widget.collapse()
@@ -249,40 +249,38 @@ class JobWidget(QFrame):
         self.qlist_item.setSizeHint(self.sizeHint())
 
     def collapse(self):
-        print("collpase triggered")
         self.button_expand.setIcon(self.icon_toggle_collapsed)
         self.expand_panel.setHidden(True)
         self.qlist_item.setSizeHint(self.collapsed_size_hint)
 
     def on_priority_changed(self, value: int):
         selection = self.job_list_widget.selectedItems()
-        if not self.qlist_item in selection:
+        if self.qlist_item not in selection:
             self.job_list_widget.clearSelection()
             self.qlist_item.setSelected(True)
-        
+
         for item in self.batchet_widget.job_list_widget.selectedItems():
             item.job_widget.spinbox_priority.blockSignals(True)
             item.job_widget.spinbox_priority.setValue(value)
             item.job_widget.job_data.priority = value
             item.job_widget.spinbox_priority.blockSignals(False)
 
-
     def on_button_start_clicked(self):
         selection = self.job_list_widget.selectedItems()
-        if not self.qlist_item in selection:
+        if self.qlist_item not in selection:
             self.job_list_widget.clearSelection()
             self.qlist_item.setSelected(True)
-        
+
         for item in self.batchet_widget.job_list_widget.selectedItems():
             item.job_widget.progress_bar.update_progress(0)
             item.job_widget.set_status(JobStatus.WAITING)
 
     def on_button_restart_clicked(self):
         selection = self.job_list_widget.selectedItems()
-        if not self.qlist_item in selection:
+        if self.qlist_item not in selection:
             self.job_list_widget.clearSelection()
             self.qlist_item.setSelected(True)
-        
+
         for item in self.batchet_widget.job_list_widget.selectedItems():
             item.job_widget.terminate_job()
             item.job_widget.progress_bar.update_progress(0)
@@ -290,10 +288,10 @@ class JobWidget(QFrame):
 
     def on_button_delete_clicked(self):
         selection = self.job_list_widget.selectedItems()
-        if not self.qlist_item in selection:
+        if self.qlist_item not in selection:
             self.job_list_widget.clearSelection()
             self.qlist_item.setSelected(True)
-        
+
         for item in self.batchet_widget.job_list_widget.selectedItems():
             item.job_widget.delete_job()
 
@@ -304,16 +302,15 @@ class JobWidget(QFrame):
 
     def on_button_stop_clicked(self):
         selection = self.job_list_widget.selectedItems()
-        if not self.qlist_item in selection:
+        if self.qlist_item not in selection:
             self.job_list_widget.clearSelection()
             self.qlist_item.setSelected(True)
-        
+
         for item in self.batchet_widget.job_list_widget.selectedItems():
             if item.job_widget.job_data.status == JobStatus.RUNNING:
                 item.job_widget.terminate_job_from_user()
             if item.job_widget.job_data.status == JobStatus.WAITING:
                 item.job_widget.suspend_job()
-
 
     def start(self):
         # Do nothing if the job is already running
