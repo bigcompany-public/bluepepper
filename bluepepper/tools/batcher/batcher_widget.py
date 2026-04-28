@@ -20,7 +20,7 @@ from bluepepper.gui.widgets.container import (
 )
 from bluepepper.tools.batcher.job_list_widget import JobListItem, JobListWidget
 from bluepepper.tools.batcher.job_manager import JobManager
-from bluepepper.tools.batcher.job_model import JobData
+from bluepepper.tools.batcher.job_model import JobData, JobStatus
 from bluepepper.tools.batcher.job_widget import JobWidget
 
 
@@ -158,6 +158,14 @@ class BatcherWidget(QWidget):
         for w in widgets:
             print(w.job_data.name, w.job_data.priority, w.job_data.created_at)
 
+    @property
+    def active_job_widgets(self) -> list[JobWidget]:
+        """
+        Returns the jobs that the batcher still has to process.
+        This property is used when closing BluePepper, promptin the user if jobs are still active
+        """
+        active = [JobStatus.WAITING, JobStatus.RUNNING]
+        return [job for job in self.job_widgets if job.job_data.status in active]
 
 if __name__ == "__main__":
     app = get_qt_app()
