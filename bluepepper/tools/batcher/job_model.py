@@ -21,8 +21,11 @@ class JobStatus(StrEnum):
 class JobData:
     name: str
     description: str
-    script_path: Path
-    args: List[str] = field(default_factory=list[str])
+    script_path: Path = field(default=Path())
+    script_args: List[str] = field(default_factory=list[str])
+    module: str = ""
+    func: str = ""
+    kwargs: dict = field(default_factory=dict)
     priority: int = 50
     job_id: str = field(default_factory=lambda: str(uuid.uuid4()))
     created_at: datetime = field(default_factory=datetime.now)
