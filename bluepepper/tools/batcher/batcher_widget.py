@@ -128,15 +128,22 @@ class BatcherWidget(QWidget):
             func="main",
             kwargs={"document_id": "LALALA"},
         )
-        self.add_job(job_data)
+        self._add_job(job_data)
         self.demo_widget_count += 1
 
-    def add_job(self, job_data: JobData):
+    def _add_job(self, job_data: JobData):
         # Create job widget
         item = JobListItem()
         job_widget = JobWidget(job_data=job_data, batcher_widget=self, qlist_item=item)
         self.job_list_widget.addItem(item)
         self.job_list_widget.setItemWidget(item, job_widget)
+
+    def add_script_job(
+        self,
+        name: str,
+        description,
+    ):
+        job_data = JobData(name=name, description=description)
 
     @property
     def job_widgets(self) -> list[JobWidget]:

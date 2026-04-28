@@ -308,6 +308,13 @@ def get_tool_config() -> AppConfig:
         callable="file_help_me",
         kwargs={"path": "<path>"},
     )
+    placeholder_job_action = MenuAction(
+        label="Create Batcher Job",
+        qta_icon="mdi6.factory",
+        module="bluepepper.tools.browser.browser_actions",
+        callable="file_help_me",
+        kwargs={"path": "<path>"},
+    )
 
     for entity in config.entities.values():
         entity.add_document_action(copy_name_action)
