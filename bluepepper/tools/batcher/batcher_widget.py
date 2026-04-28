@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from qtpy.QtWidgets import (
     QCheckBox,
     QFrame,
@@ -124,8 +122,11 @@ class BatcherWidget(QWidget):
         job_data = JobData(
             name=f"Test {self.demo_widget_count}",
             description="Just for testing purposes",
-            script_path=Path(__file__).with_name("demo_script.py"),
-            script_args=["--document", "JAJ"],
+            # script_path=Path(__file__).with_name("demo_script.py"),
+            # script_args=["--document", "JAJ"],
+            module="bluepepper.tools.batcher.demo_script",
+            func="main",
+            kwargs={"document_id": "LALALA"},
         )
         self.add_job(job_data)
         self.demo_widget_count += 1
