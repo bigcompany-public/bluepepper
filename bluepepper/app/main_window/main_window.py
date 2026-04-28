@@ -11,6 +11,7 @@ from pathlib import Path
 from threading import Thread
 from typing import Any, Callable
 
+from PySide6.QtGui import QCloseEvent
 import qtawesome
 from qtpy.QtCore import QSize, Qt, QTimer
 from qtpy.QtGui import QIcon, QMouseEvent, QPixmap
@@ -26,6 +27,7 @@ from bluepepper.gui.utils import format_widgets, get_icon, get_qt_app, get_style
 from bluepepper.gui.widgets.outcome_popups import show_error
 from conf.fastapi import FastApiSettings
 from conf.project import ProjectSettings
+from bluepepper.tools.batcher.batcher_widget import BatcherWidget
 
 _PAGES_DIR = Path(__file__).parent
 _DOUBLE_CLICK_MS = 150
@@ -202,6 +204,23 @@ class BluePepperApp(FramelessMainWindow):
     def showNormal(self) -> None:
         self.set_random_catchphrase()
         super().showNormal()
+
+    def closeEvent(self, event: QCloseEvent) -> None:
+        # Check running threads in the batcher
+        batcher_widget = None
+        for widget in self.page_widgets:
+            if isinstance(widget, BatcherWidget):
+                batcher_widget = widget
+        
+        if not batcher_widget:
+            return super().closeEvent(event)
+        
+        active_jobs = batcher_widget.active_job_widgets
+        for job_widget in active_jobs:
+            logging.warning(f"Terminating Batcher Job : {job_widget.job_data.name}")
+            job_widget.terminate_job()
+
+        return super().closeEvent(event)
 
 
 class MenuButton(QPushButton):
