@@ -55,3 +55,6 @@ class JobListWidget(QListWidget):
     @property
     def running_job_widgets_count(self) -> int:
         return len(self.running_job_widgets)
+    
+    def selectedItems(self) -> list[JobListItem]:
+        return super().selectedItems() # type: ignore

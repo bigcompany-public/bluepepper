@@ -66,7 +66,7 @@ class ProgressBar(QProgressBar):
         # because the rounded borders cause issue with small values
         if value >= 100:
             visual_value = 100
-        if value <= 0 and self.job_widget.job_data.status != JobStatus.RUNNING:
+        elif value <= 0 and self.job_widget.job_data.status != JobStatus.RUNNING:
             visual_value = 0
         else:
             number_of_parts = 100 - margin * 2
@@ -83,6 +83,7 @@ class JobWidget(QFrame):
         super().__init__()
         self.job_data = job_data
         self.batchet_widget = batcher_widget
+        self.job_list_widget = self.batchet_widget.job_list_widget
         self.qlist_item = qlist_item
 
         # Insert self into the item
@@ -110,6 +111,9 @@ class JobWidget(QFrame):
         # Setup the widget
         self.setup_ui()
         self.setup_signals()
+
+        # Create thread
+        self._thread = JobThread(job_widget=self)
 
     def setup_ui(self):
         # Add a container with a few pixels of margin to make the selection more visually clear in the JobListWidget
@@ -226,11 +230,18 @@ class JobWidget(QFrame):
         self.button_delete.clicked.connect(self.on_button_delete_clicked)
 
     def toggle_expand(self):
-        if self.expanded:
-            self.collapse()
-        else:
-            self.expand()
-        self.expanded = not self.expanded
+        to_do = "collapse" if self.expanded else "expand"
+        selection = self.job_list_widget.selectedItems()
+        if not self.qlist_item in selection:
+            self.job_list_widget.clearSelection()
+            self.qlist_item.setSelected(True)
+        
+        for item in self.batchet_widget.job_list_widget.selectedItems():
+            if to_do == "collapse":
+                item.job_widget.collapse()
+            else:
+                item.job_widget.expand()
+            item.job_widget.expanded = not item.job_widget.expanded
 
     def expand(self):
         self.button_expand.setIcon(self.icon_toggle_expanded)
@@ -238,24 +249,53 @@ class JobWidget(QFrame):
         self.qlist_item.setSizeHint(self.sizeHint())
 
     def collapse(self):
+        print("collpase triggered")
         self.button_expand.setIcon(self.icon_toggle_collapsed)
         self.expand_panel.setHidden(True)
         self.qlist_item.setSizeHint(self.collapsed_size_hint)
 
     def on_priority_changed(self, value: int):
-        self.job_data.priority = value
+        selection = self.job_list_widget.selectedItems()
+        if not self.qlist_item in selection:
+            self.job_list_widget.clearSelection()
+            self.qlist_item.setSelected(True)
+        
+        for item in self.batchet_widget.job_list_widget.selectedItems():
+            item.job_widget.spinbox_priority.blockSignals(True)
+            item.job_widget.spinbox_priority.setValue(value)
+            item.job_widget.job_data.priority = value
+            item.job_widget.spinbox_priority.blockSignals(False)
+
 
     def on_button_start_clicked(self):
-        self.progress_bar.update_progress(0)
-        self.set_status(JobStatus.WAITING)
+        selection = self.job_list_widget.selectedItems()
+        if not self.qlist_item in selection:
+            self.job_list_widget.clearSelection()
+            self.qlist_item.setSelected(True)
+        
+        for item in self.batchet_widget.job_list_widget.selectedItems():
+            item.job_widget.progress_bar.update_progress(0)
+            item.job_widget.set_status(JobStatus.WAITING)
 
     def on_button_restart_clicked(self):
-        self.terminate_job()
-        self.progress_bar.update_progress(0)
-        self.set_status(JobStatus.WAITING)
+        selection = self.job_list_widget.selectedItems()
+        if not self.qlist_item in selection:
+            self.job_list_widget.clearSelection()
+            self.qlist_item.setSelected(True)
+        
+        for item in self.batchet_widget.job_list_widget.selectedItems():
+            item.job_widget.terminate_job()
+            item.job_widget.progress_bar.update_progress(0)
+            item.job_widget.set_status(JobStatus.WAITING)
 
     def on_button_delete_clicked(self):
-        self.delete_job()
+        selection = self.job_list_widget.selectedItems()
+        if not self.qlist_item in selection:
+            self.job_list_widget.clearSelection()
+            self.qlist_item.setSelected(True)
+        
+        for item in self.batchet_widget.job_list_widget.selectedItems():
+            item.job_widget.delete_job()
 
     def delete_job(self):
         self.terminate_job()
@@ -263,13 +303,17 @@ class JobWidget(QFrame):
         self.batchet_widget.job_list_widget.takeItem(row)
 
     def on_button_stop_clicked(self):
-        if self.job_data.status == JobStatus.RUNNING:
-            self.terminate_job_from_user()
-            return
+        selection = self.job_list_widget.selectedItems()
+        if not self.qlist_item in selection:
+            self.job_list_widget.clearSelection()
+            self.qlist_item.setSelected(True)
+        
+        for item in self.batchet_widget.job_list_widget.selectedItems():
+            if item.job_widget.job_data.status == JobStatus.RUNNING:
+                item.job_widget.terminate_job_from_user()
+            if item.job_widget.job_data.status == JobStatus.WAITING:
+                item.job_widget.suspend_job()
 
-        if self.job_data.status == JobStatus.WAITING:
-            self.suspend_job()
-            return
 
     def start(self):
         # Do nothing if the job is already running
@@ -286,7 +330,6 @@ class JobWidget(QFrame):
         self._runtime_timer.start()
 
         # Start Thread
-        self._thread = JobThread(job_widget=self)
         self._thread.start()
 
         # Update Progress bar
@@ -309,6 +352,7 @@ class JobWidget(QFrame):
     def job_finished(self):
         self.stdout_view.appendPlainText("Batcher job finished successfully")
         self.set_status(JobStatus.FINISHED)
+        self.progress_bar.update_progress(100)
         if self.batchet_widget.cb_delete_finished.isChecked():
             self.delete_job()
 
