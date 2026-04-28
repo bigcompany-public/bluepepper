@@ -1,7 +1,6 @@
-
-from pathlib import Path
-import sys
 import runpy
+import sys
+from pathlib import Path
 
 
 def run_script(path: Path, args=None):
@@ -13,8 +12,8 @@ def run_script(path: Path, args=None):
     try:
         sys.argv = [str(path)] + (args or [])
         runpy.run_path(str(path), run_name="__main__")
-    except SystemExit as e:
-        raise RuntimeError(f"Script {path} exited with code {e.code}") from e
+    except SystemExit:
+        raise
     finally:
         sys.argv = old_argv
 
