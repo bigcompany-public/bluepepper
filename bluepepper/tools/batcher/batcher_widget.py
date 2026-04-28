@@ -13,11 +13,7 @@ from qtpy.QtWidgets import (
 )
 
 from bluepepper.gui.utils import get_qta_icon
-from bluepepper.gui.widgets.container import (
-    ContainerDialog,
-    ContainerWidget,
-    get_qt_app,
-)
+from bluepepper.gui.widgets.container import ContainerDialog, ContainerWidget, format_widgets, get_qt_app
 from bluepepper.tools.batcher.job_list_widget import JobListItem, JobListWidget
 from bluepepper.tools.batcher.job_manager import JobManager
 from bluepepper.tools.batcher.job_model import JobData, JobStatus
@@ -117,6 +113,9 @@ class BatcherWidget(QWidget):
         self.button_sandbox = QPushButton("Sandbox")
         main_layout.addWidget(self.button_sandbox)
 
+        # Widgets formatting
+        format_widgets(self.main_widget)
+
     def _setup_signals(self):
         self._button_demo_job.clicked.connect(self._button_demo_job_clicked)
         self.button_sandbox.clicked.connect(self.button_sandbox_clicked)
@@ -126,6 +125,7 @@ class BatcherWidget(QWidget):
             name=f"Test {self.demo_widget_count}",
             description="Just for testing purposes",
             script_path=Path(__file__).with_name("demo_script.py"),
+            script_args=["--document", "JAJ"],
         )
         self.add_job(job_data)
         self.demo_widget_count += 1
@@ -166,6 +166,7 @@ class BatcherWidget(QWidget):
         """
         active = [JobStatus.WAITING, JobStatus.RUNNING]
         return [job for job in self.job_widgets if job.job_data.status in active]
+
 
 if __name__ == "__main__":
     app = get_qt_app()
