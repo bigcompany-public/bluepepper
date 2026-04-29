@@ -7,7 +7,7 @@ import argparse
 import time
 
 
-def main(document_id):
+def main(some_arg=None):
     STEPS = 100
     time.sleep(0.2)
 
@@ -23,11 +23,11 @@ def main(document_id):
         #     print("BLUEPEPPER_BATCHER_TERMINATE")
 
     print("[Job Done]")
-    print(document_id)
+    print(some_arg)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-id", "--document_id", default=None)
     args = parser.parse_args()
-    main(document_id=args.document_id)
+    main(some_arg=args.document_id)
