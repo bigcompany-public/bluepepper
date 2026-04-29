@@ -27,8 +27,8 @@ class JobData:
     func: str = ""
     kwargs: dict = field(default_factory=dict)
     priority: int = 50
-    job_id: str = field(default_factory=lambda: str(uuid.uuid4()))
-    created_at: datetime = field(default_factory=datetime.now)
-    status: JobStatus = JobStatus.WAITING
-    progress: int = 0
+    job_id: str = field(default_factory=lambda: str(uuid.uuid4()), init=False)
+    created_at: datetime = field(default_factory=datetime.now, init=False)
+    status: JobStatus = field(default=JobStatus.WAITING, init=False)
+    progress: int = field(default=0, init=False)
     notify_when_done: bool = False
