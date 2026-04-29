@@ -6,6 +6,7 @@ providing type-safe access to entities, workflows, tasks, and their associated a
 """
 
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Callable
 
 from lucent import Convention
@@ -31,9 +32,59 @@ class MenuAction:
     icon: str = field(default="")
     qta_icon: str = field(default="")
     qta_icon_color: str = field(default=get_theme()["icon_color"])
-    kwargs: dict[str, str] = field(default_factory=dict[str, str])
-    doc_filter: Callable = None
-    path_filter: Callable = None
+    kwargs: dict = field(default_factory=dict)
+    doc_filter: Callable | None = None
+    path_filter: Callable | None = None
+
+
+@dataclass
+class BatcherMenuAction(MenuAction):
+    job_name: str = ""
+    job_description: str = ""
+
+    # Disable attributes that should be locked in this subclass
+    module: str = field(default="bluepepper.tools.batcher.browser_connector", init=False)
+    callable: str = field(default="add_job", init=False)
+    kwargs: dict = field(default_factory=dict, init=False)
+    qta_icon: str = field(default="mdi6.factory")
+    batcher_module: str = ""
+    batcher_function: str = ""
+    batcher_kwargs: dict = field(default_factory=dict)
+    batcher_script: Path | None = None
+    batcher_script_args: list[str] = field(default_factory=list[str])
+    batcher_priority: int = 50
+    batcher_notify_me_when_done: bool = False
+
+    def __post_init__(self):
+        if not self.job_name:
+            raise AttributeError("Please provide a job name")
+        if not self.job_description:
+            raise AttributeError("Please provide a description")
+        if not self.batcher_script and not self.batcher_module:
+            raise AttributeError("A Batcher Job needs at least a script or a module")
+        if self.batcher_module and not self.batcher_function:
+            raise AttributeError("Please provide a function to execute")
+
+        # Provide the arguments needed by the add_job function, in order to create the JobData object
+        self.kwargs["name"] = self.job_name
+        self.kwargs["description"] = self.job_description
+        self.kwargs["script_path"] = self.batcher_script
+        self.kwargs["script_args"] = self.batcher_script_args
+        self.kwargs["module"] = self.batcher_module
+        self.kwargs["function"] = self.batcher_function
+        self.kwargs["kwargs"] = self.batcher_kwargs
+        self.kwargs["priority"] = self.batcher_priority
+        self.kwargs["notify_when_done"] = self.batcher_notify_me_when_done
+
+        # Pass special arguments so they can be solved before being sent to the add_job function
+        # Using special keywords also specify if the add_job function should be executed for each selected item, or
+        # for all selected items
+        self.kwargs["browser"] = "<browser>"
+        for value in self.batcher_kwargs.values():
+            if not isinstance(value, str):
+                continue
+            if value.startswith("<"):
+                self.kwargs[value[1:-1]] = value
 
 
 @dataclass
@@ -87,9 +138,7 @@ class Task:
 
     def add_kind(self, kind: FileKind):
         if kind.name in self.kinds:
-            raise RuntimeError(
-                f'Cannot add kind with name "{kind.name}". Name is already used'
-            )
+            raise RuntimeError(f'Cannot add kind with name "{kind.name}". Name is already used')
         self.kinds[kind.name] = kind
 
 
@@ -118,9 +167,7 @@ class Entity:
 
     def add_task(self, task: Task):
         if task.name in self.tasks:
-            raise RuntimeError(
-                f'Cannot add task with name "{task.name}". Name is already used'
-            )
+            raise RuntimeError(f'Cannot add task with name "{task.name}". Name is already used')
         self.tasks[task.name] = task
 
     def add_document_action(self, action: MenuAction):
@@ -142,9 +189,7 @@ class AppConfig:
 
     def add_entity(self, entity: Entity):
         if entity.name in self.entities:
-            raise RuntimeError(
-                f'Cannot add entity with name "{entity.name}". Name is already used'
-            )
+            raise RuntimeError(f'Cannot add entity with name "{entity.name}". Name is already used')
         self.entities[entity.name] = entity
 
     def human_readable(self) -> str:
@@ -158,16 +203,12 @@ class AppConfig:
                 for _, kind in task.kinds.items():
                     lines.append("      [FileKind] " + kind.label)
                     for action in kind.kind_actions:
-                        kwargs = ", ".join(
-                            f"{k}={v}" for k, v in action.kwargs.values()
-                        )
+                        kwargs = ", ".join(f"{k}={v}" for k, v in action.kwargs.values())
                         lines.append(
                             f"        [FileKind Action] {action.label} -> {action.module}.{action.callable}({kwargs})"
                         )
                     for action in kind.file_actions:
-                        kwargs = ", ".join(
-                            f"{k}={v}" for k, v in action.kwargs.values()
-                        )
+                        kwargs = ", ".join(f"{k}={v}" for k, v in action.kwargs.values())
                         lines.append(
                             f"        [File Action] {action.label} -> {action.module}.{action.callable}({kwargs})"
                         )

@@ -1,13 +1,7 @@
 from pathlib import Path
 
 from bluepepper.core import codex
-from bluepepper.tools.browser.browser_config import (
-    AppConfig,
-    Entity,
-    FileKind,
-    MenuAction,
-    Task,
-)
+from bluepepper.tools.browser.browser_config import AppConfig, BatcherMenuAction, Entity, FileKind, MenuAction, Task
 from conf.project import ProjectSettings
 
 PROJECT_SETTINGS = ProjectSettings()
@@ -308,15 +302,17 @@ def get_tool_config() -> AppConfig:
         callable="file_help_me",
         kwargs={"path": "<path>"},
     )
-    placeholder_job_action = MenuAction(
+    placeholder_job_action = BatcherMenuAction(
         label="Create Batcher Job",
-        qta_icon="mdi6.factory",
-        module="bluepepper.tools.browser.browser_actions",
-        callable="file_help_me",
-        kwargs={"path": "<path>"},
+        job_name="Demo Batcher",
+        job_description="Just doing stuff",
+        batcher_module="bluepepper.tools.batcher.demo_script",
+        batcher_function="main",
+        batcher_kwargs={"some_arg": "<document_name>"},
     )
 
     for entity in config.entities.values():
+        entity.add_document_action(placeholder_job_action)
         entity.add_document_action(copy_name_action)
         entity.add_document_action(asset_copy_identifier_action)
         entity.add_document_action(copy_id_action)
