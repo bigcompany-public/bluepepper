@@ -285,6 +285,8 @@ class TableDocumentsMenu(QMenu):
                     kwargs[key] = [doc[self.entity.name] for doc in documents]
                 elif value == "<document_ids>":
                     kwargs[key] = [doc["_id"] for doc in documents]
+                elif value == "<browser>":
+                    kwargs[key] = self.tab.browser
 
             # Execute callback with provided kwargs
             callback = partial(func, **kwargs)
@@ -307,6 +309,8 @@ class TableDocumentsMenu(QMenu):
                         kwargs[key] = document[self.tab.entity.name]
                     elif value == "<document_id>":
                         kwargs[key] = document["_id"]
+                    elif value == "<browser>":
+                        kwargs[key] = self.tab.browser
 
                 # Execute callback with provided kwargs
                 callback = partial(func, **kwargs)
