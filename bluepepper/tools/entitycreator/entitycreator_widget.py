@@ -253,8 +253,8 @@ class EntityTab(QWidget):
         if not hasattr(self.entitycreator, "bluepepper_app"):
             return
 
-        bluepapper_app: BluePepperApp = getattr(self.entitycreator, "bluepepper_app")
-        for widget in bluepapper_app.page_widgets:
+        bluepepper_app: BluePepperApp = getattr(self.entitycreator, "bluepepper_app")
+        for widget in bluepepper_app.page_widgets:
             if isinstance(widget, BrowserWidget):
                 self.update_browser_widget(widget)
 
