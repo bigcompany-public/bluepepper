@@ -23,6 +23,7 @@ def main(some_arg=None):
         #     print("BLUEPEPPER_BATCHER_TERMINATE")
 
     print("[Job Done]")
+    print(type(some_arg))
     print(some_arg)
 
 

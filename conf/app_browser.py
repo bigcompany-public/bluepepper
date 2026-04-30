@@ -308,7 +308,7 @@ def get_tool_config() -> AppConfig:
         job_description="Just doing stuff",
         batcher_module="bluepepper.tools.batcher.demo_script",
         batcher_function="main",
-        batcher_kwargs={"some_arg": "<document_name>"},
+        batcher_kwargs={"some_arg": "<document>"},
     )
 
     for entity in config.entities.values():

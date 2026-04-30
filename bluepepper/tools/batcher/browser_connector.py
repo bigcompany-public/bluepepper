@@ -19,6 +19,7 @@ def add_job(
     kwargs: dict | None = None,
     priority: int = 50,
     notify_when_done: bool = False,
+    # The following arguments are used for kwargs resolution
     document: dict | None = None,
     document_id: str | None = None,
     document_name: str | None = None,
@@ -29,10 +30,6 @@ def add_job(
     document_names: list[str] | None = None,
     paths: list[Path] | None = None,
 ):
-    print("#" * 30)
-    print(document_name)
-    print(document_names)
-    print(kwargs)
     # Check a few things
     if not script_path and not module:
         raise AttributeError("A Batcher Job needs at least a script or a module")
@@ -45,24 +42,29 @@ def add_job(
     # Format keyword arguments
     kwargs = kwargs or {}
     formatted_kwargs = {}
+    local_vars = locals()
     for key, value in kwargs.items():
         formatted_kwargs[key] = value
-        if value == "<document_name>":
-            formatted_kwargs[key] = document_name
+        if not isinstance(value, str):
+            continue
+        if value.startswith("<") and value.endswith(">"):
+            var_name = value[1:-1]
+            if var_name in local_vars:
+                formatted_kwargs[key] = local_vars[var_name]
 
-    # Create & send job
-    job_data = JobData(
-        name=name,
-        description=description,
-        script_path=script_path or Path(),
-        script_args=script_args or [],
-        module=module,
-        func=function,
-        kwargs=formatted_kwargs,
-        priority=priority,
-        notify_when_done=notify_when_done,
-    )
-    batcher._add_job(job_data)
+        # Create & send job
+        job_data = JobData(
+            name=name,
+            description=description,
+            script_path=script_path or Path(),
+            script_args=script_args or [],
+            module=module,
+            func=function,
+            kwargs=formatted_kwargs,
+            priority=priority,
+            notify_when_done=notify_when_done,
+        )
+        batcher._add_job(job_data)
 
 
 def get_batcher_widget(browser: BrowserWidget) -> BatcherWidget:
