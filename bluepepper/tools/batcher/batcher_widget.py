@@ -95,7 +95,7 @@ class BatcherWidget(QWidget):
         label_delete_finished = QLabel("Delete finished jobs")
         grid_layout.addWidget(label_delete_finished, 2, 0)
         self.cb_delete_finished = QCheckBox()
-        self.cb_delete_finished.setChecked(True)
+        self.cb_delete_finished.setChecked(False)
         grid_layout.addWidget(self.cb_delete_finished, 2, 1)
 
         # Job List
