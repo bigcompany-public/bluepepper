@@ -5,7 +5,6 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from enum import StrEnum, auto
 from pathlib import Path
-from typing import List
 
 
 class JobStatus(StrEnum):
@@ -22,7 +21,7 @@ class JobData:
     name: str
     description: str
     script_path: Path = field(default=Path())
-    script_args: List[str] = field(default_factory=list[str])
+    script_args: list[str] = field(default_factory=list[str])
     module: str = ""
     func: str = ""
     kwargs: dict = field(default_factory=dict)
