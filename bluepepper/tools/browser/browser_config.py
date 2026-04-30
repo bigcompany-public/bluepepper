@@ -83,7 +83,7 @@ class BatcherMenuAction(MenuAction):
         for value in self.batcher_kwargs.values():
             if not isinstance(value, str):
                 continue
-            if value.startswith("<"):
+            if value.startswith("<") and value.endswith(">"):
                 self.kwargs[value[1:-1]] = value
 
 
