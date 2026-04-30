@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 
 from lucent import Convention
@@ -39,10 +40,10 @@ def add_job(
     # Get BatcherWidget
     batcher = get_batcher_widget(browser)
 
-    # Format keyword arguments
+    # Format module keyword arguments
+    local_vars = locals()
     kwargs = kwargs or {}
     formatted_kwargs = {}
-    local_vars = locals()
     for key, value in kwargs.items():
         formatted_kwargs[key] = value
         if not isinstance(value, str):
@@ -52,19 +53,42 @@ def add_job(
             if var_name in local_vars:
                 formatted_kwargs[key] = local_vars[var_name]
 
-        # Create & send job
-        job_data = JobData(
-            name=name,
-            description=description,
-            script_path=script_path or Path(),
-            script_args=script_args or [],
-            module=module,
-            func=function,
-            kwargs=formatted_kwargs,
-            priority=priority,
-            notify_when_done=notify_when_done,
-        )
-        batcher._add_job(job_data)
+    # Format script arguments
+    script_args = script_args or []
+    formatted_args = []
+    for arg in script_args:
+        if isinstance(arg, str) and arg.startswith("<") and arg.endswith(">"):
+            var_name = arg[1:-1]
+            if var_name in local_vars:
+                arg = local_vars[var_name]
+        formatted_args.append(arg)
+
+    # Format job name & description
+    def substitute_special_keywords(match: re.Match) -> str:
+        token = match.group(0)
+        var_name = token[1:-1]
+        if var_name in local_vars:
+            if not local_vars[var_name]:
+                return token
+            return str(local_vars[var_name])
+        return token
+
+    name = re.sub(r"<[a-z_]+>", repl=substitute_special_keywords, string=name)
+    description = re.sub(r"<[a-z_]+>", repl=substitute_special_keywords, string=description)
+
+    # Create & send job
+    job_data = JobData(
+        name=name,
+        description=description,
+        script_path=script_path or Path(),
+        script_args=formatted_args,
+        module=module,
+        func=function,
+        kwargs=formatted_kwargs,
+        priority=priority,
+        notify_when_done=notify_when_done,
+    )
+    batcher._add_job(job_data)
 
 
 def get_batcher_widget(browser: BrowserWidget) -> BatcherWidget:
