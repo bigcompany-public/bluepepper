@@ -11,9 +11,11 @@ from argparse import ArgumentParser
 from typing import Callable
 
 import requests
-from bluepepper.core import init_logging
 from requests.exceptions import HTTPError
 from requests.models import Response
+
+from bluepepper.core import init_logging
+from conf.fastapi import FastApiSettings
 
 
 def run_bluepepper_app_action(
@@ -36,7 +38,7 @@ def run_bluepepper_app_action(
     """
     # Get default host/port
     host = host or "127.0.0.1"
-    port = port or Settings.fastapi_port
+    port = port or FastApiSettings.fastapi_port
 
     # Format URL
     route = route.lstrip("/")
