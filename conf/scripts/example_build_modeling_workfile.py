@@ -18,6 +18,8 @@ def main(document: dict):
     destination = Path(codex.convs.asset_modeling_workfile_blender.format(fields))
 
     # Copy
+    if destination.exists():
+        raise FileExistsError(f"The file already exists : {destination}")
     logging.info(f"Copying {source.name} to {destination}")
     destination.parent.mkdir(exist_ok=True, parents=True)
     shutil.copy(source, destination)
