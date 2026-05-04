@@ -74,12 +74,12 @@ if __name__ == "__main__":
     init_logging("browser")
     import sys
 
-    from bluepepper.tools.browser.browser_example import config
+    from conf.app_browser import get_tool_config
 
     app = QApplication(sys.argv)
     dialog = QDialog()
     layout = QVBoxLayout(dialog)
 
-    browser_widget = BrowserWidget(parent=dialog, tool_config=config)
+    browser_widget = BrowserWidget(parent=dialog, tool_config=get_tool_config())
     dialog.show()
     sys.exit(app.exec_())
