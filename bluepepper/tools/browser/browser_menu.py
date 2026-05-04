@@ -132,6 +132,16 @@ class BrowserMenu(QMenu):
             handler_name = self.SPECIAL_KEYWORDS_HANDLERS[value]
             handler = getattr(self, handler_name)
             return handler(item=item, items=items)
+
+        # Solve strings that contain a keyword
+        if isinstance(value, str):
+            for key in self.SPECIAL_KEYWORDS_HANDLERS.keys():
+                if key in value:
+                    handler_name = self.SPECIAL_KEYWORDS_HANDLERS[key]
+                    handler = getattr(self, handler_name)
+                    result = handler(item=item, items=items)
+                    return value.replace(key, str(result))
+
         return value
 
     def _resolve_browser(self, item: Any = None, items: Optional[List[Any]] = None) -> Any:
