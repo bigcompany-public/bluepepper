@@ -222,3 +222,6 @@ __marimo__/
 
 # Sandbox files
 sandbox.py
+
+# Others
+.excalidraw
