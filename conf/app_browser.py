@@ -50,84 +50,44 @@ def get_tool_config() -> AppConfig:
     # Modeling
     asset_modeling_task = Task("modeling")
     asset_entity.add_task(asset_modeling_task)
-    kind = FileKind(
+    modeling_workfile_kind = FileKind(
         name="asset_modeling_workfile_blender",
         label="Workfile (blender)",
         convention=codex.convs.asset_modeling_workfile_blender,
     )
-    asset_modeling_task.add_kind(kind)
+    asset_modeling_task.add_kind(modeling_workfile_kind)
 
     # Surfacing
     asset_surfacing_task = Task("surfacing")
     asset_entity.add_task(asset_surfacing_task)
-    kind = FileKind(
+    surfacing_workfile_kind = FileKind(
         name="asset_surfacing_workfile_blender",
         label="Workfile (blender)",
         convention=codex.convs.asset_surfacing_workfile_blender,
     )
-    asset_surfacing_task.add_kind(kind)
-
-    # texturing
-    asset_texturing_task = Task("texturing")
-    asset_entity.add_task(asset_texturing_task)
-    kind = FileKind(
-        name="asset_texturing_workfile_blender",
-        label="Workfile (blender)",
-        convention=codex.convs.asset_texturing_workfile_blender,
-    )
-    asset_texturing_task.add_kind(kind)
+    asset_surfacing_task.add_kind(surfacing_workfile_kind)
 
     # rigging
     asset_rigging_task = Task("rigging")
     asset_entity.add_task(asset_rigging_task)
-    kind = FileKind(
+    rigging_workfile_kind = FileKind(
         name="asset_rigging_workfile_blender",
         label="Workfile (blender)",
         convention=codex.convs.asset_rigging_workfile_blender,
     )
-    asset_rigging_task.add_kind(kind)
-
-    # grooming
-    asset_grooming_task = Task("grooming")
-    asset_entity.add_task(asset_grooming_task)
-    kind = FileKind(
-        name="asset_grooming_workfile_blender",
-        label="Workfile (blender)",
-        convention=codex.convs.asset_grooming_workfile_blender,
-    )
-    asset_grooming_task.add_kind(kind)
-
-    # fx
-    asset_fx_task = Task("fx")
-    asset_entity.add_task(asset_fx_task)
-    kind = FileKind(
-        name="asset_fx_workfile_blender",
-        label="Workfile (blender)",
-        convention=codex.convs.asset_fx_workfile_blender,
-    )
-    asset_fx_task.add_kind(kind)
-
-    # assembly
-    asset_assembly_task = Task("assembly")
-    asset_entity.add_task(asset_assembly_task)
-    kind = FileKind(
-        name="asset_assembly_workfile_blender",
-        label="Workfile (blender)",
-        convention=codex.convs.asset_assembly_workfile_blender,
-    )
-    asset_assembly_task.add_kind(kind)
+    asset_rigging_task.add_kind(rigging_workfile_kind)
 
     # Shots
     shot_entity = Entity(name="shot", collection="shots", filters=["season", "episode", "sequence"])
     config.add_entity(shot_entity)
     shot_layout_task = Task("layout")
     shot_entity.add_task(shot_layout_task)
-    kind = FileKind(
+    layout_workfile_kind = FileKind(
         name="shot_layout_workfile",
         label="Workfile",
         convention=codex.convs.shot_layout_workfile,
     )
-    shot_layout_task.add_kind(kind)
+    shot_layout_task.add_kind(layout_workfile_kind)
 
     # Global menu actions
     asset_document_help_me_action = MenuAction(
@@ -316,17 +276,8 @@ def get_tool_config() -> AppConfig:
         callable="file_help_me",
         kwargs={"path": "<path>"},
     )
-    placeholder_job_action = BatcherMenuAction(
-        label="Create Batcher Job",
-        job_name="Demo Batcher - <document_name>",
-        job_description="Just doing stuff on <document_name>",
-        batcher_module="bluepepper.tools.batcher.demo_script",
-        batcher_function="main",
-        batcher_kwargs={"some_arg": "<document>"},
-    )
 
     for entity in config.entities.values():
-        entity.add_document_action(placeholder_job_action)
         entity.add_document_action(copy_name_action)
         entity.add_document_action(asset_copy_identifier_action)
         entity.add_document_action(copy_id_action)
@@ -343,19 +294,30 @@ def get_tool_config() -> AppConfig:
         entity.add_document_action(shot_add_tag_action)
         entity.add_document_action(shot_remove_tag_action)
         for task in entity.tasks.values():
-            for kind in task.kinds.values():
+            for surfacing_workfile_kind in task.kinds.values():
                 # Kind actions
-                kind.add_kind_action(kind_show_in_explorer_action)
-                kind.add_kind_action(kind_copy_path_action)
-                kind.add_kind_action(kind_copy_filename_action)
+                surfacing_workfile_kind.add_kind_action(kind_show_in_explorer_action)
+                surfacing_workfile_kind.add_kind_action(kind_copy_path_action)
+                surfacing_workfile_kind.add_kind_action(kind_copy_filename_action)
 
                 # File actions
-                kind.add_file_action(file_show_in_explorer)
-                kind.add_file_action(file_copy_path_action)
-                kind.add_file_action(file_copy_filename_action)
-                kind.add_file_action(file_copy_file_action)
-                kind.add_file_action(file_open_in_vscode)
-                kind.add_file_action(file_increment_version)
-                kind.add_file_action(file_help_me_action)
+                surfacing_workfile_kind.add_file_action(file_show_in_explorer)
+                surfacing_workfile_kind.add_file_action(file_copy_path_action)
+                surfacing_workfile_kind.add_file_action(file_copy_filename_action)
+                surfacing_workfile_kind.add_file_action(file_copy_file_action)
+                surfacing_workfile_kind.add_file_action(file_open_in_vscode)
+                surfacing_workfile_kind.add_file_action(file_increment_version)
+                surfacing_workfile_kind.add_file_action(file_help_me_action)
+
+    # More specific menu actions
+    action = BatcherMenuAction(
+        label="Build Workfile",
+        job_name="Build Workfile - <document_name>",
+        job_description="Copying empty blender file at the proper location for <document_name>",
+        batcher_module="conf.scripts.example_build_modeling_workfile",
+        batcher_function="main",
+        batcher_kwargs={"document": "<document>"},
+    )
+    modeling_workfile_kind.add_kind_action(action)
 
     return config

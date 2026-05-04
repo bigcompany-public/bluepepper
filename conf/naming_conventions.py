@@ -49,12 +49,6 @@ class BluePepperConventions(Conventions):
     asset_workfile = Convention("{@asset_work_dir}/{asset}_{task}_v{version}_{description}.{extension}")
     asset_modeling_workfile = Convention("{@asset_workfile}", fixed_fields={"task": "mdl"})
     asset_surfacing_workfile = Convention("{@asset_workfile}", fixed_fields={"task": "sur"})
-    asset_texturing_workfile = Convention("{@asset_workfile}", fixed_fields={"task": "tex"})
-    asset_rigging_workfile = Convention("{@asset_workfile}", fixed_fields={"task": "rig"})
-    asset_grooming_workfile = Convention("{@asset_workfile}", fixed_fields={"task": "gro"})
-    asset_fx_workfile = Convention("{@asset_workfile}", fixed_fields={"task": "afx"})
-    asset_anim_workfile = Convention("{@asset_workfile}", fixed_fields={"task": "ani"})
-    asset_assembly_workfile = Convention("{@asset_workfile}", fixed_fields={"task": "asb"})
 
     # Asset maya
     asset_modeling_workfile_maya = Convention(
@@ -78,28 +72,18 @@ class BluePepperConventions(Conventions):
         "{@asset_surfacing_workfile}",
         fixed_fields={"dcc": "blender", "extension": "blend"},
     )
-    asset_texturing_workfile_blender = Convention(
-        "{@asset_texturing_workfile}",
-        fixed_fields={"dcc": "blender", "extension": "blend"},
-    )
     asset_rigging_workfile_blender = Convention(
         "{@asset_rigging_workfile}",
-        fixed_fields={"dcc": "blender", "extension": "blend"},
-    )
-    asset_grooming_workfile_blender = Convention(
-        "{@asset_grooming_workfile}",
-        fixed_fields={"dcc": "blender", "extension": "blend"},
-    )
-    asset_fx_workfile_blender = Convention(
-        "{@asset_fx_workfile}", fixed_fields={"dcc": "blender", "extension": "blend"}
-    )
-    asset_assembly_workfile_blender = Convention(
-        "{@asset_assembly_workfile}",
         fixed_fields={"dcc": "blender", "extension": "blend"},
     )
 
     # User directory
     shared_user_dir = Convention("{@project_root}/users/{$USERNAME}")
+
+    # Boilerplate files
+    empty_blender_file = Convention(
+        "{@project_root}/build_files/empty_blender_file_v{version}.{extension}", fixed_fields={"extension": "blend"}
+    )
 
 
 class BluePepperCodex(Codex):
