@@ -317,6 +317,8 @@ def get_tool_config() -> AppConfig:
         batcher_module="conf.scripts.example_build_modeling_workfile",
         batcher_function="main",
         batcher_kwargs={"document": "<document>"},
+        batcher_notification=True,
+        batcher_notification_message="<document_name> - New workfile was created",
     )
     modeling_workfile_kind.add_kind_action(action)
 

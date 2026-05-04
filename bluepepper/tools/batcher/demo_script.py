@@ -8,6 +8,7 @@ import time
 
 
 def main(some_arg=None):
+    # raise RuntimeError
     STEPS = 100
     time.sleep(0.2)
 

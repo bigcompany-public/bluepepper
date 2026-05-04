@@ -61,7 +61,7 @@ class ProgressBar(QProgressBar):
 
     def update_progress(self, value: int) -> None:
         value = int(value)
-        margin = 7
+        margin = 8
 
         # progress bar value and actual value differ,
         # because the rounded borders cause issue with small values
@@ -358,7 +358,8 @@ class JobWidget(QFrame):
 
     def show_success_toast(self):
         toaster = WindowsToaster("BluePepper")
-        toast = Toast([f"{self.job_data.name} - {self.job_data.notify_message}"])
+        message = self.job_data.notify_message or f"{self.job_data.name}\nJob completed successfully"
+        toast = Toast([message])
         toaster.show_toast(toast)
 
     def terminate_job_from_script(self):

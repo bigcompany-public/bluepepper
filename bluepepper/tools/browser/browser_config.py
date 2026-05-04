@@ -59,7 +59,8 @@ class BatcherMenuAction(MenuAction):
     batcher_script: Path | None = None
     batcher_script_args: list[str] = field(default_factory=list[str])
     batcher_priority: int = 50
-    batcher_notify_me_when_done: bool = False
+    batcher_notification: bool = False
+    batcher_notification_message: str = ""
 
     def __post_init__(self):
         if not self.job_name:
@@ -71,8 +72,6 @@ class BatcherMenuAction(MenuAction):
         if self.batcher_module and not self.batcher_function:
             raise AttributeError("Please provide a function to execute")
 
-        # special_keywords = ...
-
         self.kwargs = {
             "name": self.job_name,
             "description": self.job_description,
@@ -82,7 +81,8 @@ class BatcherMenuAction(MenuAction):
             "function": self.batcher_function,
             "kwargs": self.batcher_kwargs,
             "priority": self.batcher_priority,
-            "notify_when_done": self.batcher_notify_me_when_done,
+            "notify_when_done": self.batcher_notification,
+            "notify_message": self.batcher_notification_message,
             "browser": "<browser>",  # Needed by the add_job function, and must be resolved when triggering the action
         }
 

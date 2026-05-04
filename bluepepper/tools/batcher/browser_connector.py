@@ -17,6 +17,7 @@ def add_job(
     kwargs: dict | None = None,
     priority: int = 50,
     notify_when_done: bool = False,
+    notify_message: str = "",
 ):
     # Check a few things
     if not script_path and not module:
@@ -27,10 +28,9 @@ def add_job(
     # Get BatcherWidget
     batcher = get_batcher_widget(browser)
 
+    # Create & send job
     kwargs = kwargs or {}
     script_args = script_args or []
-
-    # Create & send job
     job_data = JobData(
         name=name,
         description=description,
@@ -41,6 +41,7 @@ def add_job(
         kwargs=kwargs,
         priority=priority,
         notify_when_done=notify_when_done,
+        notify_message=notify_message,
     )
     batcher._add_job(job_data)
 

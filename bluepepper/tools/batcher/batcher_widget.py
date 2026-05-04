@@ -128,7 +128,7 @@ class BatcherWidget(QWidget):
             func="main",
             kwargs={"some_arg": "LALALA"},
             notify_when_done=True,
-            notify_message="Noice",
+            notify_message="",
         )
         self._add_job(job_data)
         self.demo_widget_count += 1
