@@ -11,8 +11,8 @@ from pathlib import Path
 from threading import Thread
 from typing import Any, Callable
 
-from PySide6.QtGui import QCloseEvent
 import qtawesome
+from PySide6.QtGui import QCloseEvent
 from qtpy.QtCore import QSize, Qt, QTimer
 from qtpy.QtGui import QIcon, QMouseEvent, QPixmap
 from qtpy.QtWidgets import QLabel, QPushButton, QWidget
@@ -25,9 +25,9 @@ from bluepepper.console import BluePepperConsole
 from bluepepper.core import init_logging, root_dir, version
 from bluepepper.gui.utils import format_widgets, get_icon, get_qt_app, get_stylesheet, get_theme
 from bluepepper.gui.widgets.outcome_popups import show_error
+from bluepepper.tools.batcher.batcher_widget import BatcherWidget
 from conf.fastapi import FastApiSettings
 from conf.project import ProjectSettings
-from bluepepper.tools.batcher.batcher_widget import BatcherWidget
 
 _PAGES_DIR = Path(__file__).parent
 _DOUBLE_CLICK_MS = 150
@@ -202,7 +202,7 @@ class BluePepperApp(FramelessMainWindow):
         self.ui.label_important_content.setText(random.choice(phrases))
 
         if str(random.random()).endswith("00"):
-            self.ui.label_important_content.setText("Mark my words ashen one, you remain among the accursed.")
+            self.ui.label_important_content.setText("Mark my words, Ashen one... You remain among the accursed...")
 
     def showNormal(self) -> None:
         self.set_random_catchphrase()
@@ -214,10 +214,10 @@ class BluePepperApp(FramelessMainWindow):
         for widget in self.page_widgets:
             if isinstance(widget, BatcherWidget):
                 batcher_widget = widget
-        
+
         if not batcher_widget:
             return super().closeEvent(event)
-        
+
         active_jobs = batcher_widget.active_job_widgets
         for job_widget in active_jobs:
             logging.warning(f"Terminating Batcher Job : {job_widget.job_data.name}")
