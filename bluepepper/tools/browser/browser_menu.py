@@ -18,24 +18,33 @@ if TYPE_CHECKING:
 class BrowserMenu(QMenu):
     """Shared menu behavior for browser context menus."""
 
-    PLACEHOLDERS = {
-        "<browser>": lambda self, item=None, items=None, documents=None: self.tab.browser,
-        "<convention>": lambda self, item=None, items=None, documents=None: getattr(self, "kind", None).convention if getattr(self, "kind", None) else None,
-        "<documents>": lambda self, item=None, items=None, documents=None: self._resolve_documents(documents, items),
-        "<document_names>": lambda self, item=None, items=None, documents=None: [doc[self.entity.name] for doc in self._resolve_documents(documents, items)],
-        "<document_ids>": lambda self, item=None, items=None, documents=None: [doc["_id"] for doc in self._resolve_documents(documents, items)],
-        "<document>": lambda self, item=None, items=None, documents=None: self._resolve_document(item, items),
-        "<document_name>": lambda self, item=None, items=None, documents=None: self._extract_document(item, items)[self.entity.name],
-        "<document_id>": lambda self, item=None, items=None, documents=None: self._extract_document(item, items)["_id"],
-        "<paths>": lambda self, item=None, items=None, documents=None: [self._extract_path(item) for item in items or []],
-        "<path>": lambda self, item=None, items=None, documents=None: self._extract_path(item, items),
+    PLACEHOLDER_HANDLERS = {
+        "<browser>": "_resolve_browser",
+        "<convention>": "_resolve_convention",
+        "<documents>": "_resolve_documents",
+        "<document_names>": "_resolve_document_names",
+        "<document_ids>": "_resolve_document_ids",
+        "<document>": "_resolve_document",
+        "<document_name>": "_resolve_document_name",
+        "<document_id>": "_resolve_document_id",
+        "<paths>": "_resolve_paths",
+        "<path>": "_resolve_path",
     }
 
-    def __init__(self, tab: EntityTab, event, kind=None):
+    def __init__(
+        self,
+        tab: EntityTab,
+        event,
+        actions: list[MenuAction],
+        targets: list[Any],
+        kind=None,
+    ):
         super().__init__(tab)
         self.tab = tab
         self._event = event
         self.kind = kind
+        self.menu_actions = actions
+        self.targets = targets
         self.entity = self.tab.entity
         self.register_actions()
 
@@ -43,14 +52,8 @@ class BrowserMenu(QMenu):
         for action in self.get_actions_to_register():
             self.register_action(action)
 
-    def get_actions(self):
-        raise NotImplementedError
-
-    def get_action_targets(self, menu_action: MenuAction):
-        raise NotImplementedError
-
     def get_actions_to_register(self):
-        return [action for action in self.get_actions() if bool(self.get_action_targets(action))]
+        return [action for action in self.menu_actions if bool(self.get_action_targets(action))]
 
     def get_action_icon(self, menu_action: MenuAction) -> Optional[QIcon]:
         if menu_action.icon:
@@ -75,24 +78,43 @@ class BrowserMenu(QMenu):
 
     def execute_menu_action(self, func: Any, menu_action: MenuAction):
         targets = self.get_action_targets(menu_action)
-        mode = self.infer_mode(menu_action)
-        if mode == "each":
+        if menu_action.mode not in {"each", "all"}:
+            raise ValueError('MenuAction mode must be "each" or "all"')
+
+        if menu_action.mode == "each":
             for target in targets:
                 kwargs = self.resolve_kwargs(menu_action.kwargs, item=target, items=targets)
                 callback = partial(func, **kwargs)
                 callback()
             return
 
+        if any(
+            placeholder in menu_action.kwargs.values()
+            for placeholder in ("<document>", "<document_id>", "<document_name>", "<path>")
+        ):
+            raise ValueError(
+                "MenuAction in all mode cannot use per-item placeholders like <document> or <path>"
+            )
+
         kwargs = self.resolve_kwargs(menu_action.kwargs, items=targets)
         callback = partial(func, **kwargs)
         callback()
 
-    def infer_mode(self, menu_action: MenuAction) -> str:
-        if menu_action.mode != "auto":
-            return menu_action.mode
-        if any(keyword in menu_action.kwargs.values() for keyword in ("<document>", "<document_id>", "<document_name>", "<path>")):
-            return "each"
-        return "all"
+    def get_action_targets(self, menu_action: MenuAction):
+        if not self.targets:
+            return []
+
+        targets = []
+        for target in self.targets:
+            document = self._extract_document(target)
+            path = self._extract_path(target)
+            if menu_action.doc_filter and not menu_action.doc_filter(document):
+                continue
+            if menu_action.path_filter and not menu_action.path_filter(path):
+                continue
+            targets.append(target)
+
+        return targets
 
     def resolve_kwargs(
         self,
@@ -106,35 +128,69 @@ class BrowserMenu(QMenu):
         return resolved_kwargs
 
     def resolve_value(self, value: Any, item: Any = None, items: Optional[List[Any]] = None) -> Any:
-        if isinstance(value, str) and value in self.PLACEHOLDERS:
-            return self.PLACEHOLDERS[value](self, item=item, items=items)
+        if isinstance(value, str) and value in self.PLACEHOLDER_HANDLERS:
+            handler_name = self.PLACEHOLDER_HANDLERS[value]
+            handler = getattr(self, handler_name)
+            return handler(item=item, items=items)
         return value
 
-    def _resolve_documents(self, documents: Optional[List[Any]], items: Optional[List[Any]]) -> List[dict]:
-        if documents is not None:
-            return documents
+    def _resolve_browser(self, item: Any = None, items: Optional[List[Any]] = None) -> Any:
+        return self.tab.browser
+
+    def _resolve_convention(self, item: Any = None, items: Optional[List[Any]] = None) -> Any:
+        return self.kind.convention if self.kind else None
+
+    def _resolve_documents(self, item: Any = None, items: Optional[List[Any]] = None) -> list[dict]:
         if items is None:
             return []
-        return [self._extract_document(item) for item in items if self._extract_document(item) is not None]
 
-    def _resolve_document(self, item: Any, items: Optional[List[Any]]) -> Optional[dict]:
+        documents: list[dict] = []
+        for target in items:
+            document = self._extract_document(target)
+            if document is not None:
+                documents.append(document)
+        return documents
+
+    def _resolve_document_names(self, item: Any = None, items: Optional[List[Any]] = None) -> list[str]:
+        return [doc[self.entity.name] for doc in self._resolve_documents(item=item, items=items)]
+
+    def _resolve_document_ids(self, item: Any = None, items: Optional[List[Any]] = None) -> list[str]:
+        return [doc["_id"] for doc in self._resolve_documents(item=item, items=items)]
+
+    def _resolve_document(self, item: Any = None, items: Optional[List[Any]] = None) -> Optional[dict]:
         if item is not None:
             return self._extract_document(item)
         if items:
             return self._extract_document(items[0])
         return None
 
-    def _extract_document(self, item: Any, items: Optional[List[Any]] = None) -> dict:
-        if item is None and items:
-            item = items[0]
-        if isinstance(item, dict):
-            return item
-        return getattr(item, "document", None)
+    def _resolve_document_name(self, item: Any = None, items: Optional[List[Any]] = None) -> Optional[str]:
+        document = self._resolve_document(item=item, items=items)
+        return document[self.entity.name] if document else None
+
+    def _resolve_document_id(self, item: Any = None, items: Optional[List[Any]] = None) -> Optional[str]:
+        document = self._resolve_document(item=item, items=items)
+        return document["_id"] if document else None
+
+    def _resolve_paths(self, item: Any = None, items: Optional[List[Any]] = None) -> list[Any]:
+        if items is None:
+            return []
+        return [self._extract_path(target) for target in items if self._extract_path(target) is not None]
+
+    def _resolve_path(self, item: Any = None, items: Optional[List[Any]] = None) -> Any:
+        if item is not None:
+            return self._extract_path(item)
+        if items:
+            return self._extract_path(items[0])
+        return None
+
+    def _extract_document(self, target: Any) -> Optional[dict]:
+        if isinstance(target, dict):
+            return target
+        return getattr(target, "document", None)
 
     @staticmethod
-    def _extract_path(item: Any, items: Optional[List[Any]] = None) -> Optional[Any]:
-        if item is None and items:
-            item = items[0]
-        if item is None:
+    def _extract_path(target: Any) -> Optional[Any]:
+        if isinstance(target, dict):
             return None
-        return getattr(item, "path", None)
+        return getattr(target, "path", None)

@@ -404,17 +404,6 @@ class TableFilesMenu(BrowserMenu):
         kind: FileKind,
         event: QEvent,
     ):
-        super().__init__(tab, event, kind=kind)
-
-    def get_actions(self):
-        return self.kind.file_actions if self.kind else []
-
-    def get_action_targets(self, menu_action: MenuAction):
-        file_items = self.tab.file_table.selected_items
-        if not file_items:
-            return []
-        if menu_action.doc_filter:
-            file_items = [item for item in file_items if menu_action.doc_filter(item.document)]
-        if menu_action.path_filter:
-            file_items = [item for item in file_items if menu_action.path_filter(item.path)]
-        return file_items
+        actions = kind.file_actions if kind else []
+        targets = tab.file_table.selected_items
+        super().__init__(tab, event, actions=actions, targets=targets, kind=kind)

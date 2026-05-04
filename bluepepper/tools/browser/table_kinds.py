@@ -134,15 +134,6 @@ class FileKindItem(QTableWidgetItem):
 
 class TableFileKindsMenu(BrowserMenu):
     def __init__(self, tab: EntityTab, kind: FileKind, event: QEvent):
-        super().__init__(tab, event, kind=kind)
-
-    def get_actions(self):
-        return self.kind.kind_actions if self.kind else []
-
-    def get_action_targets(self, menu_action: MenuAction):
-        documents = self.tab.document_table.selected_documents
-        if not documents:
-            return []
-        if menu_action.doc_filter:
-            documents = [document for document in documents if menu_action.doc_filter(document)]
-        return documents
+        actions = kind.kind_actions if kind else []
+        targets = tab.document_table.selected_documents
+        super().__init__(tab, event, actions=actions, targets=targets, kind=kind)
