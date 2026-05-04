@@ -31,3 +31,4 @@ class JobData:
     status: JobStatus = field(default=JobStatus.WAITING, init=False)
     progress: int = field(default=0, init=False)
     notify_when_done: bool = False
+    notify_message: str = "Success"

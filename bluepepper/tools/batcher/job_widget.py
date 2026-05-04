@@ -18,6 +18,7 @@ from qtpy.QtWidgets import (
     QSpinBox,
     QVBoxLayout,
 )
+from windows_toasts import Toast, WindowsToaster
 
 from bluepepper.gui.utils import get_theme, stylesheet
 from bluepepper.tools.batcher.job_model import JobData, JobStatus
@@ -350,8 +351,15 @@ class JobWidget(QFrame):
         self.stdout_view.appendPlainText("Batcher job finished successfully")
         self.set_status(JobStatus.FINISHED)
         self.progress_bar.update_progress(100)
+        if self.job_data.notify_when_done:
+            self.show_success_toast()
         if self.batchet_widget.cb_delete_finished.isChecked():
             self.delete_job()
+
+    def show_success_toast(self):
+        toaster = WindowsToaster("BluePepper")
+        toast = Toast([f"{self.job_data.name} - {self.job_data.notify_message}"])
+        toaster.show_toast(toast)
 
     def terminate_job_from_script(self):
         self.stdout_view.appendPlainText("Batcher job terminated from within the script")
@@ -372,6 +380,12 @@ class JobWidget(QFrame):
     def error_encountered(self):
         self.stdout_view.appendPlainText("Batcher job encountered an error")
         self.set_status(JobStatus.ERROR)
+        self.show_error_toast()
+
+    def show_error_toast(self):
+        toaster = WindowsToaster("BluePepper")
+        toast = Toast([f"{self.job_data.name} - Job encountered an error"])
+        toaster.show_toast(toast)
 
     def set_status(self, status: JobStatus) -> None:
         if status != JobStatus.RUNNING:

@@ -126,7 +126,9 @@ class BatcherWidget(QWidget):
             # script_args=["--document", "JAJ"],
             module="bluepepper.tools.batcher.demo_script",
             func="main",
-            kwargs={"document_id": "LALALA"},
+            kwargs={"some_arg": "LALALA"},
+            notify_when_done=True,
+            notify_message="Noice",
         )
         self._add_job(job_data)
         self.demo_widget_count += 1
