@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-import importlib
 import logging
-from functools import partial
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional
 
-import qtawesome
 from lucent import (
     Convention,
     LucentFileNotFoundError,
@@ -14,10 +11,8 @@ from lucent import (
     LucentParseError,
 )
 from qtpy.QtCore import QEvent, QObject, Qt, Signal
-from qtpy.QtGui import QIcon
 from qtpy.QtWidgets import (
     QAbstractItemView,
-    QMenu,
     QSizePolicy,
     QTableWidget,
     QTableWidgetItem,
@@ -26,8 +21,8 @@ from watchdog.events import FileSystemEvent, FileSystemEventHandler
 from watchdog.observers import Observer
 
 from bluepepper.core import database
-from bluepepper.gui.utils import get_icon
-from bluepepper.tools.browser.browser_config import FileKind
+from bluepepper.tools.browser.browser_config import FileKind, MenuAction
+from bluepepper.tools.browser.browser_menu import BrowserMenu
 
 # Imports used only for type checking : these will not be imported at runtime
 if TYPE_CHECKING:
@@ -402,149 +397,24 @@ class FileItem(QTableWidgetItem):
             self.setFlags(self.flags() ^ Qt.ItemFlag.ItemIsEnabled)
 
 
-class TableFilesMenu(QMenu):
+class TableFilesMenu(BrowserMenu):
     def __init__(
         self,
         tab: EntityTab,
         kind: FileKind,
         event: QEvent,
     ):
-        super().__init__(tab)
-        self.tab = tab
-        self.kind = kind
-        self._event = event
-        self.entity = self.tab.entity
-        self.register_actions()
+        super().__init__(tab, event, kind=kind)
 
-    def register_actions(self):
-        for action in self.get_actions_to_register():
-            self.register_action(action)
+    def get_actions(self):
+        return self.kind.file_actions if self.kind else []
 
-    def get_actions_to_register(self):
-        # Only register action if the selected documents respect the filter
-        items = self.tab.file_table.selected_items
-        if not items:
+    def get_action_targets(self, menu_action: MenuAction):
+        file_items = self.tab.file_table.selected_items
+        if not file_items:
             return []
-
-        filtered_actions = []
-        for action in self.kind.file_actions:
-            # If the action has no specific filter, just add it
-            if not action.doc_filter and not action.path_filter:
-                filtered_actions.append(action)
-                continue
-
-            at_least_one_item_matches_doc_filter = not bool(action.doc_filter)
-            at_least_one_item_matches_path_filter = not bool(action.path_filter)
-
-            for item in items:
-                if action.doc_filter and not at_least_one_item_matches_doc_filter:
-                    at_least_one_item_matches_doc_filter = action.doc_filter(item.document)
-
-                if action.path_filter and not at_least_one_item_matches_path_filter:
-                    at_least_one_item_matches_path_filter = action.path_filter(item.path)
-
-            if at_least_one_item_matches_doc_filter and at_least_one_item_matches_path_filter:
-                filtered_actions.append(action)
-
-        return filtered_actions
-
-    def register_action(self, menu_action: MenuAction):
-        action = self.addAction(menu_action.label)
-
-        # Set icon
-        icon = None
-        if menu_action.icon:
-            icon = QIcon(get_icon(menu_action.icon).as_posix())
-        elif menu_action.qta_icon:
-            icon = qtawesome.icon(
-                menu_action.qta_icon,
-                scale_factor=1.1,
-                color=menu_action.qta_icon_color,
-            )
-
-        if icon:
-            action.setIcon(icon)
-
-        # Import the module and get the callable
-        module = importlib.import_module(menu_action.module)
-        func = getattr(module, menu_action.callable)
-
-        def execute_on_all_files():
-            # Keep only items that match both document & path filters
-            items = self.tab.file_table.selected_items
-            if menu_action.doc_filter:
-                items = [item for item in items if menu_action.doc_filter(item.document)]
-            if menu_action.path_filter:
-                items = [item for item in items if menu_action.path_filter(item.path)]
-
-            # Conform kwargs
-            kwargs = {}
-            for (
-                key,
-                value,
-            ) in menu_action.kwargs.items():
-                kwargs[key] = value
-                if value == "<documents>":
-                    kwargs[key] = [item.document for item in items]
-                elif value == "<document_names>":
-                    kwargs[key] = [item.document[self.entity.name] for item in items]
-                elif value == "<document_ids>":
-                    kwargs[key] = [item.document["_id"] for item in items]
-                elif value == "<browser>":
-                    kwargs[key] = self.tab.browser
-                elif value == "<convention>":
-                    kwargs[key] = self.kind.convention
-                elif value == "<paths>":
-                    kwargs[key] = [item.path for item in items]
-
-            # Execute callback with provided kwargs
-            callback = partial(func, **kwargs)
-            callback()
-
-        # Create a wrapper that calls the function for each selected document
-        def execute_on_each_file():
-            # Keep only items that match both document & path filters
-            items = self.tab.file_table.selected_items
-            if menu_action.doc_filter:
-                items = [item for item in items if menu_action.doc_filter(item.document)]
-            if menu_action.path_filter:
-                items = [item for item in items if menu_action.path_filter(item.path)]
-
-            for item in items:
-                document = item.document
-                path = item.path
-                # Format kwargs
-                kwargs = {}
-                for key, value in menu_action.kwargs.items():
-                    kwargs[key] = value
-                    if value == "<document>":
-                        kwargs[key] = document
-                    elif value == "<document_name>":
-                        kwargs[key] = document[self.tab.entity.name]
-                    elif value == "<document_id>":
-                        kwargs[key] = document["_id"]
-                    elif value == "<browser>":
-                        kwargs[key] = self.tab.browser
-                    elif value == "<convention>":
-                        kwargs[key] = self.kind.convention
-                    elif value == "<path>":
-                        kwargs[key] = path
-
-                # Execute callback with provided kwargs
-                callback = partial(func, **kwargs)
-                callback()
-
-        # What happens on click depends on the kwargs
-        # Depending on the situation, the function may need a list of documents, or run the function
-        # for each document, or manipulate the browser altogether
-        args = [
-            "<document>",
-            "<document_id>",
-            "<document_name>",
-            "<path>",
-        ]
-        if any([arg in args for arg in menu_action.kwargs.values()]):
-            action.triggered.connect(execute_on_each_file)
-            return
-
-        action.triggered.connect(execute_on_all_files)
+        if menu_action.doc_filter:
+            file_items = [item for item in file_items if menu_action.doc_filter(item.document)]
+        if menu_action.path_filter:
+            file_items = [item for item in file_items if menu_action.path_filter(item.path)]
+        return file_items

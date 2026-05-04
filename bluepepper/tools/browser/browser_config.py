@@ -33,8 +33,13 @@ class MenuAction:
     qta_icon: str = field(default="")
     qta_icon_color: str = field(default=get_theme()["icon_color"])
     kwargs: dict = field(default_factory=dict)
-    doc_filter: Callable | None = None
-    path_filter: Callable | None = None
+    mode: str = field(default="auto")
+    doc_filter: Callable[..., bool] | None = None
+    path_filter: Callable[..., bool] | None = None
+
+    def __post_init__(self):
+        if self.mode not in {"auto", "all", "each"}:
+            raise ValueError('MenuAction mode must be "auto", "all" or "each"')
 
 
 @dataclass
@@ -85,6 +90,8 @@ class BatcherMenuAction(MenuAction):
                 continue
             if value.startswith("<") and value.endswith(">"):
                 self.kwargs[value[1:-1]] = value
+
+        super().__post_init__()
 
 
 @dataclass

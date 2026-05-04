@@ -1,25 +1,21 @@
 from __future__ import annotations
 
-import importlib
 import json
 import logging
-from functools import partial
 from json.decoder import JSONDecodeError
 from typing import TYPE_CHECKING
 
-import qtawesome
 from qtpy.QtCore import QEvent, Qt
-from qtpy.QtGui import QIcon
 from qtpy.QtWidgets import (
     QAbstractItemView,
-    QMenu,
     QSizePolicy,
     QTableWidget,
     QTableWidgetItem,
 )
 
 from bluepepper.core import database
-from bluepepper.gui.utils import get_icon
+from bluepepper.tools.browser.browser_config import MenuAction
+from bluepepper.tools.browser.browser_menu import BrowserMenu
 
 # Imports used only for type checking : these will not be imported at runtime
 if TYPE_CHECKING:
@@ -223,102 +219,17 @@ class DocumentItem(QTableWidgetItem):
             self.setFlags(self.flags() ^ Qt.ItemFlag.ItemIsEnabled)
 
 
-class TableDocumentsMenu(QMenu):
+class TableDocumentsMenu(BrowserMenu):
     def __init__(self, tab: EntityTab, event: QEvent):
-        super().__init__(tab)
-        self.tab = tab
-        self._event = event
-        self.entity = self.tab.entity
-        self.register_actions()
+        super().__init__(tab, event)
 
-    def register_actions(self):
-        for action in self.get_actions_to_register():
-            self.register_action(action)
+    def get_actions(self):
+        return self.entity.document_actions
 
-    def get_actions_to_register(self):
-        # Only register action if the selected documents respect the filter
+    def get_action_targets(self, menu_action: MenuAction):
         documents = self.tab.document_table.selected_documents
         if not documents:
             return []
-
-        filtered_actions = []
-        for action in self.entity.document_actions:
-            if not action.doc_filter:
-                filtered_actions.append(action)
-                continue
-            filtered_documents = list(filter(action.doc_filter, documents))
-            if filtered_documents:
-                filtered_actions.append(action)
-
-        return filtered_actions
-
-    def register_action(self, menu_action: MenuAction):
-        action = self.addAction(menu_action.label)
-
-        # Set icon
-        icon = None
-        if menu_action.icon:
-            icon = QIcon(get_icon(menu_action.icon).as_posix())
-        elif menu_action.qta_icon:
-            icon = qtawesome.icon(menu_action.qta_icon, scale_factor=1.1, color=menu_action.qta_icon_color)
-
-        if icon:
-            action.setIcon(icon)
-
-        # Import the module and get the callable
-        module = importlib.import_module(menu_action.module)
-        func = getattr(module, menu_action.callable)
-
-        def execute_on_all_documents():
-            # Filter documents
-            documents = self.tab.document_table.selected_documents
-            if menu_action.doc_filter:
-                documents = list(filter(menu_action.doc_filter, documents))
-
-            # Conform kwargs
-            kwargs = {}
-            for key, value in menu_action.kwargs.items():
-                kwargs[key] = value
-                if value == "<documents>":
-                    kwargs[key] = documents
-                elif value == "<document_names>":
-                    kwargs[key] = [doc[self.entity.name] for doc in documents]
-                elif value == "<document_ids>":
-                    kwargs[key] = [doc["_id"] for doc in documents]
-                elif value == "<browser>":
-                    kwargs[key] = self.tab.browser
-
-            # Execute callback with provided kwargs
-            callback = partial(func, **kwargs)
-            callback()
-
-        # Create a wrapper that calls the function for each selected document
-        def execute_on_each_document():
-            documents = self.tab.document_table.selected_documents
-            if menu_action.doc_filter:
-                documents = list(filter(menu_action.doc_filter, documents))
-
-            for document in documents:
-                # Format kwargs
-                kwargs = {}
-                for key, value in menu_action.kwargs.items():
-                    kwargs[key] = value
-                    if value == "<document>":
-                        kwargs[key] = document
-                    elif value == "<document_name>":
-                        kwargs[key] = document[self.tab.entity.name]
-                    elif value == "<document_id>":
-                        kwargs[key] = document["_id"]
-                    elif value == "<browser>":
-                        kwargs[key] = self.tab.browser
-
-                # Execute callback with provided kwargs
-                callback = partial(func, **kwargs)
-                callback()
-
-        # The following arguments are indicators the callback must be called on each document
-        args = ["<document>", "<document_id>", "<document_name>"]
-        if any([arg in args for arg in menu_action.kwargs.values()]):
-            action.triggered.connect(execute_on_each_document)
-        else:
-            action.triggered.connect(execute_on_all_documents)
+        if menu_action.doc_filter:
+            documents = [document for document in documents if menu_action.doc_filter(document)]
+        return documents
