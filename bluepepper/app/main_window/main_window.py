@@ -201,6 +201,9 @@ class BluePepperApp(FramelessMainWindow):
         phrases: list[str] = json.loads((root_dir / "conf/catchphrases.json").read_text("utf-8"))
         self.ui.label_important_content.setText(random.choice(phrases))
 
+        if str(random.random()).endswith("00"):
+            self.ui.label_important_content.setText("Mark my words ashen one, you remain among the accursed.")
+
     def showNormal(self) -> None:
         self.set_random_catchphrase()
         super().showNormal()
