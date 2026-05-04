@@ -318,11 +318,11 @@ def get_tool_config() -> AppConfig:
     )
     placeholder_job_action = BatcherMenuAction(
         label="Create Batcher Job",
-        job_name="Demo Batcher - <document_names>",
-        job_description="Just doing stuff on <document_names>",
+        job_name="Demo Batcher - <document_name>",
+        job_description="Just doing stuff on <document_name>",
         batcher_module="bluepepper.tools.batcher.demo_script",
         batcher_function="main",
-        batcher_kwargs={"some_arg": "<document_names>"},
+        batcher_kwargs={"some_arg": "<document>"},
     )
 
     for entity in config.entities.values():

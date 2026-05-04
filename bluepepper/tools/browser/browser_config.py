@@ -51,6 +51,7 @@ class BatcherMenuAction(MenuAction):
     module: str = field(default="bluepepper.tools.batcher.browser_connector", init=False)
     callable: str = field(default="add_job", init=False)
     kwargs: dict = field(default_factory=dict, init=False)
+    mode: str = field(default="each")
     qta_icon: str = field(default="mdi6.factory")
     batcher_module: str = ""
     batcher_function: str = ""
@@ -70,26 +71,20 @@ class BatcherMenuAction(MenuAction):
         if self.batcher_module and not self.batcher_function:
             raise AttributeError("Please provide a function to execute")
 
-        # Provide the arguments needed by the add_job function, in order to create the JobData object
-        self.kwargs["name"] = self.job_name
-        self.kwargs["description"] = self.job_description
-        self.kwargs["script_path"] = self.batcher_script
-        self.kwargs["script_args"] = self.batcher_script_args
-        self.kwargs["module"] = self.batcher_module
-        self.kwargs["function"] = self.batcher_function
-        self.kwargs["kwargs"] = self.batcher_kwargs
-        self.kwargs["priority"] = self.batcher_priority
-        self.kwargs["notify_when_done"] = self.batcher_notify_me_when_done
+        # special_keywords = ...
 
-        # Pass special arguments so they can be solved before being sent to the add_job function
-        # Using special keywords also specify if the add_job function should be executed for each selected item, or
-        # for all selected items
-        self.kwargs["browser"] = "<browser>"
-        for value in self.batcher_kwargs.values():
-            if not isinstance(value, str):
-                continue
-            if value.startswith("<") and value.endswith(">"):
-                self.kwargs[value[1:-1]] = value
+        self.kwargs = {
+            "name": self.job_name,
+            "description": self.job_description,
+            "script_path": self.batcher_script,
+            "script_args": self.batcher_script_args,
+            "module": self.batcher_module,
+            "function": self.batcher_function,
+            "kwargs": self.batcher_kwargs,
+            "priority": self.batcher_priority,
+            "notify_when_done": self.batcher_notify_me_when_done,
+            "browser": "<browser>",  # Needed by the add_job function, and must be resolved when triggering the action
+        }
 
         super().__post_init__()
 
@@ -137,7 +132,7 @@ class Task:
     task_field: str = field(default="")
     label: str = field(default="")
     kinds: dict[str, FileKind] = field(default_factory=dict[str, FileKind])
-    doc_filter: Callable = None
+    doc_filter: Callable[..., bool] | None = None
 
     def __post_init__(self):
         if not self.label:

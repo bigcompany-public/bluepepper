@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 class BrowserMenu(QMenu):
     """Shared menu behavior for browser context menus."""
 
-    PLACEHOLDER_HANDLERS = {
+    SPECIAL_KEYWORDS_HANDLERS = {
         "<browser>": "_resolve_browser",
         "<convention>": "_resolve_convention",
         "<documents>": "_resolve_documents",
@@ -122,8 +122,14 @@ class BrowserMenu(QMenu):
         return resolved_kwargs
 
     def resolve_value(self, value: Any, item: Any = None, items: Optional[List[Any]] = None) -> Any:
-        if isinstance(value, str) and value in self.PLACEHOLDER_HANDLERS:
-            handler_name = self.PLACEHOLDER_HANDLERS[value]
+        if isinstance(value, dict):
+            return {key: self.resolve_value(sub_value, item=item, items=items) for key, sub_value in value.items()}
+        if isinstance(value, list):
+            return [self.resolve_value(sub_value, item=item, items=items) for sub_value in value]
+        if isinstance(value, tuple):
+            return tuple(self.resolve_value(sub_value, item=item, items=items) for sub_value in value)
+        if isinstance(value, str) and value in self.SPECIAL_KEYWORDS_HANDLERS:
+            handler_name = self.SPECIAL_KEYWORDS_HANDLERS[value]
             handler = getattr(self, handler_name)
             return handler(item=item, items=items)
         return value
