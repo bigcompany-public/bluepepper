@@ -81,6 +81,7 @@ class BrowserMenu(QMenu):
         if menu_action.mode not in {"each", "all"}:
             raise ValueError('MenuAction mode must be "each" or "all"')
 
+        # Action on each selected
         if menu_action.mode == "each":
             for target in targets:
                 kwargs = self.resolve_kwargs(menu_action.kwargs, item=target, items=targets)
@@ -88,14 +89,7 @@ class BrowserMenu(QMenu):
                 callback()
             return
 
-        if any(
-            placeholder in menu_action.kwargs.values()
-            for placeholder in ("<document>", "<document_id>", "<document_name>", "<path>")
-        ):
-            raise ValueError(
-                "MenuAction in all mode cannot use per-item placeholders like <document> or <path>"
-            )
-
+        # Action on all selected
         kwargs = self.resolve_kwargs(menu_action.kwargs, items=targets)
         callback = partial(func, **kwargs)
         callback()
