@@ -145,6 +145,7 @@ def get_tool_config() -> AppConfig:
         callable="asset_add_tag",
         kwargs={"documents": "<documents>"},
         doc_filter=is_asset,
+        mode="all",
     )
     asset_remove_tag_action = MenuAction(
         label="Remove Tag",
@@ -153,6 +154,7 @@ def get_tool_config() -> AppConfig:
         callable="asset_remove_tag",
         kwargs={"documents": "<documents>"},
         doc_filter=is_asset,
+        mode="all",
     )
     shot_add_tag_action = MenuAction(
         label="Add Tag",
@@ -161,6 +163,7 @@ def get_tool_config() -> AppConfig:
         callable="shot_add_tag",
         kwargs={"documents": "<documents>"},
         doc_filter=is_shot,
+        mode="all",
     )
     shot_remove_tag_action = MenuAction(
         label="Remove Tag",
@@ -169,6 +172,7 @@ def get_tool_config() -> AppConfig:
         callable="shot_remove_tag",
         kwargs={"documents": "<documents>"},
         doc_filter=is_shot,
+        mode="all",
     )
     shot_document_help_me_action = MenuAction(
         label="Help Me",
@@ -184,6 +188,7 @@ def get_tool_config() -> AppConfig:
         module="bluepepper.tools.browser.browser_actions",
         callable="send_strings_to_clipboard",
         kwargs={"strings": "<document_names>"},
+        mode="all",
     )
     asset_copy_identifier_action = MenuAction(
         label="Copy Identifier",
@@ -192,6 +197,7 @@ def get_tool_config() -> AppConfig:
         callable="asset_send_identifiers_to_clipboard",
         kwargs={"documents": "<documents>"},
         doc_filter=is_asset,
+        mode="all",
     )
     copy_id_action = MenuAction(
         label="Copy ID",
@@ -199,6 +205,7 @@ def get_tool_config() -> AppConfig:
         module="bluepepper.tools.browser.browser_actions",
         callable="send_strings_to_clipboard",
         kwargs={"strings": "<document_ids>"},
+        mode="all",
     )
     copy_doc_action = MenuAction(
         label="Copy Document",
@@ -206,6 +213,7 @@ def get_tool_config() -> AppConfig:
         module="bluepepper.tools.browser.browser_actions",
         callable="send_json_to_clipboard",
         kwargs={"serializable": "<documents>"},
+        mode="all",
     )
     asset_show_in_aquarium_action = MenuAction(
         label="Show in Aquarium",
@@ -237,6 +245,7 @@ def get_tool_config() -> AppConfig:
         module="bluepepper.tools.browser.browser_actions",
         callable="kind_show_in_explorer",
         kwargs={"documents": "<documents>", "convention": "<convention>"},
+        mode="all",
     )
     kind_copy_path_action = MenuAction(
         label="Copy Path",
@@ -244,6 +253,7 @@ def get_tool_config() -> AppConfig:
         module="bluepepper.tools.browser.browser_actions",
         callable="kind_copy_path",
         kwargs={"documents": "<documents>", "convention": "<convention>"},
+        mode="all",
     )
     kind_copy_filename_action = MenuAction(
         label="Copy File Name",
@@ -251,6 +261,7 @@ def get_tool_config() -> AppConfig:
         module="bluepepper.tools.browser.browser_actions",
         callable="kind_copy_filename",
         kwargs={"documents": "<documents>", "convention": "<convention>"},
+        mode="all",
     )
     file_copy_path_action = MenuAction(
         label="Copy Path",
@@ -258,6 +269,7 @@ def get_tool_config() -> AppConfig:
         module="bluepepper.tools.browser.browser_actions",
         callable="file_copy_paths",
         kwargs={"paths": "<paths>"},
+        mode="all",
     )
     file_copy_filename_action = MenuAction(
         label="Copy File Name",
@@ -265,6 +277,7 @@ def get_tool_config() -> AppConfig:
         module="bluepepper.tools.browser.browser_actions",
         callable="file_copy_filename",
         kwargs={"paths": "<paths>"},
+        mode="all",
     )
     file_copy_file_action = MenuAction(
         label="Copy File",
@@ -272,6 +285,7 @@ def get_tool_config() -> AppConfig:
         module="bluepepper.tools.browser.browser_actions",
         callable="file_copy_file",
         kwargs={"paths": "<paths>"},
+        mode="all",
     )
     file_show_in_explorer = MenuAction(
         label="Show in explorer",
@@ -285,7 +299,7 @@ def get_tool_config() -> AppConfig:
         qta_icon="msc.versions",
         module="bluepepper.tools.browser.browser_actions",
         callable="file_increment_version",
-        kwargs={"path": "<path>", "convention": "<convention>", "description": "YOLO"},
+        kwargs={"path": "<path>", "convention": "<convention>", "description": "Incremented"},
     )
     file_open_in_vscode = MenuAction(
         label="Open in VSCode",
