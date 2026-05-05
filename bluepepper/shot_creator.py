@@ -4,10 +4,10 @@ from typing import Dict, Optional
 
 from aquarium.aquarium import Shot as AqShot
 from bson import ObjectId
-from conf.project import ProjectSettings
 
 from bluepepper.aqua import get_aqua
 from bluepepper.core import codex, database, init_logging
+from conf.project import ProjectSettings
 
 
 class ShotAlreadyExistsError(Exception):
@@ -99,15 +99,11 @@ class ShotCreator:
 if __name__ == "__main__":
     init_logging("shotCreator")
     parser = ArgumentParser()
-    parser.add_argument("-se", "--season", required=True, type=str)
-    parser.add_argument("-ep", "--episode", required=True, type=str)
     parser.add_argument("-sq", "--sequence", required=True, type=str)
     parser.add_argument("-sh", "--shot", required=True, type=str)
     args = parser.parse_args()
 
     fields = {
-        "season": args.season,
-        "episode": args.episode,
         "sequence": args.sequence,
         "shot": args.shot,
     }

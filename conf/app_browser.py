@@ -78,7 +78,7 @@ def get_tool_config() -> AppConfig:
     asset_rigging_task.add_kind(rigging_workfile_kind)
 
     # Shots
-    shot_entity = Entity(name="shot", collection="shots", filters=["season", "episode", "sequence"])
+    shot_entity = Entity(name="shot", collection="shots", filters=["sequence"])
     config.add_entity(shot_entity)
     shot_layout_task = Task("layout")
     shot_entity.add_task(shot_layout_task)
