@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from qtpy.QtCore import Qt
+from qtpy.QtCore import QEvent, Qt
 from qtpy.QtWidgets import QListWidget, QListWidgetItem, QSizePolicy
 
 from bluepepper.tools.batcher.job_model import JobStatus
@@ -26,6 +26,7 @@ class JobListWidget(QListWidget):
         self.setSpacing(1)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.setMinimumWidth(700)
+        self.installEventFilter(self)
 
     @property
     def job_widgets(self) -> list[JobWidget]:
@@ -55,6 +56,18 @@ class JobListWidget(QListWidget):
     @property
     def running_job_widgets_count(self) -> int:
         return len(self.running_job_widgets)
-    
+
     def selectedItems(self) -> list[JobListItem]:
-        return super().selectedItems() # type: ignore
+        return super().selectedItems()  # type: ignore
+
+    def eventFilter(self, obj: JobListWidget, event):
+        if event.type() == QEvent.Type.KeyPress:
+            if event.key() == Qt.Key.Key_Delete:
+                for item in obj.selectedItems():
+                    item.job_widget.terminate_job()
+                    obj.takeItem(obj.row(item))
+                return True  # event consumed
+        return super().eventFilter(obj, event)
+
+    # def installEventFilter(self, filterObj: QObject) -> None:
+    #     return super().installEventFilter(filterObj)
