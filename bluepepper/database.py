@@ -255,30 +255,6 @@ class BigMongoClient(MongoClient):
         """
         return self.db.get_collection("shots")
 
-    @cached_property
-    def episodes(self) -> Collection:
-        """Get the episodes collection.
-
-        Returns:
-            MongoDB Collection instance for episodes.
-        """
-        return self.db.get_collection("episodes")
-
-    def ensure_structure(self) -> None:
-        """Ensure database has required collections with sample documents.
-
-        Creates sample documents in each collection if they are empty.
-        Used for initial database setup and verification.
-        """
-        if not self.assets.find_one():
-            self.assets.insert_one({"asset": "pear", "type": "prp", "group": "dev"})
-
-        if not self.shots.find_one():
-            self.shots.insert_one({"shot": "sh9999", "sequence": "sq9999", "episode": "ep999"})
-
-        if not self.episodes.find_one():
-            self.episodes.insert_one({"episode": "ep999"})
-
     @property
     def is_local_server(self) -> bool:
         """Check if MongoDB server is configured as local."""
