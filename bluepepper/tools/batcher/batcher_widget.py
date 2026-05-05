@@ -1,7 +1,10 @@
+import qtawesome
+from qtpy.QtGui import QIcon
 from qtpy.QtWidgets import (
     QCheckBox,
     QFrame,
     QGridLayout,
+    QHBoxLayout,
     QLabel,
     QPushButton,
     QSizePolicy,
@@ -10,12 +13,21 @@ from qtpy.QtWidgets import (
     QWidget,
 )
 
-from bluepepper.gui.utils import get_qta_icon
+from bluepepper.gui.utils import get_qta_icon, get_theme
 from bluepepper.gui.widgets.container import ContainerDialog, ContainerWidget, format_widgets, get_qt_app
 from bluepepper.tools.batcher.job_list_widget import JobListItem, JobListWidget
 from bluepepper.tools.batcher.job_manager import JobManager
 from bluepepper.tools.batcher.job_model import JobData, JobStatus
 from bluepepper.tools.batcher.job_widget import JobWidget
+
+
+class IconButton(QPushButton):
+    def __init__(self, icon: QIcon):
+        super().__init__()
+        self.setIcon(icon)
+        self.setProperty("status", "invisible")
+        self.setFixedHeight(26)
+        self.setFixedWidth(25)
 
 
 class BatcherWidget(QWidget):
@@ -29,6 +41,14 @@ class BatcherWidget(QWidget):
         super().__init__(parent)
         self.demo_widget_count = 1
         self._parent = parent
+
+        # Icons for options expand
+        theme = get_theme()
+        i = 0.85
+        self.icon_toggle_collapsed = qtawesome.icon("fa6s.caret-right", scale_factor=1.2, color=theme["icon_color"])
+        self.icon_toggle_expanded = qtawesome.icon("fa6s.caret-down", scale_factor=1.2, color=theme["icon_color"])
+        self.options_expanded = False
+
         self.attach_to_parent()
         self.job_list_widget = JobListWidget(batcher=self)
         self._setup_ui()
@@ -67,14 +87,28 @@ class BatcherWidget(QWidget):
         main_layout.addWidget(options_frame)
 
         options_layout = QVBoxLayout(options_frame)
+        options_layout.setContentsMargins(3, 3, 3, 3)
+        options_layout.setSpacing(3)
+
+        # Options header
+        options_header = QFrame()
+        options_layout.addWidget(options_header)
+        header_layout = QHBoxLayout(options_header)
+        header_layout.setContentsMargins(0, 0, 0, 0)
+        header_layout.setSpacing(2)
+        self.button_expand_options = IconButton(self.icon_toggle_collapsed)
+        header_layout.addWidget(self.button_expand_options)
         label = QLabel("Options")
         label.setProperty("tag", "H3")
-        options_layout.addWidget(label)
+        header_layout.addWidget(label)
 
-        frame = QFrame()
-        frame.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        options_layout.addWidget(frame)
-        grid_layout = QGridLayout(frame)
+        # Options content
+        self.options_content_frame = QFrame()
+        self.options_content_frame.setProperty("depth", 1)
+        self.options_content_frame.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.options_content_frame.setHidden(True)  # Start collapsed
+        options_layout.addWidget(self.options_content_frame)
+        grid_layout = QGridLayout(self.options_content_frame)
 
         # Maximum threads
         max_threads_label = QLabel("Maximum Threads")
@@ -117,6 +151,22 @@ class BatcherWidget(QWidget):
     def _setup_signals(self):
         self._button_demo_job.clicked.connect(self._button_demo_job_clicked)
         self.button_sandbox.clicked.connect(self.button_sandbox_clicked)
+        self.button_expand_options.clicked.connect(self.toggle_options_expand)
+
+    def toggle_options_expand(self):
+        if self.options_expanded:
+            self.collapse_options()
+        else:
+            self.expand_options()
+        self.options_expanded = not self.options_expanded
+
+    def expand_options(self):
+        self.button_expand_options.setIcon(self.icon_toggle_expanded)
+        self.options_content_frame.setVisible(True)
+
+    def collapse_options(self):
+        self.button_expand_options.setIcon(self.icon_toggle_collapsed)
+        self.options_content_frame.setVisible(False)
 
     def _button_demo_job_clicked(self):
         import json  # noqa: F401
