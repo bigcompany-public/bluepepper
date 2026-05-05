@@ -1,7 +1,9 @@
+import json
 import logging
 import os
 import socket
 import subprocess
+import time
 from atexit import register
 from functools import cached_property
 from pathlib import Path
@@ -539,9 +541,58 @@ class BigMongoClient(MongoClient):
         document["_id"] = str(document["_id"])
         return document
 
+    def dump(self, path: Path | None = None):
+        """Dump the database to a JSON file.
+
+        Args:
+            path: Optional path to save the dump. If None, uses default backup path.
+        """
+        path = path or self.get_backup_dump_path()
+        db_dump = {}
+        for collection in self.db.list_collection_names():
+            collection_dump = []
+            for document in self.db[collection].find():
+                document = self.stringify_id(document)
+                collection_dump.append(document)
+            db_dump[collection] = collection_dump
+
+        path.parent.mkdir(exist_ok=True, parents=True)
+        path.write_text(json.dumps(db_dump, indent=4))
+
+    def get_backup_dump_path(self) -> Path:
+        """Get the default path for database backup dumps.
+
+        Returns:
+            Path: The path to the backup dump file.
+        """
+        fields = codex.get_datetime_fields()
+        root_dir = Path(os.environ["BLUEPEPPER_ROOT"])
+        path_str = root_dir.parent.joinpath(
+            f"{root_dir.name}_database_dumps/{{year}}_{{month}}_{{day}}.json"
+        ).as_posix()
+        path_str = path_str.format(**fields)
+        return Path(path_str)
+
+    def restore_database_dump(self, path: Path):
+        """Restore the database from a JSON dump file.
+
+        Args:
+            path: Path to the dump file.
+        """
+        db_dump: dict[str, list[dict]] = json.loads(path.read_text())
+        self.drop_database(self.db.name)
+        for collection, documents in db_dump.items():
+            self.db[collection].insert_many(documents)
+
+        # sleeping a bit to let mongodb register the changes
+        time.sleep(0.2)
+
 
 database = BigMongoClient()
 
 if __name__ == "__main__":
-    doc = database.get_asset_document_by_string("D:/projects/myAwesomeProject/library/fx/dev00/dev00_v035.ma")
-    print(doc)
+    # doc = database.get_asset_document_by_string("D:/projects/myAwesomeProject/library/fx/dev00/dev00_v035.ma")
+    # print(doc)
+    # database.dump()
+    # print(database.get_backup_dump_path())
+    database.restore_database_dump(Path(r"D:\gitWorkspace\BP_PROJECT_DEV\bluepepper_database_dumps\2026_05_05.json"))
