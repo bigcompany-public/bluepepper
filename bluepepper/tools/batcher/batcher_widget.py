@@ -119,14 +119,17 @@ class BatcherWidget(QWidget):
         self.button_sandbox.clicked.connect(self.button_sandbox_clicked)
 
     def _button_demo_job_clicked(self):
+        import json  # noqa: F401
+        from pathlib import Path  # noqa: F401
+
         job_data = JobData(
             name=f"Test {self.demo_widget_count}",
             description="Just for testing purposes",
-            # script_path=Path(__file__).with_name("demo_script.py"),
-            # script_args=["--document", "JAJ"],
-            module="bluepepper.tools.batcher.demo_script",
-            func="main",
-            kwargs={"some_arg": "LALALA"},
+            script_path=Path(__file__).with_name("demo_script.py"),
+            script_args=["--some_arg", json.dumps([{"hello": "world"}])],
+            # module="bluepepper.tools.batcher.demo_script",
+            # func="main",
+            # kwargs={"some_arg": "LALALA"},
             notify_when_done=True,
             notify_message="",
         )

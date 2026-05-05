@@ -15,9 +15,16 @@ def main():
 
 
 def run_batcher_script():
-    run_script(
-        path=Path(os.environ["BLUEPEPPER_BATCHER_SCRIPT"]), args=json.loads(os.environ["BLUEPEPPER_BATCHER_ARGS"])
-    )
+    args_str = os.environ["BLUEPEPPER_BATCHER_ARGS"]
+    args_list = json.loads(args_str)
+    formatted_args_list = []
+    for arg in args_list:
+        if isinstance(arg, str):
+            formatted_args_list.append(arg)
+        else:
+            formatted_args_list.append(json.dumps(arg))
+
+    run_script(path=Path(os.environ["BLUEPEPPER_BATCHER_SCRIPT"]), args=formatted_args_list)
 
 
 def run_batcher_function():
