@@ -1,4 +1,5 @@
 import qtawesome
+from qtpy.QtCore import Qt
 from qtpy.QtGui import QIcon
 from qtpy.QtWidgets import (
     QCheckBox,
@@ -10,15 +11,16 @@ from qtpy.QtWidgets import (
     QPushButton,
     QSizePolicy,
     QSpinBox,
+    QTableWidgetItem,
     QVBoxLayout,
     QWidget,
 )
 
 from bluepepper.gui.utils import get_qta_icon, get_theme
 from bluepepper.gui.widgets.container import ContainerDialog, ContainerWidget, format_widgets, get_qt_app
-from bluepepper.tools.batcher.job_list_widget import JobListItem, JobListWidget
 from bluepepper.tools.batcher.job_manager import JobManager
 from bluepepper.tools.batcher.job_model import JobData, JobStatus
+from bluepepper.tools.batcher.job_table_widget import JobTableItem, JobTableWidget
 from bluepepper.tools.batcher.job_widget import JobWidget
 
 
@@ -51,7 +53,7 @@ class BatcherWidget(QWidget):
         self.options_expanded = False
 
         self.attach_to_parent()
-        self.job_list_widget = JobListWidget(batcher=self)
+        self.job_table_widget = JobTableWidget(batcher=self)
         self._setup_ui()
         self._setup_signals()
         self._manager = JobManager(batcher=self)
@@ -130,7 +132,7 @@ class BatcherWidget(QWidget):
         label_auto_start = QLabel("Automatically start jobs")
         grid_layout.addWidget(label_auto_start, 0, 3)
         self.cb_auto_start = QCheckBox()
-        self.cb_auto_start.setChecked(True)
+        self.cb_auto_start.setChecked(False)
         grid_layout.addWidget(self.cb_auto_start, 0, 4)
 
         # Delete finished jobs
@@ -162,7 +164,7 @@ class BatcherWidget(QWidget):
         job_list_frame.setProperty("depth", "0")
         main_layout.addWidget(job_list_frame)
         layout = QVBoxLayout(job_list_frame)
-        layout.addWidget(self.job_list_widget)
+        layout.addWidget(self.job_table_widget)
 
         # Debug helpers
         self._button_demo_job = QPushButton("+ Add Demo Job")
@@ -188,6 +190,7 @@ class BatcherWidget(QWidget):
 
     def on_sort_changed(self) -> None:
         print("SORTING")
+        self.job_table_widget.sortByColumn(0, Qt.DescendingOrder)
 
     def expand_options(self):
         self.button_expand_options.setIcon(self.icon_toggle_expanded)
@@ -217,10 +220,27 @@ class BatcherWidget(QWidget):
 
     def _add_job(self, job_data: JobData):
         # Create job widget
-        item = JobListItem()
-        job_widget = JobWidget(job_data=job_data, batcher_widget=self, qlist_item=item)
-        self.job_list_widget.addItem(item)
-        self.job_list_widget.setItemWidget(item, job_widget)
+        item = JobTableItem()
+        job_widget = JobWidget(job_data=job_data, batcher_widget=self, table_item=item)
+        row_number = self.job_table_widget.rowCount()
+        self.job_table_widget.insertRow(row_number)
+        self.job_table_widget.setItem(row_number, self.job_table_widget._job_widget_column_index, item)
+        self.job_table_widget.setCellWidget(row_number, 3, job_widget)
+
+        # name item
+        item = QTableWidgetItem()
+        item.setText(job_data.name)
+        self.job_table_widget.setItem(row_number, 0, item)
+
+        # priority item
+        item = QTableWidgetItem()
+        item.setText(str(job_data.priority).zfill(3))
+        self.job_table_widget.setItem(row_number, 1, item)
+
+        # created at item
+        item = QTableWidgetItem()
+        item.setText(str(job_data.created_at))
+        self.job_table_widget.setItem(row_number, 2, item)
 
     def add_script_job(
         self,
@@ -231,19 +251,19 @@ class BatcherWidget(QWidget):
 
     @property
     def job_widgets(self) -> list[JobWidget]:
-        return self.job_list_widget.job_widgets
+        return self.job_table_widget.job_widgets
 
     @property
     def sorted_job_widgets(self) -> list[JobWidget]:
-        return self.job_list_widget.sorted_job_widgets
+        return self.job_table_widget.sorted_job_widgets
 
     @property
     def running_job_widgets(self) -> list[JobWidget]:
-        return self.job_list_widget.running_job_widgets
+        return self.job_table_widget.running_job_widgets
 
     @property
     def running_job_widgets_count(self) -> int:
-        return self.job_list_widget.running_job_widgets_count
+        return self.job_table_widget.running_job_widgets_count
 
     def button_sandbox_clicked(self):
         widgets = self.sorted_job_widgets
