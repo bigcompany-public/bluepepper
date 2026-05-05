@@ -8,14 +8,18 @@ from collections.abc import Callable
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from install.install import BluePepperInstaller
+from lucent.errors import LucentConventionNotFoundError
 from qtpy.QtCore import Qt, QTimer
 from qtpy.QtGui import QColor, QFont, QPainter, QPixmap
 from qtpy.QtWidgets import QApplication, QSplashScreen
 
+from bluepepper.app.demo_project_widget import show_dialog as show_demo_project_dialog
 from bluepepper.console import BluePepperConsole
-from bluepepper.core import init_logging, root_dir
+from bluepepper.core import codex, database, init_logging, root_dir
 from bluepepper.gui.widgets.outcome_popups import show_error
+from conf.mongodb import DatabaseSettings
+from conf.project import ProjectSettings
+from install.install import BluePepperInstaller
 
 
 def except_hook(exc_type, exc_value, exc_traceback):
@@ -98,9 +102,7 @@ class BluePepperSplash(QSplashScreen):
             self.installer.setup_virtual_environments()
 
     def connect_to_mongodb_server(self):
-        from bluepepper.core import database
-
-        # make a siple query to test the connection
+        # make a simple query to test the connection
         database.assets.find_one()
 
     def toggle_console(self):
@@ -115,6 +117,23 @@ class BluePepperSplash(QSplashScreen):
     def update_packages(self):
         if self._update:
             self.installer.update_virtual_environments_packages()
+
+    def ensure_project(self):
+        """Downloads the demo project from github if the configuration files are untouched and the database is empty"""
+        if ProjectSettings.project_name != "projectName":
+            return
+        if DatabaseSettings.mode != "local":
+            return
+        if database.db.list_collection_names():
+            return
+        try:
+            project_root_template = codex.get_convention_by_name("project_root")
+            if project_root_template.get_paths():
+                return
+        except LucentConventionNotFoundError:
+            return
+
+        show_demo_project_dialog()
 
     def clean_logs(self):
         logging.info("Running logs cleanup")
@@ -178,6 +197,7 @@ class BluePepperSplash(QSplashScreen):
             tasks.append(("Fetching latest version...", self.fetch_version))
             tasks.append(("Updating virtual environments...", self.update_venvs))
             tasks.append(("Updating python packages...", self.update_packages))
+        tasks.append(("Ensuring project...", self.ensure_project))
         tasks.append(("Cleaning logs...", self.clean_logs))
         tasks.append(("Cleaning jobs...", self.clean_jobs))
         tasks.append(("Cleaning jobs...", self.clean_temp))
