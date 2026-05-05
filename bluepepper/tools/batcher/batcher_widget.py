@@ -177,6 +177,7 @@ class BatcherWidget(QWidget):
         self._button_demo_job.clicked.connect(self._button_demo_job_clicked)
         self.button_sandbox.clicked.connect(self.button_sandbox_clicked)
         self.button_expand_options.clicked.connect(self.toggle_options_expand)
+        self.cbb_sort.currentTextChanged.connect(self.on_sort_changed)
 
     def toggle_options_expand(self):
         if self.options_expanded:
@@ -184,6 +185,9 @@ class BatcherWidget(QWidget):
         else:
             self.expand_options()
         self.options_expanded = not self.options_expanded
+
+    def on_sort_changed(self) -> None:
+        print("SORTING")
 
     def expand_options(self):
         self.button_expand_options.setIcon(self.icon_toggle_expanded)
