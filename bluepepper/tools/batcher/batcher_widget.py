@@ -2,6 +2,7 @@ import qtawesome
 from qtpy.QtGui import QIcon
 from qtpy.QtWidgets import (
     QCheckBox,
+    QComboBox,
     QFrame,
     QGridLayout,
     QHBoxLayout,
@@ -105,7 +106,7 @@ class BatcherWidget(QWidget):
         # Options content
         self.options_content_frame = QFrame()
         self.options_content_frame.setProperty("depth", 1)
-        self.options_content_frame.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.options_content_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.options_content_frame.setHidden(True)  # Start collapsed
         options_layout.addWidget(self.options_content_frame)
         grid_layout = QGridLayout(self.options_content_frame)
@@ -118,19 +119,43 @@ class BatcherWidget(QWidget):
         self.spinbox_max_threads.setValue(3)
         grid_layout.addWidget(self.spinbox_max_threads, 0, 1)
 
+        # Sorting options
+        sort_label = QLabel("Sort by")
+        grid_layout.addWidget(sort_label, 1, 0)
+        self.cbb_sort = QComboBox()
+        self.cbb_sort.addItems(["date", "name", "priority"])
+        grid_layout.addWidget(self.cbb_sort, 1, 1)
+
         # Auto start
         label_auto_start = QLabel("Automatically start jobs")
-        grid_layout.addWidget(label_auto_start, 1, 0)
+        grid_layout.addWidget(label_auto_start, 0, 3)
         self.cb_auto_start = QCheckBox()
         self.cb_auto_start.setChecked(True)
-        grid_layout.addWidget(self.cb_auto_start, 1, 1)
+        grid_layout.addWidget(self.cb_auto_start, 0, 4)
 
         # Delete finished jobs
         label_delete_finished = QLabel("Delete finished jobs")
-        grid_layout.addWidget(label_delete_finished, 2, 0)
+        grid_layout.addWidget(label_delete_finished, 1, 3)
         self.cb_delete_finished = QCheckBox()
         self.cb_delete_finished.setChecked(False)
-        grid_layout.addWidget(self.cb_delete_finished, 2, 1)
+        grid_layout.addWidget(self.cb_delete_finished, 1, 4)
+
+        # Mute notifications
+        label_mute_success_notifications = QLabel("Mute Success Notifications")
+        grid_layout.addWidget(label_mute_success_notifications, 0, 6)
+        self.cb_mute_success_notifications = QCheckBox()
+        self.cb_mute_success_notifications.setChecked(False)
+        grid_layout.addWidget(self.cb_mute_success_notifications, 0, 7)
+
+        label_mute_error_notifications = QLabel("Mute Error Notifications")
+        grid_layout.addWidget(label_mute_error_notifications, 1, 6)
+        self.cb_mute_error_notifications = QCheckBox()
+        self.cb_mute_error_notifications.setChecked(False)
+        grid_layout.addWidget(self.cb_mute_error_notifications, 1, 7)
+
+        # Set column stretches to provide spacing and allow expansion
+        grid_layout.setColumnStretch(2, 1)
+        grid_layout.setColumnStretch(5, 1)
 
         # Job List
         job_list_frame = QFrame()

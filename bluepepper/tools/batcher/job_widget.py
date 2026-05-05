@@ -357,6 +357,8 @@ class JobWidget(QFrame):
             self.delete_job()
 
     def show_success_toast(self):
+        if self.batchet_widget.cb_mute_success_notifications.isChecked():
+            return
         toaster = WindowsToaster("BluePepper")
         message = self.job_data.notify_message or f"{self.job_data.name}\nJob completed successfully"
         toast = Toast([message])
@@ -384,6 +386,8 @@ class JobWidget(QFrame):
         self.show_error_toast()
 
     def show_error_toast(self):
+        if self.batchet_widget.cb_mute_error_notifications.isChecked():
+            return
         toaster = WindowsToaster("BluePepper")
         toast = Toast([f"{self.job_data.name} - Job encountered an error"])
         toaster.show_toast(toast)
