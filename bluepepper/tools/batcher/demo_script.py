@@ -30,6 +30,6 @@ def main(some_arg=None):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-id", "--document_id", default=None)
+    parser.add_argument("-sa", "--some_arg", default=None)
     args = parser.parse_args()
-    main(some_arg=args.document_id)
+    main(some_arg=args.some_arg)
