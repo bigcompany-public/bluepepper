@@ -122,11 +122,17 @@ class BatcherWidget(QWidget):
         grid_layout.addWidget(self.spinbox_max_threads, 0, 1)
 
         # Sorting options
-        sort_label = QLabel("Sort by")
+        sort_label = QLabel("Sort By")
         grid_layout.addWidget(sort_label, 1, 0)
         self.cbb_sort = QComboBox()
-        self.cbb_sort.addItems(["date", "name", "priority"])
+        self.cbb_sort.addItems(["date", "name", "priority", "status"])
         grid_layout.addWidget(self.cbb_sort, 1, 1)
+
+        sort_label = QLabel("Sort Order")
+        grid_layout.addWidget(sort_label, 2, 0)
+        self.cbb_sort_order = QComboBox()
+        self.cbb_sort_order.addItems(["ascending", "descending"])
+        grid_layout.addWidget(self.cbb_sort_order, 2, 1)
 
         # Auto start
         label_auto_start = QLabel("Automatically start jobs")
@@ -179,7 +185,8 @@ class BatcherWidget(QWidget):
         self._button_demo_job.clicked.connect(self._button_demo_job_clicked)
         self.button_sandbox.clicked.connect(self.button_sandbox_clicked)
         self.button_expand_options.clicked.connect(self.toggle_options_expand)
-        self.cbb_sort.currentTextChanged.connect(self.on_sort_changed)
+        self.cbb_sort.currentTextChanged.connect(self.sort_jobs)
+        self.cbb_sort_order.currentTextChanged.connect(self.sort_jobs)
 
     def toggle_options_expand(self):
         if self.options_expanded:
@@ -188,9 +195,18 @@ class BatcherWidget(QWidget):
             self.expand_options()
         self.options_expanded = not self.options_expanded
 
-    def on_sort_changed(self) -> None:
-        print("SORTING")
-        self.job_table_widget.sortByColumn(0, Qt.DescendingOrder)
+    def sort_jobs(self) -> None:
+        sort_method = self.cbb_sort.currentText()
+        order = self.cbb_sort_order.currentText()
+        order = Qt.SortOrder.AscendingOrder if order == "ascending" else Qt.SortOrder.DescendingOrder
+        if sort_method == "name":
+            self.job_table_widget.sortByColumn(self.job_table_widget._name_column_index, order)
+        elif sort_method == "date":
+            self.job_table_widget.sortByColumn(self.job_table_widget._date_column_index, order)
+        elif sort_method == "priority":
+            self.job_table_widget.sortByColumn(self.job_table_widget._priority_column_index, order)
+        elif sort_method == "status":
+            self.job_table_widget.sortByColumn(self.job_table_widget._status_column_index, order)
 
     def expand_options(self):
         self.button_expand_options.setIcon(self.icon_toggle_expanded)
@@ -219,35 +235,35 @@ class BatcherWidget(QWidget):
         self.demo_widget_count += 1
 
     def _add_job(self, job_data: JobData):
-        # Create job widget
-        item = JobTableItem()
-        job_widget = JobWidget(job_data=job_data, batcher_widget=self, table_item=item)
         row_number = self.job_table_widget.rowCount()
         self.job_table_widget.insertRow(row_number)
-        self.job_table_widget.setItem(row_number, self.job_table_widget._job_widget_column_index, item)
-        self.job_table_widget.setCellWidget(row_number, 3, job_widget)
 
         # name item
         item = QTableWidgetItem()
         item.setText(job_data.name)
-        self.job_table_widget.setItem(row_number, 0, item)
+        self.job_table_widget.setItem(row_number, self.job_table_widget._name_column_index, item)
 
         # priority item
         item = QTableWidgetItem()
         item.setText(str(job_data.priority).zfill(3))
-        self.job_table_widget.setItem(row_number, 1, item)
+        self.job_table_widget.setItem(row_number, self.job_table_widget._priority_column_index, item)
 
-        # created at item
+        # date item
         item = QTableWidgetItem()
         item.setText(str(job_data.created_at))
-        self.job_table_widget.setItem(row_number, 2, item)
+        self.job_table_widget.setItem(row_number, self.job_table_widget._date_column_index, item)
 
-    def add_script_job(
-        self,
-        name: str,
-        description,
-    ):
-        job_data = JobData(name=name, description=description)
+        # status item
+        item = QTableWidgetItem()
+        item.setText(str(job_data.status.value))
+        self.job_table_widget.setItem(row_number, self.job_table_widget._status_column_index, item)
+
+        # Create job widget
+        item = JobTableItem()
+        job_widget = JobWidget(job_data=job_data, batcher_widget=self, table_item=item)
+        self.job_table_widget.setItem(row_number, self.job_table_widget._job_column_index, item)
+        self.job_table_widget.setCellWidget(row_number, self.job_table_widget._job_column_index, job_widget)
+        job_widget.set_status(JobStatus.WAITING)
 
     @property
     def job_widgets(self) -> list[JobWidget]:

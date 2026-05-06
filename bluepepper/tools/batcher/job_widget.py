@@ -16,6 +16,7 @@ from qtpy.QtWidgets import (
     QPushButton,
     QSpacerItem,
     QSpinBox,
+    QTableWidgetItem,
     QVBoxLayout,
 )
 from windows_toasts import Toast, WindowsToaster
@@ -223,24 +224,23 @@ class JobWidget(QFrame):
         self.stdout_view.setPlainText("this is\na multiple line\ntext\n" * 30)
 
     def setup_signals(self):
-        self.button_expand.clicked.connect(self.toggle_expand)
+        self.button_expand.clicked.connect(self.button_expand_clicked)
         self.spinbox_priority.valueChanged.connect(self.on_priority_changed)
         self.button_start.clicked.connect(self.on_button_start_clicked)
         self.button_stop.clicked.connect(self.on_button_stop_clicked)
         self.button_restart.clicked.connect(self.on_button_restart_clicked)
         self.button_delete.clicked.connect(self.on_button_delete_clicked)
 
-    def get_current_row(self) -> int:
+    @property
+    def current_row(self) -> int:
         return self.table_item.row()
 
-    def toggle_expand(self):
+    def button_expand_clicked(self):
+        self.update_selection()
+        self.toggle_expand_on_selected()
+
+    def toggle_expand_on_selected(self):
         to_do = "collapse" if self.expanded else "expand"
-        current_row = self.get_current_row()
-
-        if current_row not in self.job_table_widget.selected_rows:
-            self.job_table_widget.clearSelection()
-            self.job_table_widget.selectRow(current_row)
-
         for row in self.job_table_widget.selected_rows:
             job_widget = self.job_table_widget.get_job_widget_at_row(row)
             if to_do == "collapse":
@@ -249,8 +249,12 @@ class JobWidget(QFrame):
                 job_widget.expand()
             job_widget.expanded = not job_widget.expanded
 
+    def update_selection(self):
+        if self.current_row not in self.job_table_widget.selected_rows:
+            self.job_table_widget.clearSelection()
+            self.job_table_widget.selectRow(self.current_row)
+
     def expand(self):
-        print("EXPANDING")
         self.button_expand.setIcon(self.icon_toggle_expanded)
         self.expand_panel.setVisible(True)
         # self.table_item.setSizeHint(self.sizeHint())
@@ -261,70 +265,66 @@ class JobWidget(QFrame):
         # self.table_item.setSizeHint(self.collapsed_size_hint)
 
     def on_priority_changed(self, value: int):
-        selection = self.job_table_widget.selectedItems()
-        if self.table_item not in selection:
-            self.job_table_widget.clearSelection()
-            self.table_item.setSelected(True)
+        self.update_selection()
+        self.update_priority_on_selected(value)
 
-        for item in self.batchet_widget.job_table_widget.selectedItems():
-            item.job_widget.spinbox_priority.blockSignals(True)
-            item.job_widget.spinbox_priority.setValue(value)
-            item.job_widget.job_data.priority = value
-            item.job_widget.spinbox_priority.blockSignals(False)
+    @property
+    def priority_item(self) -> QTableWidgetItem:
+        return self.job_table_widget.item(self.current_row, self.job_table_widget._priority_column_index)  # type: ignore
+
+    @property
+    def status_item(self) -> QTableWidgetItem:
+        return self.job_table_widget.item(self.current_row, self.job_table_widget._status_column_index)  # type: ignore
+
+    def update_priority_on_selected(self, value: int):
+        for job_widget in self.job_table_widget.selected_job_widgets:
+            job_widget.spinbox_priority.blockSignals(True)
+            job_widget.spinbox_priority.setValue(value)
+            job_widget.job_data.priority = value
+            job_widget.spinbox_priority.blockSignals(False)
+            job_widget.priority_item.setText(str(value).zfill(3))
 
     def on_button_start_clicked(self):
-        selection = self.job_table_widget.selectedItems()
-        if self.table_item not in selection:
-            self.job_table_widget.clearSelection()
-            self.table_item.setSelected(True)
+        self.update_selection()
+        self.set_selected_job_status_to_waiting()
 
-        for item in self.batchet_widget.job_table_widget.selectedItems():
-            item.job_widget.progress_bar.update_progress(0)
-            item.job_widget.set_status(JobStatus.WAITING)
+    def set_selected_job_status_to_waiting(self):
+        for job_widget in self.job_table_widget.selected_job_widgets:
+            if job_widget.job_data.status == JobStatus.RUNNING:
+                continue
+            job_widget.progress_bar.update_progress(0)
+            job_widget.set_status(JobStatus.WAITING)
 
     def on_button_restart_clicked(self):
-        selection = self.job_table_widget.selectedItems()
-        if self.table_item not in selection:
-            self.job_table_widget.clearSelection()
-            self.table_item.setSelected(True)
+        self.update_selection()
+        self.restart_selected_jobs()
 
-        for item in self.batchet_widget.job_table_widget.selectedItems():
-            item.job_widget.terminate_job()
-            item.job_widget.progress_bar.update_progress(0)
-            item.job_widget.set_status(JobStatus.WAITING)
+    def restart_selected_jobs(self):
+        for job_widget in self.job_table_widget.selected_job_widgets:
+            job_widget.terminate_job()
+            self.set_selected_job_status_to_waiting()
 
     def on_button_delete_clicked(self):
-        selection = self.job_table_widget.selectedItems()
-        if self.table_item not in selection:
-            self.job_table_widget.clearSelection()
-            self.table_item.setSelected(True)
-
-        for item in self.batchet_widget.job_table_widget.selectedItems():
-            item.job_widget.delete_job()
-
-    def delete_job(self):
-        self.terminate_job()
-        row = self.batchet_widget.job_table_widget.row(self.table_item)
-        self.batchet_widget.job_table_widget.takeItem(row)
+        self.update_selection()
+        self.job_table_widget.delete_selected_jobs()
 
     def on_button_stop_clicked(self):
-        selection = self.job_table_widget.selectedItems()
-        if self.table_item not in selection:
-            self.job_table_widget.clearSelection()
-            self.table_item.setSelected(True)
+        self.update_selection()
+        self.stop_selected_jobs()
 
-        for item in self.batchet_widget.job_table_widget.selectedItems():
-            if item.job_widget.job_data.status == JobStatus.RUNNING:
-                item.job_widget.terminate_job_from_user()
-            if item.job_widget.job_data.status == JobStatus.WAITING:
-                item.job_widget.suspend_job()
+    def stop_selected_jobs(self):
+        for job_widget in self.job_table_widget.selected_job_widgets:
+            if job_widget.job_data.status == JobStatus.RUNNING:
+                job_widget.terminate_job_from_user()
+            if job_widget.job_data.status == JobStatus.WAITING:
+                job_widget.suspend_job()
 
     def start(self):
         # Do nothing if the job is already running
         if self.job_data.status == JobStatus.RUNNING:
             return
 
-        self.job_data.status = JobStatus.RUNNING
+        self.set_status(JobStatus.RUNNING)
         self._start_time = datetime.now()
         self.reset_stdout()
 
@@ -362,7 +362,12 @@ class JobWidget(QFrame):
         if self.batchet_widget.cb_delete_finished.isChecked():
             self.delete_job()
 
+    def delete_job(self):
+        self.job_table_widget.removeRow(self.current_row)
+
     def show_success_toast(self):
+        if not self.job_data.notify_when_done:
+            return
         if self.batchet_widget.cb_mute_success_notifications.isChecked():
             return
         toaster = WindowsToaster("BluePepper")
@@ -403,3 +408,5 @@ class JobWidget(QFrame):
             self._runtime_timer.stop()
         self.job_data.status = status
         self.progress_bar.redraw()
+        index = str(10 - list(JobStatus).index(status)).zfill(2)
+        self.status_item.setText(f"{index} - {status.value}")

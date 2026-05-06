@@ -283,7 +283,7 @@ def get_tool_config() -> AppConfig:
         job_description="testing script on <document_name>",
         batcher_script=Path(r"D:\gitWorkspace\BP_PROJECT_DEV\bluepepper\bluepepper\tools\batcher\demo_script.py"),
         batcher_script_args=["-sa", ["hello", "world"]],
-        batcher_notification=True,
+        batcher_notification=False,
         batcher_notification_message="<document_name> - Script executed successfully",
     )
     modeling_workfile_kind.add_kind_action(action)

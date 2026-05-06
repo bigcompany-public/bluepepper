@@ -26,7 +26,12 @@ class JobTableItem(QTableWidgetItem):
 class JobTableWidget(QTableWidget):
     def __init__(self, batcher: BatcherWidget) -> None:
         super().__init__(batcher)
-        self._job_widget_column_index = 3
+        self._columns = ["name", "priority", "date", "status", "job"]
+        self._name_column_index = self._columns.index("name")
+        self._priority_column_index = self._columns.index("priority")
+        self._date_column_index = self._columns.index("date")
+        self._status_column_index = self._columns.index("status")
+        self._job_column_index = self._columns.index("job")
         self.setSortingEnabled(True)
         self.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -35,18 +40,20 @@ class JobTableWidget(QTableWidget):
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.setMinimumWidth(700)
         self.installEventFilter(self)
-        self.setColumnCount(4)
-        self.setHorizontalHeaderLabels(["name", "priority", "date", "job"])
+        self.setColumnCount(len(self._columns))
+        self.setHorizontalHeaderLabels(self._columns)
         self.verticalHeader().setVisible(False)
+        self.horizontalHeader().setVisible(False)
         self.horizontalHeader().setStretchLastSection(True)
-        self.setColumnHidden(0, True)
+        for i in range(len(self._columns) - 1):
+            self.setColumnHidden(i, True)
 
     def get_job_widget_at_row(self, row: int) -> JobWidget:
-        return self.cellWidget(row, column=self._job_widget_column_index)
+        return self.cellWidget(row, column=self._job_column_index)
 
     @property
     def job_widgets(self) -> list[JobWidget]:
-        return [self.cellWidget(row, self._job_widget_column_index) for row in range(self.rowCount())]
+        return [self.cellWidget(row, self._job_column_index) for row in range(self.rowCount())]
 
     def cellWidget(self, row: int, column: int) -> JobWidget:
         """Fixes type annotation"""
@@ -75,16 +82,24 @@ class JobTableWidget(QTableWidget):
 
     @property
     def selected_rows(self) -> list[int]:
-        return [item.row() for item in self.selectedIndexes() if item.column() == self._job_widget_column_index]
+        return [item.row() for item in self.selectedIndexes() if item.column() == self._job_column_index]
 
-    def eventFilter(self, obj: JobTableWidget, event):
+    @property
+    def selected_job_widgets(self) -> list[JobWidget]:
+        return [self.get_job_widget_at_row(row) for row in self.selected_rows]
+
+    def eventFilter(self, table_widget: JobTableWidget, event):
         if event.type() == QEvent.Type.KeyPress:
             if event.key() == Qt.Key.Key_Delete:
-                for item in obj.selectedItems():
-                    item.job_widget.terminate_job()
-                    obj.takeItem(obj.row(item))
+                self.delete_selected_jobs()
                 return True  # event consumed
-        return super().eventFilter(obj, event)
+        return super().eventFilter(table_widget, event)
 
-    # def installEventFilter(self, filterObj: QObject) -> None:
-    #     return super().installEventFilter(filterObj)
+    def delete_selected_jobs(self):
+        rows_to_remove = []
+        for row in self.selected_rows:
+            job_widget = self.get_job_widget_at_row(row)
+            job_widget.terminate_job()
+            rows_to_remove.append(row)
+        for row in reversed(rows_to_remove):
+            self.removeRow(row)
