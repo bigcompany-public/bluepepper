@@ -3,34 +3,38 @@ from __future__ import annotations
 import importlib
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional
 
 import qtawesome
+from lucent import Convention
 from qtpy.QtGui import QIcon
 from qtpy.QtWidgets import QMenu
 
 from bluepepper.gui.utils import get_icon
-from bluepepper.tools.browser.browser_config import MenuAction
+from bluepepper.tools.browser.browser_config import FileKind, MenuAction
 
 if TYPE_CHECKING:
     from bluepepper.tools.browser.browser_tab import EntityTab
+    from bluepepper.tools.browser.browser_widget import BrowserWidget
 
 
 class BrowserMenu(QMenu):
     """Shared menu behavior for browser context menus."""
 
-    SPECIAL_KEYWORDS_HANDLERS = {
-        "<browser>": "_resolve_browser",
-        "<convention>": "_resolve_convention",
-        "<documents>": "_resolve_documents",
-        "<document_names>": "_resolve_document_names",
-        "<document_ids>": "_resolve_document_ids",
-        "<document>": "_resolve_document",
-        "<document_name>": "_resolve_document_name",
-        "<document_id>": "_resolve_document_id",
-        "<paths>": "_resolve_paths",
-        "<path>": "_resolve_path",
-    }
+    @property
+    def special_keywords_handlers(self) -> dict[str, Callable]:
+        return {
+            "<browser>": self._resolve_browser,
+            "<convention>": self._resolve_convention,
+            "<documents>": self._resolve_documents,
+            "<document_names>": self._resolve_document_names,
+            "<document_ids>": self._resolve_document_ids,
+            "<document>": self._resolve_document,
+            "<document_name>": self._resolve_document_name,
+            "<document_id>": self._resolve_document_id,
+            "<paths>": self._resolve_paths,
+            "<path>": self._resolve_path,
+        }
 
     def __init__(
         self,
@@ -38,7 +42,7 @@ class BrowserMenu(QMenu):
         event,
         actions: list[MenuAction],
         targets: list[Any],
-        kind=None,
+        kind: FileKind | None = None,
     ):
         super().__init__(tab)
         self.tab = tab
@@ -70,7 +74,7 @@ class BrowserMenu(QMenu):
             action.setIcon(icon)
 
         module = importlib.import_module(menu_action.module)
-        func = getattr(module, menu_action.callable)
+        func = getattr(module, menu_action.function)
 
         def execute_action(checked: bool = False, func=func, menu_action=menu_action):
             self.execute_menu_action(func, menu_action)
@@ -101,14 +105,13 @@ class BrowserMenu(QMenu):
 
         targets = []
         for target in self.targets:
-            document = self._extract_document(target)
-            path = self._extract_path(target)
+            document = target if isinstance(target, dict) else None
+            path = target if isinstance(target, Path) else None
             if menu_action.doc_filter and not menu_action.doc_filter(document):
                 continue
             if menu_action.path_filter and not menu_action.path_filter(path):
                 continue
             targets.append(target)
-
         return targets
 
     def resolve_kwargs(
@@ -129,81 +132,46 @@ class BrowserMenu(QMenu):
             return [self.resolve_value(sub_value, item=item, items=items) for sub_value in value]
         if isinstance(value, tuple):
             return tuple(self.resolve_value(sub_value, item=item, items=items) for sub_value in value)
-        if isinstance(value, str) and value in self.SPECIAL_KEYWORDS_HANDLERS:
-            handler_name = self.SPECIAL_KEYWORDS_HANDLERS[value]
-            handler = getattr(self, handler_name)
+        if isinstance(value, str) and value in self.special_keywords_handlers:
+            handler = self.special_keywords_handlers[value]
             return handler(item=item, items=items)
 
         # Solve strings that contain a keyword
         if isinstance(value, str):
-            for key in self.SPECIAL_KEYWORDS_HANDLERS.keys():
+            for key in self.special_keywords_handlers.keys():
                 if key in value:
-                    handler_name = self.SPECIAL_KEYWORDS_HANDLERS[key]
-                    handler = getattr(self, handler_name)
+                    handler = self.special_keywords_handlers[key]
                     result = handler(item=item, items=items)
                     return value.replace(key, str(result))
 
         return value
 
-    def _resolve_browser(self, item: Any = None, items: Optional[List[Any]] = None) -> Any:
+    def _resolve_browser(self, item=None, items=None) -> BrowserWidget:
         return self.tab.browser
 
-    def _resolve_convention(self, item: Any = None, items: Optional[List[Any]] = None) -> Any:
+    def _resolve_convention(self, item=None, items=None) -> Convention | None:
         return self.kind.convention if self.kind else None
 
-    def _resolve_documents(self, item: Any = None, items: Optional[List[Any]] = None) -> list[dict]:
-        if items is None:
-            return []
+    def _resolve_documents(self, items: list[dict], item=None) -> list[dict]:
+        return items
 
-        documents: list[dict] = []
-        for target in items:
-            document = self._extract_document(target)
-            if document is not None:
-                documents.append(document)
-        return documents
+    def _resolve_document_names(self, items: list[dict], item=None) -> list[str]:
+        return [doc[self.entity.name] for doc in items]
 
-    def _resolve_document_names(self, item: Any = None, items: Optional[List[Any]] = None) -> list[str]:
-        return [doc[self.entity.name] for doc in self._resolve_documents(item=item, items=items)]
+    def _resolve_document_ids(self, items: list[dict], item=None) -> list[str]:
+        return [doc["_id"] for doc in items]
 
-    def _resolve_document_ids(self, item: Any = None, items: Optional[List[Any]] = None) -> list[str]:
-        return [doc["_id"] for doc in self._resolve_documents(item=item, items=items)]
+    def _resolve_document(self, item: dict, items=None) -> dict:
+        return item
 
-    def _resolve_document(self, item: Any = None, items: Optional[List[Any]] = None) -> Optional[dict]:
-        if item is not None:
-            return self._extract_document(item)
-        if items:
-            return self._extract_document(items[0])
-        return None
+    def _resolve_document_name(self, item: dict, items=None) -> str:
+        return item[self.entity.name]
 
-    def _resolve_document_name(self, item: Any = None, items: Optional[List[Any]] = None) -> Optional[str]:
-        document = self._resolve_document(item=item, items=items)
-        return document[self.entity.name] if document else None
+    def _resolve_document_id(self, item: dict, items=None) -> str:
+        return item["_id"]
 
-    def _resolve_document_id(self, item: Any = None, items: Optional[List[Any]] = None) -> Optional[str]:
-        document = self._resolve_document(item=item, items=items)
-        return document["_id"] if document else None
+    def _resolve_paths(self, items: list[Path], item=None) -> list[Path]:
+        return items
 
-    def _resolve_paths(self, item: Any = None, items: Optional[List[Any]] = None) -> list[str]:
-        if items is None:
-            return []
-        paths = [self._extract_path(target) for target in items if self._extract_path(target) is not None]
-        return [p.as_posix() for p in paths]
-
-    def _resolve_path(self, item: Any = None, items: Optional[List[Any]] = None) -> Optional[str]:
-        if item is not None:
-            p = self._extract_path(item)
-        elif items:
-            p = self._extract_path(items[0])
-        else:
-            return None
-        return p.as_posix() if p else None
-
-    def _extract_document(self, target: Any) -> Optional[dict]:
-        if isinstance(target, dict):
-            return target
-        return getattr(target, "document", None)
-
-    def _extract_path(self, target: Any) -> Optional[Path]:
-        if isinstance(target, str):
-            return Path(target)
-        return None
+    def _resolve_path(self, item: Path, items=None) -> Path:
+        return item

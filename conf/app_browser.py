@@ -94,7 +94,7 @@ def get_tool_config() -> AppConfig:
         label="Help Me",
         qta_icon="fa5s.hand-sparkles",
         module="bluepepper.tools.browser.browser_actions",
-        callable="asset_document_help_me",
+        function="asset_document_help_me",
         kwargs={"document": "<document>"},
         doc_filter=is_asset,
     )
@@ -102,7 +102,7 @@ def get_tool_config() -> AppConfig:
         label="Add Tag",
         qta_icon="mdi.tag-plus",
         module="bluepepper.tools.browser.browser_actions",
-        callable="asset_add_tag",
+        function="asset_add_tag",
         kwargs={"documents": "<documents>"},
         doc_filter=is_asset,
         mode="all",
@@ -111,7 +111,7 @@ def get_tool_config() -> AppConfig:
         label="Remove Tag",
         qta_icon="mdi.tag-minus",
         module="bluepepper.tools.browser.browser_actions",
-        callable="asset_remove_tag",
+        function="asset_remove_tag",
         kwargs={"documents": "<documents>"},
         doc_filter=is_asset,
         mode="all",
@@ -120,7 +120,7 @@ def get_tool_config() -> AppConfig:
         label="Add Tag",
         qta_icon="mdi.tag-plus",
         module="bluepepper.tools.browser.browser_actions",
-        callable="shot_add_tag",
+        function="shot_add_tag",
         kwargs={"documents": "<documents>"},
         doc_filter=is_shot,
         mode="all",
@@ -129,7 +129,7 @@ def get_tool_config() -> AppConfig:
         label="Remove Tag",
         qta_icon="mdi.tag-minus",
         module="bluepepper.tools.browser.browser_actions",
-        callable="shot_remove_tag",
+        function="shot_remove_tag",
         kwargs={"documents": "<documents>"},
         doc_filter=is_shot,
         mode="all",
@@ -138,7 +138,7 @@ def get_tool_config() -> AppConfig:
         label="Help Me",
         qta_icon="fa5s.hand-sparkles",
         module="bluepepper.tools.browser.browser_actions",
-        callable="shot_document_help_me",
+        function="shot_document_help_me",
         kwargs={"document": "<document>"},
         doc_filter=is_shot,
     )
@@ -146,7 +146,7 @@ def get_tool_config() -> AppConfig:
         label="Copy Name",
         qta_icon="fa5.clipboard",
         module="bluepepper.tools.browser.browser_actions",
-        callable="send_strings_to_clipboard",
+        function="send_strings_to_clipboard",
         kwargs={"strings": "<document_names>"},
         mode="all",
     )
@@ -154,7 +154,7 @@ def get_tool_config() -> AppConfig:
         label="Copy Identifier",
         qta_icon="fa5.clipboard",
         module="bluepepper.tools.browser.browser_actions",
-        callable="asset_send_identifiers_to_clipboard",
+        function="asset_send_identifiers_to_clipboard",
         kwargs={"documents": "<documents>"},
         doc_filter=is_asset,
         mode="all",
@@ -163,7 +163,7 @@ def get_tool_config() -> AppConfig:
         label="Copy ID",
         qta_icon="fa5.clipboard",
         module="bluepepper.tools.browser.browser_actions",
-        callable="send_strings_to_clipboard",
+        function="send_strings_to_clipboard",
         kwargs={"strings": "<document_ids>"},
         mode="all",
     )
@@ -171,7 +171,7 @@ def get_tool_config() -> AppConfig:
         label="Copy Document",
         qta_icon="fa5.clipboard",
         module="bluepepper.tools.browser.browser_actions",
-        callable="send_json_to_clipboard",
+        function="send_json_to_clipboard",
         kwargs={"serializable": "<documents>"},
         mode="all",
     )
@@ -179,7 +179,7 @@ def get_tool_config() -> AppConfig:
         label="Execute Python Script",
         qta_icon="mdi6.language-python",
         module="bluepepper.tools.batcher.python_script_drop_dialog",
-        callable="add_jobs",
+        function="add_jobs",
         kwargs={"browser": "<browser>", "targets": "<documents>"},
         mode="all",
     )
@@ -187,7 +187,7 @@ def get_tool_config() -> AppConfig:
         label="Show in Aquarium",
         icon="aquarium.png",
         module="bluepepper.tools.browser.browser_actions",
-        callable="asset_show_in_aquarium",
+        function="asset_show_in_aquarium",
         kwargs={"document": "<document>"},
         doc_filter=is_asset,
     )
@@ -195,7 +195,7 @@ def get_tool_config() -> AppConfig:
         label="Show in Aquarium",
         icon="aquarium.png",
         module="bluepepper.tools.browser.browser_actions",
-        callable="shot_show_in_aquarium",
+        function="shot_show_in_aquarium",
         kwargs={"document": "<document>"},
         doc_filter=is_shot,
     )
@@ -203,7 +203,7 @@ def get_tool_config() -> AppConfig:
         label="Fetch Breakdownlist (from aquarium)",
         qta_icon="mdi.database-import-outline",
         module="bluepepper.tools.browser.browser_actions",
-        callable="shot_fetch_breakdownlist",
+        function="shot_fetch_breakdownlist",
         kwargs={"document_id": "<document_id>"},
         doc_filter=is_shot,
     )
@@ -211,7 +211,7 @@ def get_tool_config() -> AppConfig:
         label="Show in explorer",
         qta_icon="fa6s.folder-open",
         module="bluepepper.tools.browser.browser_actions",
-        callable="kind_show_in_explorer",
+        function="kind_show_in_explorer",
         kwargs={"documents": "<documents>", "convention": "<convention>"},
         mode="all",
     )
@@ -219,7 +219,7 @@ def get_tool_config() -> AppConfig:
         label="Copy Path",
         qta_icon="fa5.clipboard",
         module="bluepepper.tools.browser.browser_actions",
-        callable="kind_copy_path",
+        function="kind_copy_path",
         kwargs={"documents": "<documents>", "convention": "<convention>"},
         mode="all",
     )
@@ -227,7 +227,7 @@ def get_tool_config() -> AppConfig:
         label="Copy File Name",
         qta_icon="fa5.clipboard",
         module="bluepepper.tools.browser.browser_actions",
-        callable="kind_copy_filename",
+        function="kind_copy_filename",
         kwargs={"documents": "<documents>", "convention": "<convention>"},
         mode="all",
     )
@@ -235,7 +235,7 @@ def get_tool_config() -> AppConfig:
         label="Copy Path",
         qta_icon="fa5.clipboard",
         module="bluepepper.tools.browser.browser_actions",
-        callable="file_copy_paths",
+        function="file_copy_paths",
         kwargs={"paths": "<paths>"},
         mode="all",
     )
@@ -243,7 +243,7 @@ def get_tool_config() -> AppConfig:
         label="Copy File Name",
         qta_icon="fa5.clipboard",
         module="bluepepper.tools.browser.browser_actions",
-        callable="file_copy_filename",
+        function="file_copy_filename",
         kwargs={"paths": "<paths>"},
         mode="all",
     )
@@ -251,7 +251,7 @@ def get_tool_config() -> AppConfig:
         label="Copy File",
         qta_icon="fa5.clipboard",
         module="bluepepper.tools.browser.browser_actions",
-        callable="file_copy_file",
+        function="file_copy_file",
         kwargs={"paths": "<paths>"},
         mode="all",
     )
@@ -259,21 +259,21 @@ def get_tool_config() -> AppConfig:
         label="Show in explorer",
         qta_icon="fa6s.folder-open",
         module="bluepepper.tools.browser.browser_actions",
-        callable="file_show_in_explorer",
+        function="file_show_in_explorer",
         kwargs={"path": "<path>"},
     )
     file_increment_version = MenuAction(
         label="Increment",
         qta_icon="msc.versions",
         module="bluepepper.tools.browser.browser_actions",
-        callable="file_increment_version",
+        function="file_increment_version",
         kwargs={"path": "<path>", "convention": "<convention>", "description": "Incremented"},
     )
     file_open_in_vscode = MenuAction(
         label="Open in VSCode",
         qta_icon="msc.vscode",
         module="bluepepper.tools.browser.browser_actions",
-        callable="file_open_in_vscode",
+        function="file_open_in_vscode",
         kwargs={"path": "<path>"},
         path_filter=is_text,
     )
@@ -281,31 +281,38 @@ def get_tool_config() -> AppConfig:
         label="Help Me",
         qta_icon="fa5s.hand-sparkles",
         module="bluepepper.tools.browser.browser_actions",
-        callable="file_help_me",
+        function="file_help_me",
         kwargs={"path": "<path>"},
     )
     file_python_script_action = MenuAction(
         label="Execute Python Script",
         qta_icon="mdi6.language-python",
         module="bluepepper.tools.batcher.python_script_drop_dialog",
-        callable="add_jobs",
+        function="add_jobs",
         kwargs={"browser": "<browser>", "targets": "<paths>"},
         mode="all",
     )
 
-    action = BatcherMenuAction(
-        label="Test Script",
-        job_name="Custom Script - <document_name>",
-        job_description="testing script on <document_name>",
-        batcher_script=Path(r"D:\gitWorkspace\BP_PROJECT_DEV\bluepepper\bluepepper\tools\batcher\demo_script.py"),
-        batcher_script_args=["-sa", ["hello", "world"]],
-        batcher_notification=True,
-        batcher_notification_message="<document_name> - Script executed successfully",
+    test_action = MenuAction(
+        label="Test",
+        module="sandbox",
+        function="main",
+        kwargs={
+            "browser": "<browser>",
+            "document": "<document>",
+            "document_name": "<document_name>",
+            "document_id": "<document_id>",
+            "path": "<path>",
+            "convention": "<convention>",
+            "documents": "<documents>",
+            "document_names": "<document_names>",
+            "document_ids": "<document_ids>",
+            "paths": "<paths>",
+        },
     )
-    modeling_workfile_kind.add_kind_action(action)
 
     for entity in config.entities.values():
-        entity.add_document_action(action)
+        entity.add_document_action(test_action)
         entity.add_document_action(copy_name_action)
         entity.add_document_action(asset_copy_identifier_action)
         entity.add_document_action(copy_id_action)

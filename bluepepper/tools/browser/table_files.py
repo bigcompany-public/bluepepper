@@ -405,5 +405,5 @@ class TableFilesMenu(BrowserMenu):
         event: QEvent,
     ):
         actions = kind.file_actions if kind else []
-        targets = [str(item.path.as_posix()) for item in tab.file_table.selected_items]
+        targets = [item.path for item in tab.file_table.selected_items]
         super().__init__(tab, event, actions=actions, targets=targets, kind=kind)

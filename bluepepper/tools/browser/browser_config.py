@@ -21,14 +21,14 @@ class MenuAction:
 
     Attributes:
         label: Display label for the menu action
-        module: Python module path containing the callable
-        callable: Function name to execute
-        kwargs: Additional keyword arguments to pass to the callable
+        module: Python module path containing the function
+        function: Function name to execute
+        kwargs: Additional keyword arguments to pass to the function
     """
 
     label: str
     module: str
-    callable: str
+    function: str
     icon: str = field(default="")
     qta_icon: str = field(default="")
     qta_icon_color: str = field(default=get_theme()["icon_color"])
@@ -49,7 +49,7 @@ class BatcherMenuAction(MenuAction):
 
     # Disable attributes that should be locked in this subclass
     module: str = field(default="bluepepper.tools.batcher.browser_connector", init=False)
-    callable: str = field(default="add_job", init=False)
+    function: str = field(default="add_job", init=False)
     kwargs: dict = field(default_factory=dict, init=False)
     mode: str = field(default="each")
     qta_icon: str = field(default="mdi6.factory")
@@ -207,12 +207,12 @@ class AppConfig:
                     for action in kind.kind_actions:
                         kwargs = ", ".join(f"{k}={v}" for k, v in action.kwargs.values())
                         lines.append(
-                            f"        [FileKind Action] {action.label} -> {action.module}.{action.callable}({kwargs})"
+                            f"        [FileKind Action] {action.label} -> {action.module}.{action.function}({kwargs})"
                         )
                     for action in kind.file_actions:
                         kwargs = ", ".join(f"{k}={v}" for k, v in action.kwargs.values())
                         lines.append(
-                            f"        [File Action] {action.label} -> {action.module}.{action.callable}({kwargs})"
+                            f"        [File Action] {action.label} -> {action.module}.{action.function}({kwargs})"
                         )
 
         return "\n".join(lines)
