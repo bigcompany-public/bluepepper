@@ -21,12 +21,12 @@ from watchdog.events import FileSystemEvent, FileSystemEventHandler
 from watchdog.observers import Observer
 
 from bluepepper.core import database
-from bluepepper.tools.browser.browser_config import FileKind, MenuAction
+from bluepepper.tools.browser.browser_config import FileKind
 from bluepepper.tools.browser.browser_menu import BrowserMenu
 
 # Imports used only for type checking : these will not be imported at runtime
 if TYPE_CHECKING:
-    from bluepepper.tools.browser.browser_config import Entity, MenuAction
+    from bluepepper.tools.browser.browser_config import Entity
     from bluepepper.tools.browser.browser_tab import EntityTab
     from bluepepper.tools.browser.browser_widget import BrowserWidget
 
@@ -405,5 +405,5 @@ class TableFilesMenu(BrowserMenu):
         event: QEvent,
     ):
         actions = kind.file_actions if kind else []
-        targets = tab.file_table.selected_items
+        targets = [str(item.path.as_posix()) for item in tab.file_table.selected_items]
         super().__init__(tab, event, actions=actions, targets=targets, kind=kind)

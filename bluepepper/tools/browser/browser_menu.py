@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib
 from functools import partial
+from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 import qtawesome
@@ -182,25 +183,27 @@ class BrowserMenu(QMenu):
         document = self._resolve_document(item=item, items=items)
         return document["_id"] if document else None
 
-    def _resolve_paths(self, item: Any = None, items: Optional[List[Any]] = None) -> list[Any]:
+    def _resolve_paths(self, item: Any = None, items: Optional[List[Any]] = None) -> list[str]:
         if items is None:
             return []
-        return [self._extract_path(target) for target in items if self._extract_path(target) is not None]
+        paths = [self._extract_path(target) for target in items if self._extract_path(target) is not None]
+        return [p.as_posix() for p in paths]
 
-    def _resolve_path(self, item: Any = None, items: Optional[List[Any]] = None) -> Any:
+    def _resolve_path(self, item: Any = None, items: Optional[List[Any]] = None) -> Optional[str]:
         if item is not None:
-            return self._extract_path(item)
-        if items:
-            return self._extract_path(items[0])
-        return None
+            p = self._extract_path(item)
+        elif items:
+            p = self._extract_path(items[0])
+        else:
+            return None
+        return p.as_posix() if p else None
 
     def _extract_document(self, target: Any) -> Optional[dict]:
         if isinstance(target, dict):
             return target
         return getattr(target, "document", None)
 
-    @staticmethod
-    def _extract_path(target: Any) -> Optional[Any]:
-        if isinstance(target, dict):
-            return None
-        return getattr(target, "path", None)
+    def _extract_path(self, target: Any) -> Optional[Path]:
+        if isinstance(target, str):
+            return Path(target)
+        return None
