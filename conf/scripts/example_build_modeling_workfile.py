@@ -9,7 +9,9 @@ def main(document: dict):
     init_logging("blenderBuild")
 
     # Get blender file to copy
-    source = codex.convs.empty_blender_file.get_paths()[0]
+    source = codex.convs.empty_blender_file.get_paths()
+    if not source:
+        raise FileNotFoundError("No empty blender file was found")
 
     # Get location to copy it to
     fields = document.copy()
