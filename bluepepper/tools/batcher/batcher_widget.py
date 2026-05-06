@@ -173,17 +173,14 @@ class BatcherWidget(QWidget):
         layout.addWidget(self.job_table_widget)
 
         # Debug helpers
-        self._button_demo_job = QPushButton("+ Add Demo Job")
-        main_layout.addWidget(self._button_demo_job)
-        self.button_sandbox = QPushButton("Sandbox")
-        main_layout.addWidget(self.button_sandbox)
+        # self._button_demo_job = QPushButton("+ Add Demo Job")
+        # main_layout.addWidget(self._button_demo_job)
+        # self._button_demo_job.clicked.connect(self._button_demo_job_clicked)
 
         # Widgets formatting
         format_widgets(self.main_widget)
 
     def _setup_signals(self):
-        self._button_demo_job.clicked.connect(self._button_demo_job_clicked)
-        self.button_sandbox.clicked.connect(self.button_sandbox_clicked)
         self.button_expand_options.clicked.connect(self.toggle_options_expand)
         self.cbb_sort.currentTextChanged.connect(self.sort_jobs)
         self.cbb_sort_order.currentTextChanged.connect(self.sort_jobs)
@@ -284,11 +281,6 @@ class BatcherWidget(QWidget):
     @property
     def running_job_widgets_count(self) -> int:
         return self.job_table_widget.running_job_widgets_count
-
-    def button_sandbox_clicked(self):
-        widgets = self.sorted_job_widgets
-        for w in widgets:
-            print(w.job_data.name, w.job_data.priority, w.job_data.created_at)
 
     @property
     def active_job_widgets(self) -> list[JobWidget]:
