@@ -254,7 +254,7 @@ class JobWidget(QFrame):
     def expand(self):
         self.button_expand.setIcon(self.icon_toggle_expanded)
         self.expand_panel.setVisible(True)
-        self.job_table_widget.setRowHeight(self.current_row, self.sizeHint().height())
+        self.job_table_widget.setRowHeight(self.current_row, self.sizeHint().height() + 2)
 
     def collapse(self):
         self.button_expand.setIcon(self.icon_toggle_collapsed)
