@@ -21,7 +21,6 @@ from bluepepper.app.api.fastapi_bridge import fastapi_bridge
 from bluepepper.app.api.fastapi_server import run_server_as_daemon
 from bluepepper.app.main_window.frameless_window import FramelessMainWindow
 from bluepepper.app.main_window.ui_main_window import Ui_bluepepper_app_widget
-from bluepepper.console import BluePepperConsole
 from bluepepper.core import init_logging, root_dir, version
 from bluepepper.gui.utils import format_widgets, get_icon, get_qt_app, get_stylesheet, get_theme
 from bluepepper.gui.widgets.outcome_popups import show_error
@@ -313,8 +312,6 @@ class FunctionButton(QPushButton):
 
 def except_hook(exc_type: type, exc_value: BaseException, exc_traceback: Any) -> None:
     """Global exception handler: show console and error popup."""
-    console = BluePepperConsole()
-    console.show()
     formatted = "".join(traceback.format_exception(exc_type, exc_value, exc_traceback))
     logging.error(formatted)
     show_error(error=str(exc_value), traceback=formatted)
