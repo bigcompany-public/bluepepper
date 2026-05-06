@@ -232,10 +232,10 @@ class BatcherWidget(QWidget):
             notify_when_done=True,
             notify_message="",
         )
-        self._add_job(job_data)
+        self.add_job(job_data)
         self.demo_widget_count += 1
 
-    def _add_job(self, job_data: JobData):
+    def add_job(self, job_data: JobData):
         row_number = self.job_table_widget.rowCount()
         self.job_table_widget.insertRow(row_number)
 
