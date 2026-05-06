@@ -24,7 +24,11 @@ def run_batcher_script():
         else:
             formatted_args_list.append(json.dumps(arg))
 
-    run_script(path=Path(os.environ["BLUEPEPPER_BATCHER_SCRIPT"]), args=formatted_args_list)
+    try:
+        run_script(path=Path(os.environ["BLUEPEPPER_BATCHER_SCRIPT"]), args=formatted_args_list)
+    except Exception as err:
+        print(f"BLUEPEPPER_BATCHER_ERROR={err}")
+        raise
 
 
 def run_batcher_function():
