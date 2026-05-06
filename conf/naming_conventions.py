@@ -45,6 +45,7 @@ class BluePepperConventions(Conventions):
     asset_workfile = Convention("{@asset_work_dir}/{asset}_{task}_v{version}_{description}.{extension}")
     asset_modeling_workfile = Convention("{@asset_workfile}", fixed_fields={"task": "mdl"})
     asset_surfacing_workfile = Convention("{@asset_workfile}", fixed_fields={"task": "sur"})
+    asset_rigging_workfile = Convention("{@asset_workfile}", fixed_fields={"task": "rig"})
 
     # Asset maya
     asset_modeling_workfile_maya = Convention(
