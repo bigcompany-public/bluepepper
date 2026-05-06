@@ -138,7 +138,7 @@ class BatcherWidget(QWidget):
         label_auto_start = QLabel("Automatically start jobs")
         grid_layout.addWidget(label_auto_start, 0, 3)
         self.cb_auto_start = QCheckBox()
-        self.cb_auto_start.setChecked(False)
+        self.cb_auto_start.setChecked(True)
         grid_layout.addWidget(self.cb_auto_start, 0, 4)
 
         # Delete finished jobs
