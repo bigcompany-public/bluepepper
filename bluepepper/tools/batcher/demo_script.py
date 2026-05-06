@@ -19,7 +19,7 @@ def main(some_arg=None):
         print(f"Step {step}/{STEPS} complete.")
         print(f"BLUEPEPPER_BATCHER_PROGRESS={pct}")
         # if pct == 50:
-        #     raise Exception("JAJ")
+        #     raise Exception("A random accured because 50% was met")
         # if pct == 53:
         #     print("BLUEPEPPER_BATCHER_TERMINATE")
 
