@@ -187,11 +187,8 @@ class JobWidget(QFrame):
         self.button_delete = IconButton(self.icon_delete)
         main_layout.addWidget(self.button_delete)
 
-        # Store size hint without the expanded frame
-        self.collapsed_size_hint = self.sizeHint()
-        # The size hint is slightly off, maybe because of layout margins
-        self.collapsed_size_hint.setHeight(self.collapsed_size_hint.height() + 2)
-        self.table_item.setSizeHint(self.collapsed_size_hint)
+        # Store collapsed size hint, as expanding the widget messes up the size hint
+        self.collapsed_height = self.sizeHint().height() + 2
 
         # Expanded panel
         self.expand_panel = QFrame()
@@ -257,12 +254,12 @@ class JobWidget(QFrame):
     def expand(self):
         self.button_expand.setIcon(self.icon_toggle_expanded)
         self.expand_panel.setVisible(True)
-        # self.table_item.setSizeHint(self.sizeHint())
+        self.job_table_widget.setRowHeight(self.current_row, self.sizeHint().height())
 
     def collapse(self):
         self.button_expand.setIcon(self.icon_toggle_collapsed)
         self.expand_panel.setHidden(True)
-        # self.table_item.setSizeHint(self.collapsed_size_hint)
+        self.job_table_widget.setRowHeight(self.current_row, self.collapsed_height)
 
     def on_priority_changed(self, value: int):
         self.update_selection()

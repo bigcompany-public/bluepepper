@@ -263,7 +263,11 @@ class BatcherWidget(QWidget):
         job_widget = JobWidget(job_data=job_data, batcher_widget=self, table_item=item)
         self.job_table_widget.setItem(row_number, self.job_table_widget._job_column_index, item)
         self.job_table_widget.setCellWidget(row_number, self.job_table_widget._job_column_index, job_widget)
+
+        # Set initial status
         job_widget.set_status(JobStatus.WAITING)
+        # collapse is called AFTER the JobWidget is added to the table, otherwise the height is slightly off
+        job_widget.collapse()
 
     @property
     def job_widgets(self) -> list[JobWidget]:
