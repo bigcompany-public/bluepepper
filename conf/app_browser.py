@@ -175,6 +175,14 @@ def get_tool_config() -> AppConfig:
         kwargs={"serializable": "<documents>"},
         mode="all",
     )
+    document_python_script_action = MenuAction(
+        label="Execute Python Script",
+        qta_icon="mdi6.language-python",
+        module="bluepepper.tools.batcher.python_script_drop_dialog",
+        callable="add_jobs",
+        kwargs={"browser": "<browser>", "targets": "<documents>"},
+        mode="all",
+    )
     asset_show_in_aquarium_action = MenuAction(
         label="Show in Aquarium",
         icon="aquarium.png",
@@ -276,6 +284,14 @@ def get_tool_config() -> AppConfig:
         callable="file_help_me",
         kwargs={"path": "<path>"},
     )
+    file_python_script_action = MenuAction(
+        label="Execute Python Script",
+        qta_icon="mdi6.language-python",
+        module="bluepepper.tools.batcher.python_script_drop_dialog",
+        callable="add_jobs",
+        kwargs={"browser": "<browser>", "targets": "<paths>"},
+        mode="all",
+    )
 
     action = BatcherMenuAction(
         label="Test Script",
@@ -305,6 +321,7 @@ def get_tool_config() -> AppConfig:
         entity.add_document_action(shot_document_help_me_action)
         entity.add_document_action(shot_add_tag_action)
         entity.add_document_action(shot_remove_tag_action)
+        entity.add_document_action(document_python_script_action)
         for task in entity.tasks.values():
             for surfacing_workfile_kind in task.kinds.values():
                 # Kind actions
@@ -320,6 +337,7 @@ def get_tool_config() -> AppConfig:
                 surfacing_workfile_kind.add_file_action(file_open_in_vscode)
                 surfacing_workfile_kind.add_file_action(file_increment_version)
                 surfacing_workfile_kind.add_file_action(file_help_me_action)
+                surfacing_workfile_kind.add_file_action(file_python_script_action)
 
     # More specific menu actions
     action = BatcherMenuAction(
