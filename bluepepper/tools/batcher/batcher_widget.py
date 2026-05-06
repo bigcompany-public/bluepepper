@@ -111,7 +111,11 @@ class BatcherWidget(QWidget):
         self.options_content_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.options_content_frame.setHidden(True)  # Start collapsed
         options_layout.addWidget(self.options_content_frame)
-        grid_layout = QGridLayout(self.options_content_frame)
+        _layout = QVBoxLayout(self.options_content_frame)
+        _subframe = QFrame()
+        _subframe.setFixedWidth(620)
+        _layout.addWidget(_subframe)
+        grid_layout = QGridLayout(_subframe)
 
         # Maximum threads
         max_threads_label = QLabel("Maximum Threads")
