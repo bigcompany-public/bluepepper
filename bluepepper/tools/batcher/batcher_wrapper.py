@@ -28,11 +28,15 @@ def run_batcher_script():
 
 
 def run_batcher_function():
-    run_function(
-        module=os.environ["BLUEPEPPER_BATCHER_MODULE"],
-        function=os.environ["BLUEPEPPER_BATCHER_FUNCTION"],
-        kwargs=json.loads(os.environ["BLUEPEPPER_BATCHER_KWARGS"]),
-    )
+    try:
+        run_function(
+            module=os.environ["BLUEPEPPER_BATCHER_MODULE"],
+            function=os.environ["BLUEPEPPER_BATCHER_FUNCTION"],
+            kwargs=json.loads(os.environ["BLUEPEPPER_BATCHER_KWARGS"]),
+        )
+    except Exception as err:
+        print(f"BLUEPEPPER_BATCHER_ERROR={err}")
+        raise
 
 
 if __name__ == "__main__":

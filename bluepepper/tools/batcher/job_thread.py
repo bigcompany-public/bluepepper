@@ -1,14 +1,14 @@
 from __future__ import annotations
 
+import json
+import os
 import subprocess
 import sys
-import json
 from io import StringIO
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from qtpy.QtCore import QThread, Signal
-from pathlib import Path
-import os
 
 if TYPE_CHECKING:
     from bluepepper.tools.batcher.job_widget import JobWidget
@@ -20,7 +20,7 @@ class JobThread(QThread):
     """
 
     _finished = Signal()
-    _error = Signal()
+    _error = Signal(str)
     _progress = Signal(int)
     _log = Signal(str)
     _terminate = Signal()
@@ -56,6 +56,7 @@ class JobThread(QThread):
         return env
 
     def run(self):
+        error_message = ""
         self._log.emit(f"Starting job {self.job_widget.job_data.name}")
         process = subprocess.Popen(
             [sys.executable, "-u", self.wrapper_script.as_posix()],
@@ -63,7 +64,7 @@ class JobThread(QThread):
             stderr=subprocess.STDOUT,
             text=True,
             bufsize=1,
-            env=self.script_env
+            env=self.script_env,
         )
 
         stdout: StringIO = process.stdout  # type: ignore
@@ -74,18 +75,22 @@ class JobThread(QThread):
 
             # Emit progress to update the progress bar
             if "BLUEPEPPER_BATCHER_PROGRESS" in line:
-                self._progress.emit(int(line.split("=")[-1].strip()))
+                self._progress.emit(int(line.split("=", 1)[-1].strip()))
 
             # This log line can be used to avoid stalling
             if "BLUEPEPPER_BATCHER_TERMINATE" in line:
                 self._terminate.emit()
                 return
 
+            # Store error message
+            if "BLUEPEPPER_BATCHER_ERROR" in line:
+                error_message = line.split("=", 1)[-1].strip()
+
         stdout.close()
         returncode = process.wait()
 
         if returncode != 0:
-            self._error.emit()
+            self._error.emit(error_message)
             return
 
         self._finished.emit()

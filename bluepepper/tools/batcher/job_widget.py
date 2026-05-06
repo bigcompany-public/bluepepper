@@ -388,16 +388,19 @@ class JobWidget(QFrame):
         self._thread.terminate()
         self.set_status(JobStatus.SUSPENDED)
 
-    def error_encountered(self):
+    def error_encountered(self, error_message: str):
         self.stdout_view.appendPlainText("Batcher job encountered an error")
         self.set_status(JobStatus.ERROR)
-        self.show_error_toast()
+        self.show_error_toast(error_message)
 
-    def show_error_toast(self):
+    def show_error_toast(self, error_message: str):
         if self.batchet_widget.cb_mute_error_notifications.isChecked():
             return
+        message = f"{self.job_data.name}\nJob encountered an error"
+        if error_message:
+            message += f"\n{error_message}"
         toaster = WindowsToaster("BluePepper")
-        toast = Toast([f"{self.job_data.name} - Job encountered an error"])
+        toast = Toast([message])
         toaster.show_toast(toast)
 
     def set_status(self, status: JobStatus) -> None:
