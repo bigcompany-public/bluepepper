@@ -1,9 +1,7 @@
 from pathlib import Path
 
-from bluepepper.app.main_window.main_window import BluePepperApp
-from bluepepper.tools.batcher.batcher_widget import BatcherWidget
 from bluepepper.tools.batcher.job_model import JobData
-from bluepepper.tools.browser.browser_widget import BrowserWidget
+from bluepepper.tools.browser.browser_widget import BrowserWidget, get_batcher_widget
 
 
 def add_job(
@@ -43,16 +41,4 @@ def add_job(
         notify_when_done=notify_when_done,
         notify_message=notify_message,
     )
-    batcher._add_job(job_data)
-
-
-def get_batcher_widget(browser: BrowserWidget) -> BatcherWidget:
-    bluepepper_app: BluePepperApp = getattr(browser, "bluepepper_app")
-    if not bluepepper_app:
-        raise AttributeError("This Browser is not a child of a BluePepper App, you cannot create Batcher Jobs")
-
-    for widget in bluepepper_app.page_widgets:
-        if isinstance(widget, BatcherWidget):
-            return widget
-
-    raise RuntimeError("Batcher widget not found")
+    batcher.add_job(job_data)

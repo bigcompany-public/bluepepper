@@ -9,8 +9,10 @@ from qtpy.QtWidgets import (
     QWidget,
 )
 
+from bluepepper.app.main_window.main_window import BluePepperApp
 from bluepepper.core import init_logging
 from bluepepper.gui.utils import format_widgets, get_stylesheet
+from bluepepper.tools.batcher.batcher_widget import BatcherWidget
 from bluepepper.tools.browser.browser_config import AppConfig
 from bluepepper.tools.browser.browser_tab import EntityTab
 
@@ -68,6 +70,18 @@ class BrowserWidget(QWidget):
     @property
     def selected_tab(self) -> EntityTab:
         return self.tab_widget.currentWidget()  # type: ignore
+
+
+def get_batcher_widget(browser: BrowserWidget) -> BatcherWidget:
+    bluepepper_app: BluePepperApp = getattr(browser, "bluepepper_app")
+    if not bluepepper_app:
+        raise AttributeError("This Browser is not a child of a BluePepper App, you cannot create Batcher Jobs")
+
+    for widget in bluepepper_app.page_widgets:
+        if isinstance(widget, BatcherWidget):
+            return widget
+
+    raise RuntimeError("Batcher widget not found")
 
 
 if __name__ == "__main__":
