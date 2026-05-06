@@ -23,8 +23,6 @@ from install.install import BluePepperInstaller
 
 
 def except_hook(exc_type, exc_value, exc_traceback):
-    console = BluePepperConsole()
-    console.show()
     formatted_traceback = traceback.format_exception(exc_type, exc_value, exc_traceback)
     formatted_traceback = "".join(formatted_traceback)
     logging.error(formatted_traceback)
