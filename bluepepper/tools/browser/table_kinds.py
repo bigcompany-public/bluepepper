@@ -12,12 +12,12 @@ from qtpy.QtWidgets import (
 )
 
 from bluepepper.core import database
-from bluepepper.tools.browser.browser_config import FileKind, MenuAction
+from bluepepper.tools.browser.browser_config import FileKind
 from bluepepper.tools.browser.browser_menu import BrowserMenu
 
 # Imports used only for type checking : these will not be imported at runtime
 if TYPE_CHECKING:
-    from bluepepper.tools.browser.browser_config import Entity, MenuAction
+    from bluepepper.tools.browser.browser_config import Entity
     from bluepepper.tools.browser.browser_tab import EntityTab
     from bluepepper.tools.browser.browser_widget import BrowserWidget
 
@@ -111,7 +111,9 @@ class TableFileKinds(QTableWidget):
         """
         if not self.entity.document_actions:
             return
-        menu = TableFileKindsMenu(tab=self.tab, kind=self.selected_kind, event=event)
+        menu = BrowserMenu(
+            browser=self.browser, event=event, actions=self.tab.entity.document_actions, target_type="filekind"
+        )
         menu.exec_(event.globalPos())
 
 
@@ -130,10 +132,3 @@ class FileKindItem(QTableWidgetItem):
     def set_enabled(self):
         if not self.kind:
             self.setFlags(self.flags() ^ Qt.ItemFlag.ItemIsEnabled)
-
-
-class TableFileKindsMenu(BrowserMenu):
-    def __init__(self, tab: EntityTab, kind: FileKind, event: QEvent):
-        actions = kind.kind_actions if kind else []
-        targets = tab.document_table.selected_documents
-        super().__init__(tab, event, actions=actions, targets=targets, kind=kind)

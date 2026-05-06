@@ -7,14 +7,14 @@ from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional
 
 import qtawesome
 from lucent import Convention
+from qtpy.QtCore import QEvent
 from qtpy.QtGui import QIcon
 from qtpy.QtWidgets import QMenu
 
 from bluepepper.gui.utils import get_icon
-from bluepepper.tools.browser.browser_config import FileKind, MenuAction
+from bluepepper.tools.browser.browser_config import MenuAction
 
 if TYPE_CHECKING:
-    from bluepepper.tools.browser.browser_tab import EntityTab
     from bluepepper.tools.browser.browser_widget import BrowserWidget
 
 
@@ -38,18 +38,20 @@ class BrowserMenu(QMenu):
 
     def __init__(
         self,
-        tab: EntityTab,
-        event,
+        browser: BrowserWidget,
+        event: QEvent,
         actions: list[MenuAction],
-        targets: list[Any],
-        kind: FileKind | None = None,
+        target_type: str,
     ):
-        super().__init__(tab)
-        self.tab = tab
+        super().__init__(browser.selected_tab)
+        self.browser = browser
+        self.target_type = target_type
+        self.tab = browser.selected_tab
         self._event = event
-        self.kind = kind
+        self.kind = self.tab.kind_table.selected_kind
         self.menu_actions = actions
-        self.targets = targets
+        self.documents = self.tab.document_table.selected_documents
+        self.path_items = self.tab.file_table.selected_items
         self.entity = self.tab.entity
         self.register_actions()
 
@@ -100,19 +102,26 @@ class BrowserMenu(QMenu):
         callback()
 
     def get_action_targets(self, menu_action: MenuAction):
-        if not self.targets:
-            return []
-
         targets = []
-        for target in self.targets:
-            document = target if isinstance(target, dict) else None
-            path = target if isinstance(target, Path) else None
-            if menu_action.doc_filter and not menu_action.doc_filter(document):
-                continue
-            if menu_action.path_filter and not menu_action.path_filter(path):
-                continue
-            targets.append(target)
-        return targets
+        if self.target_type == "document":
+            documents = self.documents
+            for document in documents:
+                if menu_action.doc_filter and not menu_action.doc_filter(document):
+                    continue
+                targets.append(document)
+            return targets
+
+        if self.target_type == "path":
+            items = self.path_items
+            for item in items:
+                if menu_action.doc_filter and not menu_action.doc_filter(item.document):
+                    continue
+                if menu_action.path_filter and not menu_action.path_filter(item.path):
+                    continue
+                targets.append((item.path, item.document))
+            return targets
+
+        raise RuntimeError(f"Target type not supported - {self.target_type}")
 
     def resolve_kwargs(
         self,
@@ -150,28 +159,48 @@ class BrowserMenu(QMenu):
         return self.tab.browser
 
     def _resolve_convention(self, item=None, items=None) -> Convention | None:
-        return self.kind.convention if self.kind else None
+        if self.target_type in ["document", "task"]:
+            return
+        if not self.kind:
+            return
+        return self.kind.convention
 
-    def _resolve_documents(self, items: list[dict], item=None) -> list[dict]:
+    def _resolve_documents(self, items: list, item=None) -> list[dict]:
+        if self.target_type == "path":
+            items = [document for path, document in items]
         return items
 
-    def _resolve_document_names(self, items: list[dict], item=None) -> list[str]:
+    def _resolve_document_names(self, items: list, item=None) -> list[str]:
+        if self.target_type == "path":
+            items = [document for path, document in items]
         return [doc[self.entity.name] for doc in items]
 
-    def _resolve_document_ids(self, items: list[dict], item=None) -> list[str]:
+    def _resolve_document_ids(self, items: list, item=None) -> list[str]:
+        if self.target_type == "path":
+            items = [document for path, document in items]
         return [doc["_id"] for doc in items]
 
     def _resolve_document(self, item: dict, items=None) -> dict:
+        if self.target_type == "path":
+            item = item[1]
         return item
 
     def _resolve_document_name(self, item: dict, items=None) -> str:
+        if self.target_type == "path":
+            item = item[1]
         return item[self.entity.name]
 
     def _resolve_document_id(self, item: dict, items=None) -> str:
+        if self.target_type == "path":
+            item = item[1]
         return item["_id"]
 
-    def _resolve_paths(self, items: list[Path], item=None) -> list[Path]:
-        return items
+    def _resolve_paths(self, items: list[tuple[Path, dict]], item=None) -> list[Path] | None:
+        if self.target_type in ["document", "task", "filekind"]:
+            return None
+        return [item[0] for item in items]
 
-    def _resolve_path(self, item: Path, items=None) -> Path:
-        return item
+    def _resolve_path(self, item: tuple[Path, dict], items=None) -> Path | None:
+        if self.target_type in ["document", "task", "filekind"]:
+            return None
+        return item[0]

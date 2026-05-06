@@ -189,7 +189,9 @@ class TableDocuments(QTableWidget):
         """
         if not self.entity.document_actions:
             return
-        menu = TableDocumentsMenu(tab=self.tab, event=event)
+        menu = BrowserMenu(
+            browser=self.browser, event=event, actions=self.tab.entity.document_actions, target_type="document"
+        )
         menu.exec_(event.globalPos())
 
 
@@ -216,10 +218,3 @@ class DocumentItem(QTableWidgetItem):
     def set_enabled(self):
         if not self.document:
             self.setFlags(self.flags() ^ Qt.ItemFlag.ItemIsEnabled)
-
-
-class TableDocumentsMenu(BrowserMenu):
-    def __init__(self, tab: EntityTab, event: QEvent):
-        actions = tab.entity.document_actions
-        targets = tab.document_table.selected_documents
-        super().__init__(tab, event, actions=actions, targets=targets)

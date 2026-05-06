@@ -309,6 +309,7 @@ def get_tool_config() -> AppConfig:
             "document_ids": "<document_ids>",
             "paths": "<paths>",
         },
+        # doc_filter=is_chr,
     )
 
     for entity in config.entities.values():

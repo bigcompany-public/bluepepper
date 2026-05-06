@@ -367,10 +367,8 @@ class TableFiles(QTableWidget):
         """
         if not self.entity.document_actions:
             return
-        menu = TableFilesMenu(
-            tab=self.tab,
-            kind=self.selected_kind,
-            event=event,
+        menu = BrowserMenu(
+            browser=self.browser, event=event, actions=self.tab.entity.document_actions, target_type="path"
         )
         menu.exec_(event.globalPos())
 
@@ -395,15 +393,3 @@ class FileItem(QTableWidgetItem):
     def set_enabled(self):
         if not self.path:
             self.setFlags(self.flags() ^ Qt.ItemFlag.ItemIsEnabled)
-
-
-class TableFilesMenu(BrowserMenu):
-    def __init__(
-        self,
-        tab: EntityTab,
-        kind: FileKind,
-        event: QEvent,
-    ):
-        actions = kind.file_actions if kind else []
-        targets = [item.path for item in tab.file_table.selected_items]
-        super().__init__(tab, event, actions=actions, targets=targets, kind=kind)
