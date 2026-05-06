@@ -14,12 +14,11 @@ from qtpy.QtWidgets import (
 )
 
 from bluepepper.core import database
-from bluepepper.tools.browser.browser_config import MenuAction
 from bluepepper.tools.browser.browser_menu import BrowserMenu
 
 # Imports used only for type checking : these will not be imported at runtime
 if TYPE_CHECKING:
-    from bluepepper.tools.browser.browser_config import Entity, MenuAction
+    from bluepepper.tools.browser.browser_config import Entity
     from bluepepper.tools.browser.browser_tab import (
         EntityTab,
         FilterComboBox,
