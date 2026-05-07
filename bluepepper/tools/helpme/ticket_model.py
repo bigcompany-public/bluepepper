@@ -11,6 +11,6 @@ class TicketModel:
     error: str = ""
     traceback: str = ""
     path: Path | None = None
-    asset_id: str = ""
-    shot_id: str = ""
+    asset: str = ""
+    shot: str = ""
     screenshots: list[Path] = field(default_factory=list[Path])

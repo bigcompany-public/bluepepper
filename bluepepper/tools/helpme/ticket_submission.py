@@ -62,10 +62,10 @@ def send_ticket_content_to_clipboard(ticket: TicketModel):
         paragraphs.append(f"traceback: {ticket.traceback}")
     if ticket.path:
         paragraphs.append(f"path: {ticket.path}")
-    if ticket.asset_id:
-        paragraphs.append(f"asset_id: {ticket.asset_id}")
-    if ticket.shot_id:
-        paragraphs.append(f"shot_id: {ticket.shot_id}")
+    if ticket.asset:
+        paragraphs.append(f"asset: {ticket.asset}")
+    if ticket.shot:
+        paragraphs.append(f"shot: {ticket.shot}")
     paragraphs.append(f"description: {ticket.description}")
 
     paragraphs += ticket.screenshots

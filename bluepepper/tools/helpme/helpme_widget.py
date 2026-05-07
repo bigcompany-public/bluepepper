@@ -18,7 +18,7 @@ from bluepepper.gui.widgets.container import (
 )
 from bluepepper.tools.helpme.ticket_model import TicketModel
 from bluepepper.tools.helpme.ui_helpme_widget import Ui_helpme_widget
-from conf.ticket_submission import submit_ticket
+from conf.tickets import main as submit_ticket
 
 
 class SubmitTicket(QObject):
@@ -226,8 +226,8 @@ class HelpMeWidget(Ui_helpme_widget):
             error=self._error,
             traceback=self._traceback,
             path=Path(self._path) if self._path else None,
-            asset_id=self._asset_id,
-            shot_id=self._shot_id,
+            asset=self.label_asset.text() if self._asset_id else "",
+            shot=self.label_shot.text() if self._shot_id else "",
             screenshots=self.screenshot_paths,
         )
         submit_ticket(ticket)
