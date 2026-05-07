@@ -180,7 +180,7 @@ def get_tool_config() -> AppConfig:
         qta_icon="mdi6.language-python",
         module="bluepepper.tools.batcher.python_script_drop_dialog",
         function="add_jobs",
-        kwargs={"browser": "<browser>", "targets": "<documents>"},
+        kwargs={"browser": "<browser>", "targets": "<document_ids>"},
         mode="all",
     )
     asset_show_in_aquarium_action = MenuAction(
@@ -309,7 +309,6 @@ def get_tool_config() -> AppConfig:
             "document_ids": "<document_ids>",
             "paths": "<paths>",
         },
-        # doc_filter=is_chr,
     )
 
     for entity in config.entities.values():
@@ -338,6 +337,7 @@ def get_tool_config() -> AppConfig:
                 kind.add_kind_action(kind_copy_filename_action)
 
                 # File actions
+                kind.add_file_action(test_action)
                 kind.add_file_action(file_show_in_explorer)
                 kind.add_file_action(file_copy_path_action)
                 kind.add_file_action(file_copy_filename_action)

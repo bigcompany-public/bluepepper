@@ -151,24 +151,23 @@ def kind_copy_filename(documents: List[dict], convention: Convention):
 
 
 def file_copy_paths(paths: list[Path]):
-    send_strings_to_clipboard([path.as_posix() for path in paths])
+    send_strings_to_clipboard([Path(path).as_posix() for path in paths])
 
 
 def file_copy_filename(paths: list[Path]):
-    send_strings_to_clipboard([path.name for path in paths])
+    send_strings_to_clipboard([Path(path).name for path in paths])
 
 
 def file_copy_file(paths: list[Path]):
-    send_paths_to_clipboard(paths)
+    send_paths_to_clipboard([Path(path) for path in paths])
 
 
 def file_show_in_explorer(path: Path):
-    show_in_explorer(path)
+    show_in_explorer(Path(path))
 
 
-def file_increment_version(
-    path: Path, convention: Convention, description: Optional[str] = None
-):
+def file_increment_version(path: Path, convention: Convention, description: Optional[str] = None):
+    path = Path(path)
     fields_to_enforce = {"description": description} if description else None
     dst = convention.increment(path, fields_to_enforce=fields_to_enforce)
     logging.info(f"Copying {path} to {dst}")
@@ -176,5 +175,6 @@ def file_increment_version(
 
 
 def file_open_in_vscode(path: Path):
+    path = Path(path)
     vscode = VsCodeLauncher(path)
     vscode.open()

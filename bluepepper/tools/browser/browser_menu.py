@@ -195,12 +195,12 @@ class BrowserMenu(QMenu):
             item = item[1]
         return item["_id"]
 
-    def _resolve_paths(self, items: list[tuple[Path, dict]], item=None) -> list[Path] | None:
+    def _resolve_paths(self, items: list[tuple[Path, dict]], item=None) -> list[str] | None:
         if self.target_type in ["document", "task", "filekind"]:
             return None
-        return [item[0] for item in items]
+        return [item[0].as_posix() for item in items]
 
-    def _resolve_path(self, item: tuple[Path, dict], items=None) -> Path | None:
+    def _resolve_path(self, item: tuple[Path, dict], items=None) -> str | None:
         if self.target_type in ["document", "task", "filekind"]:
             return None
-        return item[0]
+        return item[0].as_posix()
