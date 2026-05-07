@@ -272,7 +272,7 @@ class BigMongoClient(MongoClient):
         Raises:
             AssetNotFoundError: If no asset with the given ID exists.
         """
-        document = self.assets.find_one(ObjectId(document_id))
+        document = self.assets.find_one({"_id": document_id})
         if not document:
             raise AssetNotFoundError(f'No asset with _id="{document_id}" was found')
         return self.stringify_id(document)
@@ -359,7 +359,7 @@ class BigMongoClient(MongoClient):
         Raises:
             ShotNotFoundError: If no shot with the given ID exists.
         """
-        document = self.shots.find_one(ObjectId(document_id))
+        document = self.shots.find_one({"_id": document_id})
         if not document:
             raise ShotNotFoundError(f'No shot with _id="{document_id}" was found')
         return self.stringify_id(document)
