@@ -33,7 +33,7 @@ class BluePepperConventions(Conventions):
     # Configuration for entity creation
     asset_identifier = Convention("{asset}")
     asset_fields = Convention("{type}_{asset}")
-    shot_identifier = Convention("{shot}")
+    shot_identifier = Convention("{sequence}_{shot}")
     shot_fields = Convention("{sequence}_{shot}")
 
     # Aquarium
