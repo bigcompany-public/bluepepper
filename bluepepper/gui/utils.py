@@ -386,6 +386,33 @@ def get_stylesheet(theme: str = "dark"):
         color:{colors["disabled3"]};
         background-color: rgba(255,255,255,5);
     }}
+    QPlainTextEdit {{
+        border: 1px solid;
+        border-color:{colors["text_color2"]};
+        border-radius:3px;
+        padding:3px;
+        color:{colors["text_color"]};
+        background-color:{colors["bg_one"]};
+    }}
+    QPlainTextEdit:hover {{
+        border-color:{colors["active"]};
+    }}
+    QPlainTextEdit:focus {{
+        border-color:{colors["active"]};
+    }}
+    QPlainTextEdit[status="error"] {{
+        border: 1px solid;
+        border-color:{colors["error"]};
+    }}
+    QPlainTextEdit[status="ok"]::focus {{
+        border: 1px solid;
+        border-color:{colors["ok"]};
+    }}
+    QPlainTextEdit:disabled {{
+        border-color:{colors["disabled3"]};
+        color:{colors["disabled3"]};
+        background-color: rgba(255,255,255,5);
+    }}
     QPushButton {{
         padding-left : 10px;
         padding-right : 10px;
