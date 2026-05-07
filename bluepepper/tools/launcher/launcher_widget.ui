@@ -29,29 +29,25 @@
    <item>
     <widget class="QWidget" name="main_widget" native="true">
      <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <widget class="QLabel" name="label_title">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Launcher</string>
-        </property>
-        <property name="tag" stdset="0">
-         <string>H2</string>
-        </property>
-       </widget>
-      </item>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
       <item>
        <widget class="QFrame" name="frame_apps">
         <property name="frameShape">
-         <enum>QFrame::StyledPanel</enum>
+         <enum>QFrame::Shape::StyledPanel</enum>
         </property>
         <property name="frameShadow">
-         <enum>QFrame::Raised</enum>
+         <enum>QFrame::Shadow::Raised</enum>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
@@ -67,13 +63,13 @@
          <item>
           <widget class="QListWidget" name="list_apps">
            <property name="editTriggers">
-            <set>QAbstractItemView::NoEditTriggers</set>
+            <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
            </property>
            <property name="selectionMode">
-            <enum>QAbstractItemView::NoSelection</enum>
+            <enum>QAbstractItemView::SelectionMode::NoSelection</enum>
            </property>
            <property name="viewMode">
-            <enum>QListView::IconMode</enum>
+            <enum>QListView::ViewMode::IconMode</enum>
            </property>
           </widget>
          </item>
@@ -83,10 +79,10 @@
       <item>
        <widget class="QFrame" name="frame_tools">
         <property name="frameShape">
-         <enum>QFrame::StyledPanel</enum>
+         <enum>QFrame::Shape::StyledPanel</enum>
         </property>
         <property name="frameShadow">
-         <enum>QFrame::Raised</enum>
+         <enum>QFrame::Shadow::Raised</enum>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_4">
          <item>

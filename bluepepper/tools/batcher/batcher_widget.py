@@ -1,5 +1,5 @@
 import qtawesome
-from qtpy.QtCore import Qt
+from qtpy.QtCore import Qt, Signal
 from qtpy.QtGui import QIcon
 from qtpy.QtWidgets import (
     QCheckBox,
@@ -31,6 +31,15 @@ class IconButton(QPushButton):
         self.setProperty("status", "invisible")
         self.setFixedHeight(26)
         self.setFixedWidth(25)
+
+
+class ClickableLabel(QLabel):
+    clicked = Signal()
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.MouseButton.LeftButton:
+            self.clicked.emit()
+        super().mousePressEvent(event)
 
 
 class BatcherWidget(QWidget):
@@ -80,9 +89,6 @@ class BatcherWidget(QWidget):
     def _setup_ui(self):
         self.setMinimumHeight(550)
         main_layout = QVBoxLayout(self.main_widget)
-        label_title = QLabel("Batcher")
-        label_title.setProperty("tag", "H2")
-        main_layout.addWidget(label_title)
 
         # Global options
         options_frame = QFrame()
@@ -101,9 +107,9 @@ class BatcherWidget(QWidget):
         header_layout.setSpacing(2)
         self.button_expand_options = IconButton(self.icon_toggle_collapsed)
         header_layout.addWidget(self.button_expand_options)
-        label = QLabel("Options")
-        label.setProperty("tag", "H3")
-        header_layout.addWidget(label)
+        self.options_label = ClickableLabel("Options")
+        self.options_label.setProperty("tag", "H3")
+        header_layout.addWidget(self.options_label)
 
         # Options content
         self.options_content_frame = QFrame()
@@ -188,6 +194,7 @@ class BatcherWidget(QWidget):
         self.button_expand_options.clicked.connect(self.toggle_options_expand)
         self.cbb_sort.currentTextChanged.connect(self.sort_jobs)
         self.cbb_sort_order.currentTextChanged.connect(self.sort_jobs)
+        self.options_label.clicked.connect(self.toggle_options_expand)
 
     def toggle_options_expand(self):
         if self.options_expanded:
