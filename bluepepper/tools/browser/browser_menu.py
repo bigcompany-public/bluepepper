@@ -103,7 +103,7 @@ class BrowserMenu(QMenu):
 
     def get_action_targets(self, menu_action: MenuAction):
         targets = []
-        if self.target_type == "document":
+        if self.target_type in ["document", "filekind"]:
             documents = self.documents
             for document in documents:
                 if menu_action.doc_filter and not menu_action.doc_filter(document):

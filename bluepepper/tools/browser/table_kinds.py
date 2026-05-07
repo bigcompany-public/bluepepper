@@ -109,10 +109,12 @@ class TableFileKinds(QTableWidget):
         """
         This method pops a Qmenu widget when the user right clicks on the table
         """
-        if not self.entity.document_actions:
+        if not self.selected_kind:
+            return
+        if not self.selected_kind.kind_actions:
             return
         menu = BrowserMenu(
-            browser=self.browser, event=event, actions=self.tab.entity.document_actions, target_type="filekind"
+            browser=self.browser, event=event, actions=self.selected_kind.kind_actions, target_type="filekind"
         )
         menu.exec_(event.globalPos())
 
