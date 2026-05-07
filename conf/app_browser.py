@@ -80,6 +80,7 @@ def get_tool_config() -> AppConfig:
     # Shots
     shot_entity = Entity(name="shot", collection="shots", filters=["sequence"])
     config.add_entity(shot_entity)
+
     shot_layout_task = Task("layout")
     shot_entity.add_task(shot_layout_task)
     layout_workfile_kind = FileKind(
@@ -88,6 +89,24 @@ def get_tool_config() -> AppConfig:
         convention=codex.convs.shot_layout_workfile,
     )
     shot_layout_task.add_kind(layout_workfile_kind)
+
+    shot_anim_task = Task("anim")
+    shot_entity.add_task(shot_anim_task)
+    anim_workfile_kind = FileKind(
+        name="shot_anim_workfile",
+        label="Workfile",
+        convention=codex.convs.shot_anim_workfile,
+    )
+    shot_anim_task.add_kind(anim_workfile_kind)
+
+    shot_lighting_task = Task("lighting")
+    shot_entity.add_task(shot_lighting_task)
+    lighting_workfile_kind = FileKind(
+        name="shot_lighting_workfile",
+        label="Workfile",
+        convention=codex.convs.shot_lighting_workfile,
+    )
+    shot_lighting_task.add_kind(lighting_workfile_kind)
 
     # Global menu actions
     asset_document_help_me_action = MenuAction(

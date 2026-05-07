@@ -47,17 +47,20 @@ class BluePepperConventions(Conventions):
     asset_surfacing_workfile = Convention("{@asset_workfile}", fixed_fields={"task": "sur"})
     asset_rigging_workfile = Convention("{@asset_workfile}", fixed_fields={"task": "rig"})
 
-    # Asset maya
-    asset_modeling_workfile_maya = Convention(
-        "{@asset_modeling_workfile}", fixed_fields={"dcc": "maya", "extension": "ma"}
-    )
-
     # Shots
     shot_work_dir = Convention("{@project_root}/shots/{shot}/{task}/work")
     shot_workfile = Convention("{@shot_work_dir}/{@shot_identifier}_{task}_v{version}_{description}.{extension}")
     shot_layout_workfile = Convention(
         "{@shot_workfile}",
-        fixed_fields={"task": "lay", "dcc": "maya", "extension": "ma"},
+        fixed_fields={"task": "lay", "dcc": "blender", "extension": "blend"},
+    )
+    shot_anim_workfile = Convention(
+        "{@shot_workfile}",
+        fixed_fields={"task": "anim", "dcc": "blender", "extension": "blend"},
+    )
+    shot_lighting_workfile = Convention(
+        "{@shot_workfile}",
+        fixed_fields={"task": "lgt", "dcc": "blender", "extension": "blend"},
     )
 
     # Asset blender
