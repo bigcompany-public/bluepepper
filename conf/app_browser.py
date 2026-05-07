@@ -312,26 +312,7 @@ def get_tool_config() -> AppConfig:
         mode="all",
     )
 
-    test_action = MenuAction(
-        label="Test",
-        module="sandbox",
-        function="main",
-        kwargs={
-            "browser": "<browser>",
-            "document": "<document>",
-            "document_name": "<document_name>",
-            "document_id": "<document_id>",
-            "path": "<path>",
-            "convention": "<convention>",
-            "documents": "<documents>",
-            "document_names": "<document_names>",
-            "document_ids": "<document_ids>",
-            "paths": "<paths>",
-        },
-    )
-
     for entity in config.entities.values():
-        entity.add_document_action(test_action)
         entity.add_document_action(copy_name_action)
         entity.add_document_action(asset_copy_identifier_action)
         entity.add_document_action(copy_id_action)
@@ -356,7 +337,6 @@ def get_tool_config() -> AppConfig:
                 kind.add_kind_action(kind_copy_filename_action)
 
                 # File actions
-                kind.add_file_action(test_action)
                 kind.add_file_action(file_show_in_explorer)
                 kind.add_file_action(file_copy_path_action)
                 kind.add_file_action(file_copy_filename_action)

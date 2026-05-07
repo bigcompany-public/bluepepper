@@ -4,7 +4,7 @@ import traceback
 from pathlib import Path
 
 import qtawesome
-from qtpy.QtCore import QSize, Qt
+from qtpy.QtCore import QObject, QSize, Qt, Signal
 from qtpy.QtGui import QIcon, QPixmap
 from qtpy.QtWidgets import QListWidget, QListWidgetItem, QWidget
 
@@ -16,7 +16,16 @@ from bluepepper.gui.widgets.container import (
     ContainerWidget,
     get_qt_app,
 )
+from bluepepper.tools.helpme.ticket_model import TicketModel
 from bluepepper.tools.helpme.ui_helpme_widget import Ui_helpme_widget
+from conf.ticket_submission import submit_ticket
+
+
+class SubmitTicket(QObject):
+    confirmed = Signal()
+
+
+ticket_submission = SubmitTicket()
 
 
 class ScreenshotItem(QListWidgetItem):
@@ -25,7 +34,7 @@ class ScreenshotItem(QListWidgetItem):
         self.path = Path(path)
         pix = QPixmap(str(self.path))
         scaled = pix.scaled(
-            QSize(icon_size, icon_size), Qt.KeepAspectRatio, Qt.SmoothTransformation
+            QSize(icon_size, icon_size), Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation
         )
 
         self.setIcon(QIcon(scaled))
@@ -49,29 +58,29 @@ class HelpMeWidget(Ui_helpme_widget):
         self._path: str = Path(path).as_posix() if path else None  # type: ignore
         self._asset_id = asset_id
         self._shot_id = shot_id
-        self._fields: dict[str, str] = self.get_fields() if self._path else None
+        self._fields: dict[str, str] | None = self.get_fields() if self._path else None
         self.setup_ui()
         self.setup_signals()
         self.setup_initial_state()
         self.apply_stylesheet()
+        self.toggle_accept_button()
 
     def setup_ui(self):
         """Setups the widget exported from QtDesigner inside the parent widget"""
         self.setupUi(self._parent)
-        self.list_screenshots.setIconSize(
-            QSize(self.screenshot_size, self.screenshot_size)
-        )
+        self.list_screenshots.setIconSize(QSize(self.screenshot_size, self.screenshot_size))
         self.list_screenshots.setSpacing(5)
         self.list_screenshots.setUniformItemSizes(True)
-        self.list_screenshots.setResizeMode(QListWidget.Adjust)
+        self.list_screenshots.setResizeMode(QListWidget.ResizeMode.Adjust)
 
     def setup_signals(self):
         """Creates signals for the various widgets"""
         self.pb_add_screenshot.clicked.connect(self.pb_screenshot_clicked)
-        self.list_screenshots.itemSelectionChanged.connect(
-            self.screenshot_selection_changed
-        )
+        self.list_screenshots.itemSelectionChanged.connect(self.screenshot_selection_changed)
         self.pb_remove_screenshot.clicked.connect(self.pb_remove_screenshot_clicked)
+        self.le_name.textChanged.connect(self.toggle_accept_button)
+        self.text_edit_description.textChanged.connect(self.toggle_accept_button)
+        self.button_open_ticket.clicked.connect(self.button_open_ticket_clicked)
 
     def setup_initial_state(self):
         """Sets default values for the various widgets"""
@@ -196,6 +205,35 @@ class HelpMeWidget(Ui_helpme_widget):
     def screenshot_size(self) -> int:
         return 200
 
+    @property
+    def screenshot_paths(self) -> list[Path]:
+        paths = []
+        for i in range(self.list_screenshots.count()):
+            item: ScreenshotItem = self.list_screenshots.item(i)  # type: ignore
+            paths.append(item.path)
+        return paths
+
+    def toggle_accept_button(self):
+        enable = bool(self.le_name.text()) and bool(self.text_edit_description.toPlainText())
+        self.button_open_ticket.setEnabled(enable)
+
+    def button_open_ticket_clicked(self):
+        ticket = TicketModel(
+            name=self.le_name.text(),
+            user=self.label_user.text(),
+            computer=self.label_computer.text(),
+            description=self.text_edit_description.toPlainText(),
+            error=self._error,
+            traceback=self._traceback,
+            path=Path(self._path) if self._path else None,
+            asset_id=self._asset_id,
+            shot_id=self._shot_id,
+            screenshots=self.screenshot_paths,
+        )
+        submit_ticket(ticket)
+
+        ticket_submission.confirmed.emit()
+
 
 def show_dialog(
     path: Path | None = None,
@@ -222,6 +260,7 @@ def show_dialog(
     )
     container = ContainerWidget(widget=widget, title="Help Me", icon=icon)
     dialog = ContainerDialog(container=container)
+    ticket_submission.confirmed.connect(dialog.accept)
     dialog.exec()
 
 
