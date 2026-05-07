@@ -331,21 +331,21 @@ def get_tool_config() -> AppConfig:
         entity.add_document_action(shot_remove_tag_action)
         entity.add_document_action(document_python_script_action)
         for task in entity.tasks.values():
-            for surfacing_workfile_kind in task.kinds.values():
+            for kind in task.kinds.values():
                 # Kind actions
-                surfacing_workfile_kind.add_kind_action(kind_show_in_explorer_action)
-                surfacing_workfile_kind.add_kind_action(kind_copy_path_action)
-                surfacing_workfile_kind.add_kind_action(kind_copy_filename_action)
+                kind.add_kind_action(kind_show_in_explorer_action)
+                kind.add_kind_action(kind_copy_path_action)
+                kind.add_kind_action(kind_copy_filename_action)
 
                 # File actions
-                surfacing_workfile_kind.add_file_action(file_show_in_explorer)
-                surfacing_workfile_kind.add_file_action(file_copy_path_action)
-                surfacing_workfile_kind.add_file_action(file_copy_filename_action)
-                surfacing_workfile_kind.add_file_action(file_copy_file_action)
-                surfacing_workfile_kind.add_file_action(file_open_in_vscode)
-                surfacing_workfile_kind.add_file_action(file_increment_version)
-                surfacing_workfile_kind.add_file_action(file_help_me_action)
-                surfacing_workfile_kind.add_file_action(file_python_script_action)
+                kind.add_file_action(file_show_in_explorer)
+                kind.add_file_action(file_copy_path_action)
+                kind.add_file_action(file_copy_filename_action)
+                kind.add_file_action(file_copy_file_action)
+                kind.add_file_action(file_open_in_vscode)
+                kind.add_file_action(file_increment_version)
+                kind.add_file_action(file_help_me_action)
+                kind.add_file_action(file_python_script_action)
 
     # More specific menu actions
     action = BatcherMenuAction(
