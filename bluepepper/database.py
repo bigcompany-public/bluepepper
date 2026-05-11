@@ -31,13 +31,13 @@ class AssetNotFoundError(Exception):
 
 
 class AssetTagNotFoundError(Exception):
-    """Raised when an asset tag document is not found in the database."""
+    """Raised when an tag document is not found in the database."""
 
     ...
 
 
 class ShotTagNotFoundError(Exception):
-    """Raised when an asset tag document is not found in the database."""
+    """Raised when an tag document is not found in the database."""
 
     ...
 
@@ -229,22 +229,13 @@ class BigMongoClient(MongoClient):
         return self.db.get_collection("assets")
 
     @cached_property
-    def asset_tags(self) -> Collection:
-        """Get the asset tags collection.
+    def tags(self) -> Collection:
+        """Get the tags collection.
 
         Returns:
-            MongoDB Collection instance for asset tags.
+            MongoDB Collection instance for tags.
         """
-        return self.db.get_collection("assetTags")
-
-    @cached_property
-    def shot_tags(self) -> Collection:
-        """Get the shotTags collection.
-
-        Returns:
-            MongoDB Collection instance for shot tags.
-        """
-        return self.db.get_collection("shotTags")
+        return self.db.get_collection("tags")
 
     @cached_property
     def shots(self) -> Collection:
@@ -434,8 +425,8 @@ class BigMongoClient(MongoClient):
         fields = codex.get_fields(string)
         return self.get_shot_document_by_fields(fields)
 
-    def get_asset_tag_document_by_id(self, document_id: str) -> dict[str, Any]:
-        """Retrieve asset tag document by ObjectId.
+    def get_tag_document_by_id(self, document_id: str) -> dict[str, str]:
+        """Retrieve tag document by ObjectId.
 
         Args:
             document_id: AssetTag document ID as string representation of ObjectId.
@@ -444,62 +435,29 @@ class BigMongoClient(MongoClient):
             AssetTag document dictionary with _id converted to string.
 
         Raises:
-            AssetTagNotFoundError: If no asset tag with the given ID exists.
+            AssetTagNotFoundError: If no tag with the given ID exists.
         """
-        document = self.asset_tags.find_one(ObjectId(document_id))
+        document = self.tags.find_one(ObjectId(document_id))
         if not document:
-            raise AssetTagNotFoundError(f'No asset tag with _id="{document_id}" was found')
+            raise AssetTagNotFoundError(f'No tag with _id="{document_id}" was found')
         return self.stringify_id(document)
 
-    def get_asset_tag_document_by_name(self, tag: str) -> dict[str, Any]:
-        """Retrieve asset tag document by tag name.
+    def get_tag_document(self, tag: str, tag_type: str) -> dict[str, Any]:
+        """Retrieve tag document by tag name/type.
 
         Args:
-            tag: The asset tag name to search for.
+            tag: The tag name to search for.
+            tag_type: The tag type to search for.
 
         Returns:
             AssetTag document dictionary with _id converted to string.
 
         Raises:
-            AssetTagNotFoundError: If no asset tag with the given name exists.
+            AssetTagNotFoundError: If no tag with the given name exists.
         """
-        document = self.asset_tags.find_one({"tag": tag})
+        document = self.tags.find_one({"tag": tag, "tagType": tag_type})
         if not document:
-            raise AssetTagNotFoundError(f'No asset tag with tag="{tag}" was found')
-        return self.stringify_id(document)
-
-    def get_shot_tag_document_by_id(self, document_id: str) -> dict[str, Any]:
-        """Retrieve shot tag document by ObjectId.
-
-        Args:
-            document_id: ShotTag document ID as string representation of ObjectId.
-
-        Returns:
-            ShotTag document dictionary with _id converted to string.
-
-        Raises:
-            ShotTagNotFoundError: If no shot tag with the given ID exists.
-        """
-        document = self.shot_tags.find_one(ObjectId(document_id))
-        if not document:
-            raise ShotTagNotFoundError(f'No shot tag with _id="{document_id}" was found')
-        return self.stringify_id(document)
-
-    def get_shot_tag_document_by_name(self, tag: str) -> dict[str, Any]:
-        """Retrieve shot tag document by tag name.
-
-        Args:
-            tag: The shot tag name to search for.
-
-        Returns:
-            ShotTag document dictionary with _id converted to string.
-
-        Raises:
-            ShotTagNotFoundError: If no shot tag with the given name exists.
-        """
-        document = self.shot_tags.find_one({"tag": tag})
-        if not document:
-            raise ShotTagNotFoundError(f'No shot tag with tag="{tag}" was found')
+            raise AssetTagNotFoundError(f'No tag with tag="{tag}" was found')
         return self.stringify_id(document)
 
     def stringify_id(self, document: dict[str, Any]) -> dict[str, Any]:

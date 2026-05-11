@@ -3,10 +3,9 @@ from argparse import ArgumentParser
 
 import qtawesome
 from bson import ObjectId
-from pymongo.collection import Collection
-from PySide6.QtCore import QTimer, Signal
-from PySide6.QtGui import QColor, QKeyEvent
-from PySide6.QtWidgets import (
+from qtpy.QtCore import Qt, QTimer, Signal
+from qtpy.QtGui import QColor, QKeyEvent
+from qtpy.QtWidgets import (
     QApplication,
     QFormLayout,
     QHBoxLayout,
@@ -39,9 +38,7 @@ def _hex_brightness(hex_color: str) -> float:
 
 def _icon_color_for_bg(hex_color: str) -> str:
     """Return '#000000' or '#FFFFFF' depending on background brightness."""
-    return (
-        "#000000" if _hex_brightness(hex_color) > _BRIGHTNESS_THRESHOLD else "#FFFFFF"
-    )
+    return "#000000" if _hex_brightness(hex_color) > _BRIGHTNESS_THRESHOLD else "#FFFFFF"
 
 
 class ColorButton(QPushButton):
@@ -66,9 +63,8 @@ class ColorButton(QPushButton):
 
         self.setMinimumWidth(self._BUTTON_SIZE)
         self.setMinimumHeight(self._BUTTON_SIZE)
-        from PySide6.QtCore import Qt
 
-        self.setFocusPolicy(self.focusPolicy() | Qt.StrongFocus)
+        self.setFocusPolicy(self.focusPolicy() | Qt.FocusPolicy.StrongFocus)
         self.setMouseTracking(True)
         self._refresh_appearance()
 
@@ -82,9 +78,7 @@ class ColorButton(QPushButton):
 
     def _refresh_appearance(self):
         icon_color = _icon_color_for_bg(self._color)
-        icon = qtawesome.icon(
-            self._EYEDROPPER_ICON, scale_factor=1.35, color=icon_color
-        )
+        icon = qtawesome.icon(self._EYEDROPPER_ICON, scale_factor=1.35, color=icon_color)
         self.setIcon(icon)
         self.setStyleSheet(
             f"""
@@ -112,11 +106,11 @@ class ColorButton(QPushButton):
         from PySide6.QtCore import Qt
 
         if self._hovered:
-            if event.key() == Qt.Key_C and event.modifiers() == Qt.ControlModifier:
+            if event.key() == Qt.Key.Key_C and event.modifiers() == Qt.KeyboardModifier.ControlModifier:
                 QApplication.clipboard().setText(self._color)
                 self.color_copy_requested.emit()
                 return
-            if event.key() == Qt.Key_V and event.modifiers() == Qt.ControlModifier:
+            if event.key() == Qt.Key.Key_V and event.modifiers() == Qt.KeyboardModifier.ControlModifier:
                 text = QApplication.clipboard().text().strip()
                 if QColor(text).isValid():
                     self.color_paste_requested.emit(text)
@@ -127,14 +121,11 @@ class ColorButton(QPushButton):
 class TagEditorWidget(QWidget):
     confirmed = Signal()
 
-    def __init__(self, document_id: str, collection: Collection):
+    def __init__(self, document_id: str):
         super().__init__()
-        self.document: dict = collection.find_one({"_id": ObjectId(document_id)})
+        self.document: dict = database.get_tag_document_by_id(document_id)
         if not self.document:
-            raise RuntimeError(
-                f"Document not found on database/{collection.name} : {document_id}"
-            )
-        self.collection = collection
+            raise RuntimeError(f"Document not found on database/{database.tags.name} : {document_id}")
 
         # Color buffers — hold last confirmed colors for reverting
         self._color_buffer = self.document["tagColor"]
@@ -311,9 +302,7 @@ class TagEditorWidget(QWidget):
         self._icon_timer.start(100)
 
     def _check_clipboard_for_icon(self):
-        process_done = (
-            self._qta_process is not None and self._qta_process.poll() is not None
-        )
+        process_done = self._qta_process is not None and self._qta_process.poll() is not None
         clipboard_text = QApplication.clipboard().text().strip()
 
         if clipboard_text:
@@ -337,8 +326,8 @@ class TagEditorWidget(QWidget):
         self._refresh_icon_row()
 
     def ok_button_clicked(self):
-        self.collection.update_one(
-            {"_id": self.document["_id"]},
+        database.tags.update_one(
+            {"_id": ObjectId(self.document["_id"])},
             {
                 "$set": {
                     "tagColor": self.tag_widget._tag_color,
@@ -348,27 +337,14 @@ class TagEditorWidget(QWidget):
                 }
             },
         )
-        self.document: dict = self.collection.find_one(
-            {"_id": ObjectId(self.document["_id"])}
-        )  # type: ignore
+        self.document: dict = database.tags.find_one({"_id": ObjectId(self.document["_id"])})  # type: ignore
         self.confirmed.emit()
 
 
-def edit_asset_tag(document_id) -> dict[str, str] | None:
+def edit_tag(document_id) -> dict[str, str] | None:
     app = get_qt_app()
     icon = get_qta_icon(name="mdi.tag-text", scale_factor=1.25)
-    widget = TagEditorWidget(document_id, database.asset_tags)
-    container = ContainerWidget(widget=widget, icon=icon, title="Edit Tag")
-    dialog = ContainerDialog(container)
-    widget.confirmed.connect(dialog.accept)
-    if dialog.exec():
-        return widget.document
-
-
-def edit_shot_tag(document_id):
-    app = get_qt_app()
-    icon = get_qta_icon(name="mdi.tag-text", scale_factor=1.25)
-    widget = TagEditorWidget(document_id, database.shot_tags)
+    widget = TagEditorWidget(document_id)
     container = ContainerWidget(widget=widget, icon=icon, title="Edit Tag")
     dialog = ContainerDialog(container)
     widget.confirmed.connect(dialog.accept)
@@ -378,12 +354,6 @@ def edit_shot_tag(document_id):
 
 if __name__ == "__main__":
     parser = ArgumentParser()
-    parser.add_argument("-aid", "--asset_id", required=False)
-    parser.add_argument("-sid", "--shot_id", required=False)
+    parser.add_argument("-id", "--tag_id", required=True)
     args = parser.parse_args()
-
-    if args.asset_id:
-        print(edit_asset_tag(args.asset_id))
-
-    if args.shot_id:
-        print(edit_shot_tag(args.shot_id))
+    edit_tag(args.tag_id)

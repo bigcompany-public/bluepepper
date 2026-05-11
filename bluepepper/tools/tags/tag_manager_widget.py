@@ -1,7 +1,5 @@
 from argparse import ArgumentParser
-from typing import Callable
 
-from pymongo.collection import Collection
 from qtpy.QtCore import Qt, Signal
 from qtpy.QtWidgets import (
     QFrame,
@@ -23,7 +21,7 @@ from bluepepper.gui.widgets.container import (
     ContainerWidget,
     get_qt_app,
 )
-from bluepepper.tools.tags.tag_editor_widget import edit_asset_tag, edit_shot_tag
+from bluepepper.tools.tags.tag_editor_widget import edit_tag
 from bluepepper.tools.tags.tag_widget import TagWidget
 
 
@@ -37,12 +35,10 @@ class EditableTagWidget(QWidget):
     def __init__(
         self,
         tag_document: dict[str, str],
-        edit_callback: Callable,
         parent: QWidget | None = None,
     ):
         super().__init__(parent)
         self._tag_document = tag_document
-        self._edit_callback = edit_callback
 
         self._layout = QHBoxLayout(self)
         self._layout.setContentsMargins(0, 0, 0, 0)
@@ -62,7 +58,7 @@ class EditableTagWidget(QWidget):
         menu = QMenu(self)
         edit_action = menu.addAction("Edit")
         if menu.exec(self.mapToGlobal(pos)):
-            result = self._edit_callback(str(self._tag_document["_id"]))
+            result = edit_tag(str(self._tag_document["_id"]))
             if result:
                 self._tag_document = result
                 self.update_tag_widget()
@@ -71,10 +67,9 @@ class EditableTagWidget(QWidget):
 class TagManagerWidget(QWidget):
     confirmed: Signal = Signal(object)
 
-    def __init__(self, collection: Collection, edit_callback: Callable):
+    def __init__(self, tag_type: str):
+        self.tag_type = tag_type
         super().__init__()
-        self._collection = collection
-        self._edit_callback = edit_callback
         self.setup_ui()
         self.setup_signals()
         self.setup_initial_state()
@@ -96,9 +91,7 @@ class TagManagerWidget(QWidget):
         self._table.setColumnCount(1)
         self._table.horizontalHeader().hide()
         self._table.verticalHeader().hide()
-        self._table.horizontalHeader().setSectionResizeMode(
-            QHeaderView.ResizeMode.Stretch
-        )
+        self._table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self._table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         self._table.setSelectionMode(QTableWidget.SelectionMode.ExtendedSelection)
         frame_layout.addWidget(self._table)
@@ -114,9 +107,7 @@ class TagManagerWidget(QWidget):
 
     def setup_signals(self) -> None:
         self._search_edit.textChanged.connect(self.update_items)
-        self._ok_button.clicked.connect(
-            lambda: self.confirmed.emit(self._get_selected_document())
-        )
+        self._ok_button.clicked.connect(lambda: self.confirmed.emit(self._get_selected_document()))
 
     def _get_selected_document(self) -> dict[str, str] | None:
         selected = self._table.selectedItems()
@@ -128,7 +119,7 @@ class TagManagerWidget(QWidget):
 
     def get_tag_documents(self) -> list[dict[str, str]]:
         query = {"tag": {"$regex": self._search_edit.text(), "$options": "i"}}
-        return sorted(list(self._collection.find(query)), key=lambda doc: doc["tag"])
+        return sorted(list(database.tags.find(query)), key=lambda doc: doc["tag"])
 
     def setup_initial_state(self) -> None:
         self.update_items()
@@ -137,9 +128,7 @@ class TagManagerWidget(QWidget):
         documents = self.get_tag_documents()
         self._table.setRowCount(len(documents))
         for row, document in enumerate(documents):
-            widget = EditableTagWidget(
-                tag_document=document, edit_callback=self._edit_callback
-            )
+            widget = EditableTagWidget(document)
             self._table.setItem(row, 0, QTableWidgetItem())
             self._table.setCellWidget(row, 0, widget)
             self._table.setRowHeight(row, widget.sizeHint().height() + 6)
@@ -153,25 +142,10 @@ class TagManagerWidget(QWidget):
         return documents
 
 
-def show_asset_tag_manager_dialog() -> list[dict[str, str]] | None:
+def show_tag_manager_dialog(tag_type: str) -> list[dict[str, str]] | None:
     app = get_qt_app()
     icon = get_qta_icon(name="mdi.tag-text", scale_factor=1.25)
-    widget = TagManagerWidget(
-        collection=database.asset_tags, edit_callback=edit_asset_tag
-    )
-    container = ContainerWidget(widget=widget, icon=icon, title="Tag Manager")
-    dialog = ContainerDialog(container)
-    widget.confirmed.connect(dialog.accept)
-    if dialog.exec():
-        return widget.selected_documents()
-
-
-def show_shot_tag_manager_dialog() -> list[dict[str, str]] | None:
-    app = get_qt_app()
-    icon = get_qta_icon(name="mdi.tag-text", scale_factor=1.25)
-    widget = TagManagerWidget(
-        collection=database.shot_tags, edit_callback=edit_shot_tag
-    )
+    widget = TagManagerWidget(tag_type)
     container = ContainerWidget(widget=widget, icon=icon, title="Tag Manager")
     dialog = ContainerDialog(container)
     widget.confirmed.connect(dialog.accept)
@@ -181,12 +155,6 @@ def show_shot_tag_manager_dialog() -> list[dict[str, str]] | None:
 
 if __name__ == "__main__":
     parser = ArgumentParser()
-    parser.add_argument("-a", "--asset", action="store_true")
-    parser.add_argument("-s", "--shot", action="store_true")
+    parser.add_argument("-t", "--tag_type", required=True)
     args = parser.parse_args()
-
-    if args.asset:
-        print(show_asset_tag_manager_dialog())
-
-    if args.shot:
-        print(show_shot_tag_manager_dialog())
+    print(show_tag_manager_dialog(args.tag_type))

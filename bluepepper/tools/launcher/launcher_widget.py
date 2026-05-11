@@ -46,20 +46,20 @@ class LauncherWidget(Ui_launcher_widget):
         format_widgets(self._parent)
 
         # Apps List
-        self.list_apps.setViewMode(QListView.IconMode)
+        self.list_apps.setViewMode(QListView.ViewMode.IconMode)
         self.list_apps.setIconSize(self.icon_size)
         self.list_apps.setWordWrap(True)
         self.list_apps.setSpacing(5)
         self.list_apps.setUniformItemSizes(True)
-        self.list_apps.setResizeMode(QListWidget.Adjust)
+        self.list_apps.setResizeMode(QListWidget.ResizeMode.Adjust)
 
         # Tools List
-        self.list_tools.setViewMode(QListView.IconMode)
+        self.list_tools.setViewMode(QListView.ViewMode.IconMode)
         self.list_tools.setIconSize(self.icon_size)
         self.list_tools.setWordWrap(True)
         self.list_tools.setSpacing(5)
         self.list_tools.setUniformItemSizes(True)
-        self.list_tools.setResizeMode(QListWidget.Adjust)
+        self.list_tools.setResizeMode(QListWidget.ResizeMode.Adjust)
 
     def setup_signals(self):
         self.list_apps.itemDoubleClicked.connect(self.on_item_double_clicked)
@@ -84,10 +84,7 @@ class LauncherWidget(Ui_launcher_widget):
 
     def on_item_double_clicked(self, item: AppItem):
         logging.info(f"Launching: {item.app.label}")
-        run_callable(
-            module=item.app.module,
-            function=item.app.function,
-        )
+        run_callable(module=item.app.module, function=item.app.function, kwargs=item.app.kwargs)
 
     def add_tool_items(self):
         for tool in self.tool_config.tools:

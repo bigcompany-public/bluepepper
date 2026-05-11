@@ -1,8 +1,8 @@
 from argparse import ArgumentParser
 
 from lucent import Rule
-from PySide6.QtCore import Signal
-from PySide6.QtWidgets import (
+from qtpy.QtCore import Signal
+from qtpy.QtWidgets import (
     QFormLayout,
     QHBoxLayout,
     QLabel,
@@ -21,18 +21,17 @@ from bluepepper.gui.widgets.container import (
     get_qt_app,
 )
 from bluepepper.gui.widgets.outcome_popups.outcome_popups import OutcomePopup
-from bluepepper.tags import AssetTagCreator, ShotTagCreator, TagCreator
-from bluepepper.tools.tags.tag_editor_widget import edit_asset_tag, edit_shot_tag
+from bluepepper.tags import TagCreator
+from bluepepper.tools.tags.tag_editor_widget import edit_tag
 
 
 class CreateTagWidget(QWidget):
     # When "create" is pressed, emit a signal that returns the created document's id
     confirmed = Signal(str)
 
-    def __init__(self, creator: TagCreator):
+    def __init__(self, tag_type: str):
         super().__init__()
-        self.creator = creator
-        self.collection = creator.collection
+        self.tag_type = tag_type
         self.created_id: str = ""
         self.setup_ui()
         self.setup_signals()
@@ -53,11 +52,11 @@ class CreateTagWidget(QWidget):
         self.le_name.setMinimumWidth(200)
         self.le_name.setPlaceholderText("tagName")
 
-        form_layout.setWidget(0, QFormLayout.LabelRole, self.tag_label)
-        form_layout.setWidget(0, QFormLayout.FieldRole, self.le_name)
+        form_layout.setWidget(0, QFormLayout.ItemRole.LabelRole, self.tag_label)
+        form_layout.setWidget(0, QFormLayout.ItemRole.FieldRole, self.le_name)
 
         self.create_button = QPushButton("Create")
-        self.create_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.create_button.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.create_button.setProperty("status", "important")
 
         button_layout = QHBoxLayout()
@@ -99,17 +98,17 @@ class CreateTagWidget(QWidget):
             return
 
         with OutcomePopup(show_success_popup=False, sound=True):
-            self.creator.tag = name
-            document = self.creator.create()
+            creator = TagCreator(tag=name, tag_type=self.tag_type)
+            document = creator.create()
 
             self.created_id = document["_id"]
             self.confirmed.emit(document["_id"])
 
 
-def create_asset_tag():
+def show_dialog(tag_type: str):
     app = get_qt_app()
     icon = get_qta_icon(name="mdi.tag-plus", scale_factor=1.25)
-    widget = CreateTagWidget(creator=AssetTagCreator(tag=""))
+    widget = CreateTagWidget(tag_type=tag_type)
     container = ContainerWidget(widget=widget, icon=icon, title="Create Tag")
     dialog = ContainerDialog(container)
     dialog.setMaximumSize(widget.sizeHint().width(), widget.sizeHint().height())
@@ -117,31 +116,12 @@ def create_asset_tag():
     if not dialog.exec():
         return
 
-    edit_asset_tag(widget.created_id)
-
-
-def create_shot_tag():
-    app = get_qt_app()
-    icon = get_qta_icon(name="mdi.tag-plus", scale_factor=1.25)
-    widget = CreateTagWidget(creator=ShotTagCreator(tag=""))
-    container = ContainerWidget(widget=widget, icon=icon, title="Create Tag")
-    dialog = ContainerDialog(container)
-    dialog.setMaximumSize(widget.sizeHint().width(), widget.sizeHint().height())
-    widget.confirmed.connect(dialog.accept)
-    if not dialog.exec():
-        return
-
-    edit_shot_tag(widget.created_id)
+    edit_tag(widget.created_id)
 
 
 if __name__ == "__main__":
     parser = ArgumentParser()
-    parser.add_argument("-a", "--asset", action="store_true")
-    parser.add_argument("-s", "--shot", action="store_true")
+    parser.add_argument("-t", "--tag_type", required=True)
     args = parser.parse_args()
 
-    if args.asset:
-        create_asset_tag()
-
-    if args.shot:
-        create_shot_tag()
+    show_dialog(tag_type=args.tag_type)

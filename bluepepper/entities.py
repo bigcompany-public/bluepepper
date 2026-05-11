@@ -48,29 +48,25 @@ class Asset:
     def add_tag(self, tag: str):
         # Raise error if asset tag was not found
         logging.info(f'Adding tag "{tag}" to asset : {self.identifier}')
-        database.get_asset_tag_document_by_name(tag)
+        database.get_tag_document(tag, tag_type="asset")
         all_tags: list = self.document.get("_tags", [])
         all_tags.append(tag)
         all_tags = sorted(list(set(all_tags)))
-        database.assets.update_one(
-            {"_id": ObjectId(self.document["_id"])}, {"$set": {"_tags": all_tags}}
-        )
+        database.assets.update_one({"_id": self.document["_id"]}, {"$set": {"_tags": all_tags}})
 
         # invalidate current document
         del self.document
 
     def remove_tag(self, tag: str):
         # Raise error if asset tag was not found
-        database.get_asset_tag_document_by_name(tag)
+        database.get_tag_document(tag, tag_type="asset")
         all_tags: list = self.document.get("_tags", [])
         if tag not in all_tags:
             return
 
         logging.info(f'Removing tag "{tag}" from asset : {self.identifier}')
         all_tags.remove(tag)
-        database.assets.update_one(
-            {"_id": ObjectId(self.document["_id"])}, {"$set": {"_tags": all_tags}}
-        )
+        database.assets.update_one({"_id": ObjectId(self.document["_id"])}, {"$set": {"_tags": all_tags}})
 
         # invalidate current document
         del self.document
@@ -87,22 +83,14 @@ class Asset:
 
     @staticmethod
     def from_aquarium_key(aquarium_key: int) -> Asset:
-        document: dict[str, str] = database.assets.find_one(
-            {"_aquariumKey": int(aquarium_key)}
-        )  # type: ignore
+        document: dict[str, str] = database.assets.find_one({"_aquariumKey": int(aquarium_key)})  # type: ignore
         if not document:
-            raise AssetNotFoundError(
-                f'Asset with aquarium key "{aquarium_key}" not found'
-            )
+            raise AssetNotFoundError(f'Asset with aquarium key "{aquarium_key}" not found')
         return Asset(document_id=document["_id"])
 
     @staticmethod
     def from_fields(fields: dict[str, str]) -> Asset:
-        query = {
-            k: v
-            for k, v in fields.items()
-            if k in codex.convs.asset_identifier.required_fields
-        }
+        query = {k: v for k, v in fields.items() if k in codex.convs.asset_identifier.required_fields}
         document: dict[str, str] = database.assets.find_one(query)  # type: ignore
         if not document:
             raise AssetNotFoundError(f"Asset with query {query} not found")
@@ -154,9 +142,7 @@ class Shot:
             update={"$set": {"_breakdown": breakdown}},
         )
         if not result.matched_count:
-            raise RuntimeError(
-                f"{self.identifier} - Failed to update the breakdown on database"
-            )
+            raise RuntimeError(f"{self.identifier} - Failed to update the breakdown on database")
 
         # invalidate current document
         del self.document
@@ -183,22 +169,14 @@ class Shot:
 
     @staticmethod
     def from_aquarium_key(aquarium_key: int) -> Shot:
-        document: dict[str, str] = database.assets.find_one(
-            {"_aquariumKey": int(aquarium_key)}
-        )  # type: ignore
+        document: dict[str, str] = database.assets.find_one({"_aquariumKey": int(aquarium_key)})  # type: ignore
         if not document:
-            raise ShotNotFoundError(
-                f'Shot with aquarium key "{aquarium_key}" not found'
-            )
+            raise ShotNotFoundError(f'Shot with aquarium key "{aquarium_key}" not found')
         return Shot(document_id=document["_id"])
 
     @staticmethod
     def from_fields(fields: dict[str, str]) -> Shot:
-        query = {
-            k: v
-            for k, v in fields.items()
-            if k in codex.convs.asset_identifier.required_fields
-        }
+        query = {k: v for k, v in fields.items() if k in codex.convs.asset_identifier.required_fields}
         document: dict[str, str] = database.assets.find_one(query)  # type: ignore
         if not document:
             raise ShotNotFoundError(f"Shot with query {query} not found")
@@ -211,9 +189,7 @@ class Shot:
         all_tags: list = self.document.get("_tags", [])
         all_tags.append(tag)
         all_tags = sorted(list(set(all_tags)))
-        database.shots.update_one(
-            {"_id": ObjectId(self.document["_id"])}, {"$set": {"_tags": all_tags}}
-        )
+        database.shots.update_one({"_id": ObjectId(self.document["_id"])}, {"$set": {"_tags": all_tags}})
 
         # invalidate current document
         del self.document
@@ -227,9 +203,7 @@ class Shot:
 
         logging.info(f'Removing tag "{tag}" from shot : {self.identifier}')
         all_tags.remove(tag)
-        database.shots.update_one(
-            {"_id": ObjectId(self.document["_id"])}, {"$set": {"_tags": all_tags}}
-        )
+        database.shots.update_one({"_id": ObjectId(self.document["_id"])}, {"$set": {"_tags": all_tags}})
 
         # invalidate current document
         del self.document
@@ -245,3 +219,8 @@ class AssetCasting:
 
     def __repr__(self):
         return f"{self.asset.identifier} x {self.quantity}"
+
+
+if __name__ == "__main__":
+    a = Asset("69ea2320a43cd5d382c0801f")
+    a.add_tag("yolo")
