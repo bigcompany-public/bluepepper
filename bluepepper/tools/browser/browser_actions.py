@@ -28,7 +28,7 @@ def shot_document_help_me(document: dict):
 
 
 def asset_add_tag(documents: list[dict]):
-    tag_documents = show_tag_manager_dialog(tag_type="asset")
+    tag_documents = show_tag_manager_dialog(tag_collection="assets")
     if not tag_documents:  # Cancelled by the user
         return
 
@@ -39,7 +39,7 @@ def asset_add_tag(documents: list[dict]):
 
 
 def asset_remove_tag(documents: list[dict]):
-    tag_documents = show_tag_manager_dialog(tag_type="asset")
+    tag_documents = show_tag_manager_dialog(tag_collection="assets")
     if not tag_documents:  # Cancelled by the user
         return
 
@@ -50,7 +50,7 @@ def asset_remove_tag(documents: list[dict]):
 
 
 def shot_add_tag(documents: list[dict]):
-    tag_documents = show_tag_manager_dialog(tag_type="shot")
+    tag_documents = show_tag_manager_dialog(tag_collection="shots")
     if not tag_documents:  # Cancelled by the user
         return
 
@@ -61,7 +61,7 @@ def shot_add_tag(documents: list[dict]):
 
 
 def shot_remove_tag(documents: list[dict]):
-    tag_documents = show_tag_manager_dialog(tag_type="shot")
+    tag_documents = show_tag_manager_dialog(tag_collection="shots")
     if not tag_documents:  # Cancelled by the user
         return
 
