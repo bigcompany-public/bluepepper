@@ -7,12 +7,14 @@ from pathlib import Path
 from typing import Generator
 
 import psutil
-from bluepepper.core import get_temp_path, init_logging, root_dir
+import pyautogui
 from pynput.keyboard import Controller as KeyboardController
 from pynput.keyboard import Key
 from pynput.keyboard import Listener as KeyboardListener
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
+
+from bluepepper.core import get_temp_path, init_logging, root_dir
 
 
 class ScreenshotHandler(FileSystemEventHandler):
@@ -127,16 +129,25 @@ class GinkScreenshot:
         # Create handler that looks for new files
         event_handler = ScreenshotHandler()
         observer = Observer()
-        observer.schedule(
-            event_handler, self.destination_dir.as_posix(), recursive=False
-        )
+        observer.schedule(event_handler, self.destination_dir.as_posix(), recursive=False)
         observer.start()
 
         # Create handler that checks if escape gets pressed
         esc_watcher = EscWatcher()
         esc_watcher.start()
 
+        # monitor the down right area of the screen, where gink should open
+        # When gink opens, two colors can be sampled : the white bar, and the black close button
+        width, height = pyautogui.size()
+        x = width - 45
+        y = height - 90
         start_time = time.time()
+        initial_bg_color = pyautogui.pixel(x, y)
+        white_bar_color = (245, 245, 245)
+        black_button_color = (0, 0, 0)
+        gink_opening = False
+        gink_opened = False
+
         try:
             while True:
                 # 1) Screenshot created
@@ -153,6 +164,15 @@ class GinkScreenshot:
                 # 3) Timeout
                 if time.time() - start_time > timeout:
                     logging.warning("No screenshot detected — timeout.")
+                    return None
+
+                # 4) Gink closed with the close button
+                current_pixel_value = pyautogui.pixel(x, y)
+                if current_pixel_value == white_bar_color:
+                    gink_opening = True
+                if gink_opening and current_pixel_value == black_button_color:
+                    gink_opened = True
+                if gink_opened and current_pixel_value == initial_bg_color:
                     return None
 
                 time.sleep(0.05)
