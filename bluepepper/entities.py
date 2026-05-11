@@ -48,18 +48,18 @@ class Asset:
     def add_tag(self, tag: str):
         # Raise error if asset tag was not found
         logging.info(f'Adding tag "{tag}" to asset : {self.identifier}')
-        database.get_tag_document(tag, tag_type="asset")
+        database.get_tag_document(tag, tag_collection="assets")
         all_tags: list = self.document.get("_tags", [])
         all_tags.append(tag)
         all_tags = sorted(list(set(all_tags)))
-        database.assets.update_one({"_id": self.document["_id"]}, {"$set": {"_tags": all_tags}})
+        database.assets.update_one({"_id": ObjectId(self.document["_id"])}, {"$set": {"_tags": all_tags}})
 
         # invalidate current document
         del self.document
 
     def remove_tag(self, tag: str):
         # Raise error if asset tag was not found
-        database.get_tag_document(tag, tag_type="asset")
+        database.get_tag_document(tag, tag_collection="assets")
         all_tags: list = self.document.get("_tags", [])
         if tag not in all_tags:
             return
@@ -185,7 +185,7 @@ class Shot:
     def add_tag(self, tag: str):
         # Raise error if shot tag was not found
         logging.info(f'Adding tag "{tag}" to shot : {self.identifier}')
-        database.get_tag_document(tag=tag, tag_type="shot")
+        database.get_tag_document(tag=tag, tag_collection="shot")
         all_tags: list = self.document.get("_tags", [])
         all_tags.append(tag)
         all_tags = sorted(list(set(all_tags)))
@@ -196,7 +196,7 @@ class Shot:
 
     def remove_tag(self, tag: str):
         # Raise error if shot tag was not found
-        database.get_tag_document(tag=tag, tag_type="shot")
+        database.get_tag_document(tag=tag, tag_collection="shot")
         all_tags: list = self.document.get("_tags", [])
         if tag not in all_tags:
             return

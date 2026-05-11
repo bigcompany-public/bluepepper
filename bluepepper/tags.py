@@ -19,14 +19,14 @@ class TagCreator:
     def __init__(
         self,
         tag: str,
-        tag_type: str,
+        tag_collection: str,
         color: Optional[str] = "#45AB9E",
         text_color: Optional[str] = "#FFFFFF",
         icon: Optional[str] = "fa5s.circle",
         icon_color: Optional[str] = "#FFFFFF",
     ) -> None:
         self.tag = tag
-        self.tag_type = tag_type
+        self.tag_collection = tag_collection
         self.icon = icon
         self.color = color
         self.text_color = text_color
@@ -37,7 +37,7 @@ class TagCreator:
     def fields(self) -> dict:
         return {
             "tag": self.tag,
-            "tagType": self.tag_type,
+            "tagCollection": self.tag_collection,
             "tagColor": self.color,
             "tagTextColor": self.text_color,
             "tagIcon": self.icon,
@@ -68,7 +68,7 @@ class TagCreator:
         return self.document
 
     def check_existing_tag(self) -> None:
-        query = {"tag": self.tag, "tagType": self.tag_type}
+        query = {"tag": self.tag, "tagCollection": self.tag_collection}
         result = list(self.collection.find(query))
         if result:
             raise TagAlreadyExistsError(f"Tag already exists : {query}")
@@ -81,8 +81,10 @@ class TagCreator:
 if __name__ == "__main__":
     init_logging("sandbox")
     parser = argparse.ArgumentParser()
-    parser.add_argument("-n", "--name", required=True, help="Name of the tag")
-    parser.add_argument("-t", "--type", required=True, help="Type of the tag (asset, shot...)")
+    parser.add_argument("-t", "--tag_name", required=True, help="Name of the tag")
+    parser.add_argument(
+        "-c", "--tag_collection", required=True, help="Collection associated with the tag (assets, shots...)"
+    )
     args = parser.parse_args()
-    tc = TagCreator(tag=args.name, tag_type=args.type)
+    tc = TagCreator(tag=args.name, tag_collection=args.type)
     tc.create()

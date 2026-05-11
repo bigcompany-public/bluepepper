@@ -69,7 +69,7 @@ class DefaultLauncherConfig(LauncherConfig):
             module="bluepepper.tools.tags.tag_manager_widget",
             function="show_tag_manager_dialog",
             tooltip="Manage asset tags",
-            kwargs={"tag_type": "asset"},
+            kwargs={"tag_collection": "assets"},
         ),
         LauncherItem(
             label="Shot Tag Manager",
@@ -77,6 +77,6 @@ class DefaultLauncherConfig(LauncherConfig):
             module="bluepepper.tools.tags.tag_manager_widget",
             function="show_tag_manager_dialog",
             tooltip="Manage shot tags",
-            kwargs={"tag_type": "shot"},
+            kwargs={"tag_collection": "shots"},
         ),
     ]
