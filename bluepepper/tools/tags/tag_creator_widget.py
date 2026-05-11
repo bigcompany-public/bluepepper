@@ -29,9 +29,10 @@ class CreateTagWidget(QWidget):
     # When "create" is pressed, emit a signal that returns the created document's id
     confirmed = Signal(str)
 
-    def __init__(self, tag_type: str):
+    def __init__(self, tag_collection: str, tag_name: str = ""):
         super().__init__()
-        self.tag_type = tag_type
+        self.tag_collection = tag_collection
+        self.tag_name = tag_name
         self.created_id: str = ""
         self.setup_ui()
         self.setup_signals()
@@ -51,6 +52,8 @@ class CreateTagWidget(QWidget):
         self.le_name = QLineEdit()
         self.le_name.setMinimumWidth(200)
         self.le_name.setPlaceholderText("tagName")
+        if self.tag_name:
+            self.le_name.setText(self.tag_name)
 
         form_layout.setWidget(0, QFormLayout.ItemRole.LabelRole, self.tag_label)
         form_layout.setWidget(0, QFormLayout.ItemRole.FieldRole, self.le_name)
@@ -98,17 +101,17 @@ class CreateTagWidget(QWidget):
             return
 
         with OutcomePopup(show_success_popup=False, sound=True):
-            creator = TagCreator(tag=name, tag_type=self.tag_type)
+            creator = TagCreator(tag=name, tag_collection=self.tag_collection)
             document = creator.create()
 
             self.created_id = document["_id"]
             self.confirmed.emit(document["_id"])
 
 
-def show_dialog(tag_type: str):
+def show_dialog(tag_collection: str, tag_name: str = ""):
     app = get_qt_app()
     icon = get_qta_icon(name="mdi.tag-plus", scale_factor=1.25)
-    widget = CreateTagWidget(tag_type=tag_type)
+    widget = CreateTagWidget(tag_collection=tag_collection, tag_name=tag_name)
     container = ContainerWidget(widget=widget, icon=icon, title="Create Tag")
     dialog = ContainerDialog(container)
     dialog.setMaximumSize(widget.sizeHint().width(), widget.sizeHint().height())
@@ -121,7 +124,8 @@ def show_dialog(tag_type: str):
 
 if __name__ == "__main__":
     parser = ArgumentParser()
-    parser.add_argument("-t", "--tag_type", required=True)
+    parser.add_argument("-c", "--tag_collection", required=True)
+    parser.add_argument("-t", "--tag_name", required=False)
     args = parser.parse_args()
 
-    show_dialog(tag_type=args.tag_type)
+    show_dialog(tag_collection=args.tag_collection, tag_name=args.tag_name)
