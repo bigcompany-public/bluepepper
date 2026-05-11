@@ -24,6 +24,7 @@ discord.py
 opencolorio
 watchdog
 windows-toasts
+pyautogui
 
 # Production trackers
 aquarium-python-api
