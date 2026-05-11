@@ -185,7 +185,7 @@ class Shot:
     def add_tag(self, tag: str):
         # Raise error if shot tag was not found
         logging.info(f'Adding tag "{tag}" to shot : {self.identifier}')
-        database.get_tag_document(tag=tag, tag_collection="shot")
+        database.get_tag_document(tag=tag, tag_collection="shots")
         all_tags: list = self.document.get("_tags", [])
         all_tags.append(tag)
         all_tags = sorted(list(set(all_tags)))
@@ -196,7 +196,7 @@ class Shot:
 
     def remove_tag(self, tag: str):
         # Raise error if shot tag was not found
-        database.get_tag_document(tag=tag, tag_collection="shot")
+        database.get_tag_document(tag=tag, tag_collection="shots")
         all_tags: list = self.document.get("_tags", [])
         if tag not in all_tags:
             return
