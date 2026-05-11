@@ -16,10 +16,7 @@ from bluepepper.entities import Asset, Shot
 from bluepepper.openfile import open_file, show_in_explorer
 from bluepepper.softwares.vscode_launcher import VsCodeLauncher
 from bluepepper.tools.helpme.helpme_widget import show_dialog as show_helpme_dialog
-from bluepepper.tools.tags.tag_manager_widget import (
-    show_asset_tag_manager_dialog,
-    show_shot_tag_manager_dialog,
-)
+from bluepepper.tools.tags.tag_manager_widget import show_tag_manager_dialog
 
 
 def asset_document_help_me(document: dict):
@@ -31,7 +28,7 @@ def shot_document_help_me(document: dict):
 
 
 def asset_add_tag(documents: list[dict]):
-    tag_documents = show_asset_tag_manager_dialog()
+    tag_documents = show_tag_manager_dialog(tag_type="asset")
     if not tag_documents:  # Cancelled by the user
         return
 
@@ -42,7 +39,7 @@ def asset_add_tag(documents: list[dict]):
 
 
 def asset_remove_tag(documents: list[dict]):
-    tag_documents = show_asset_tag_manager_dialog()
+    tag_documents = show_tag_manager_dialog(tag_type="asset")
     if not tag_documents:  # Cancelled by the user
         return
 
@@ -53,7 +50,7 @@ def asset_remove_tag(documents: list[dict]):
 
 
 def shot_add_tag(documents: list[dict]):
-    tag_documents = show_shot_tag_manager_dialog()
+    tag_documents = show_tag_manager_dialog(tag_type="shot")
     if not tag_documents:  # Cancelled by the user
         return
 
@@ -64,7 +61,7 @@ def shot_add_tag(documents: list[dict]):
 
 
 def shot_remove_tag(documents: list[dict]):
-    tag_documents = show_shot_tag_manager_dialog()
+    tag_documents = show_tag_manager_dialog(tag_type="shot")
     if not tag_documents:  # Cancelled by the user
         return
 
