@@ -6,13 +6,13 @@ This module contains the open_file function,
 used to standardize the way files are opened
 """
 
-import os
-import logging
-import webbrowser
 import argparse
+import logging
+import os
 import subprocess
-from typing import List
+import webbrowser
 from pathlib import Path
+from typing import List
 
 
 def open_file(path: Path, os_default=False):
@@ -58,7 +58,10 @@ def open_file(path: Path, os_default=False):
 
 def show_in_explorer(path: Path):
     path = Path(path)
-    subprocess.Popen(["explorer.exe", f'/select,{path}'])
+    # Notes :
+    # - doesn't work with forward slashes
+    # - doesn't work with commands provided as a list if the path contains spaces (a string with quotes is used instead)
+    subprocess.Popen(f'explorer.exe /select,"{path}"')
 
 
 def read_as_vlc_playlist(paths: List[Path]):
