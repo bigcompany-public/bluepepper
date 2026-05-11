@@ -30,13 +30,7 @@ class AssetNotFoundError(Exception):
     ...
 
 
-class AssetTagNotFoundError(Exception):
-    """Raised when an tag document is not found in the database."""
-
-    ...
-
-
-class ShotTagNotFoundError(Exception):
+class TagNotFoundError(Exception):
     """Raised when an tag document is not found in the database."""
 
     ...
@@ -263,7 +257,7 @@ class BigMongoClient(MongoClient):
         Raises:
             AssetNotFoundError: If no asset with the given ID exists.
         """
-        document = self.assets.find_one({"_id": document_id})
+        document = self.assets.find_one({"_id": ObjectId(document_id)})
         if not document:
             raise AssetNotFoundError(f'No asset with _id="{document_id}" was found')
         return self.stringify_id(document)
@@ -350,7 +344,7 @@ class BigMongoClient(MongoClient):
         Raises:
             ShotNotFoundError: If no shot with the given ID exists.
         """
-        document = self.shots.find_one({"_id": document_id})
+        document = self.shots.find_one({"_id": ObjectId(document_id)})
         if not document:
             raise ShotNotFoundError(f'No shot with _id="{document_id}" was found')
         return self.stringify_id(document)
@@ -429,35 +423,35 @@ class BigMongoClient(MongoClient):
         """Retrieve tag document by ObjectId.
 
         Args:
-            document_id: AssetTag document ID as string representation of ObjectId.
+            document_id: Tag document ID as string representation of ObjectId.
 
         Returns:
-            AssetTag document dictionary with _id converted to string.
+            Tag document dictionary with _id converted to string.
 
         Raises:
-            AssetTagNotFoundError: If no tag with the given ID exists.
+            TagNotFoundError: If no tag with the given ID exists.
         """
         document = self.tags.find_one(ObjectId(document_id))
         if not document:
-            raise AssetTagNotFoundError(f'No tag with _id="{document_id}" was found')
+            raise TagNotFoundError(f'No tag with _id="{document_id}" was found')
         return self.stringify_id(document)
 
-    def get_tag_document(self, tag: str, tag_type: str) -> dict[str, Any]:
+    def get_tag_document(self, tag: str, tag_collection: str) -> dict[str, Any]:
         """Retrieve tag document by tag name/type.
 
         Args:
             tag: The tag name to search for.
-            tag_type: The tag type to search for.
+            tag_collection: The tag type to search for.
 
         Returns:
-            AssetTag document dictionary with _id converted to string.
+            Tag document dictionary with _id converted to string.
 
         Raises:
-            AssetTagNotFoundError: If no tag with the given name exists.
+            TagNotFoundError: If no tag with the given name exists.
         """
-        document = self.tags.find_one({"tag": tag, "tagType": tag_type})
+        document = self.tags.find_one({"tag": tag, "tagCollection": tag_collection})
         if not document:
-            raise AssetTagNotFoundError(f'No tag with tag="{tag}" was found')
+            raise TagNotFoundError(f'No tag with tag="{tag}" was found')
         return self.stringify_id(document)
 
     def stringify_id(self, document: dict[str, Any]) -> dict[str, Any]:
@@ -493,6 +487,9 @@ class BigMongoClient(MongoClient):
         path.parent.mkdir(exist_ok=True, parents=True)
         path.write_text(json.dumps(db_dump, indent=4))
 
+    def get_entities_with_tag(self, tag: str, collection: Collection) -> list[dict]:
+        return list(collection.find({"_tags": tag}))
+
     def get_backup_dump_path(self) -> Path:
         """Get the default path for database backup dumps.
 
@@ -516,6 +513,8 @@ class BigMongoClient(MongoClient):
         db_dump: dict[str, list[dict]] = json.loads(path.read_text())
         self.drop_database(self.db.name)
         for collection, documents in db_dump.items():
+            for document in documents:
+                document["_id"] = ObjectId(document["_id"])
             self.db[collection].insert_many(documents)
 
         # sleeping a bit to let mongodb register the changes
