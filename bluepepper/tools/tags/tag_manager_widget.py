@@ -256,8 +256,18 @@ class TagManagerWidget(QWidget):
         self.create_button.clicked.connect(self.create_button_clicked)
 
     def create_button_clicked(self):
-        show_dialog(self.tag_collection, tag_name=self._search_edit.text())
+        document = show_dialog(self.tag_collection, tag_name=self._search_edit.text())
+        if not document:
+            return
+
+        # Select newly created item
         self.table_widget.update_items()
+        self.table_widget.clearSelection()
+        for row in range(self.table_widget.rowCount()):
+            widget = self.table_widget.get_tag_widget_at_row(row)
+            item: QTableWidgetItem = self.table_widget.item(row, 0)  # type: ignore
+            if widget.tag_document["_id"] == document["_id"]:
+                item.setSelected(True)
 
     @property
     def selected_documents(self) -> list[dict[str, str]]:

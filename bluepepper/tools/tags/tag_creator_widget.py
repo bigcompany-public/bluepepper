@@ -108,7 +108,7 @@ class CreateTagWidget(QWidget):
             self.confirmed.emit(document["_id"])
 
 
-def show_dialog(tag_collection: str, tag_name: str = ""):
+def show_dialog(tag_collection: str, tag_name: str = "") -> dict | None:
     app = get_qt_app()
     icon = get_qta_icon(name="mdi.tag-plus", scale_factor=1.25)
     widget = CreateTagWidget(tag_collection=tag_collection, tag_name=tag_name)
@@ -119,7 +119,7 @@ def show_dialog(tag_collection: str, tag_name: str = ""):
     if not dialog.exec():
         return
 
-    edit_tag(widget.created_id)
+    return edit_tag(widget.created_id)
 
 
 if __name__ == "__main__":
