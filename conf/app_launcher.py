@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Sequence
 
 
 @dataclass
@@ -21,7 +20,7 @@ class LauncherItem:
     icon: str
     module: str
     function: str
-    args: Sequence[str] = field(default_factory=list[str])
+    kwargs: dict[str, str] = field(default_factory=dict[str, str])
     tooltip: str = ""
 
 
@@ -68,14 +67,16 @@ class DefaultLauncherConfig(LauncherConfig):
             label="Asset Tag Manager",
             icon="tag.png",
             module="bluepepper.tools.tags.tag_manager_widget",
-            function="show_asset_tag_manager_dialog",
+            function="show_tag_manager_dialog",
             tooltip="Manage asset tags",
+            kwargs={"tag_type": "asset"},
         ),
         LauncherItem(
             label="Shot Tag Manager",
             icon="tag.png",
             module="bluepepper.tools.tags.tag_manager_widget",
-            function="show_shot_tag_manager_dialog",
+            function="show_tag_manager_dialog",
             tooltip="Manage shot tags",
+            kwargs={"tag_type": "shot"},
         ),
     ]
