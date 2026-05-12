@@ -71,6 +71,10 @@ class BrowserWidget(QWidget):
     def selected_tab(self) -> EntityTab:
         return self.tab_widget.currentWidget()  # type: ignore
 
+    def update_documents(self):
+        """Shorthand for updating documents in the current tab"""
+        self.selected_tab.document_table.update_items()
+
 
 def get_batcher_widget(browser: BrowserWidget) -> BatcherWidget:
     bluepepper_app: BluePepperApp = getattr(browser, "bluepepper_app")
