@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from argparse import ArgumentParser
 
-from qtpy.QtCore import QSize, Qt, Signal
+from qtpy.QtCore import Qt, Signal
 from qtpy.QtWidgets import (
     QAbstractItemView,
     QFrame,
@@ -26,20 +26,14 @@ from bluepepper.tools.tags.tag_widget import TagWidget
 
 
 class TagListWidget(QFrame):
-    """
-    Frame that contains the actual TagWidget, mostly for having a good looking and well spaced table items
-    """
-
     def __init__(self, tag_document: dict[str, str], item: QListWidgetItem):
         super().__init__()
         self.tag_document = tag_document
         self.item = item
 
-        # Add a container with a few pixels of margin to make the selection more visually clear in the JobTableWidget
         margin_layout = QVBoxLayout(self)
-        margin_layout.setContentsMargins(2, 0, 0, 0)
+        margin_layout.setContentsMargins(2, 2, 2, 2)
 
-        # Main frame containing the tag widget
         inner_frame = QFrame()
         inner_frame.setProperty("depth", "4")
         margin_layout.addWidget(inner_frame)
@@ -50,9 +44,12 @@ class TagListWidget(QFrame):
         self._layout.addWidget(self._widget)
         self._layout.addStretch()
 
-        # Adjust the size of the item
-        size: QSize = self.sizeHint()
-        item.setSizeHint(size)
+    def update_item_size_hint(self):
+        """Call this after setItemWidget() so layout is finalized."""
+        self.adjustSize()
+        size = self.sizeHint()
+        size.setHeight(size.height() + 2)
+        self.item.setSizeHint(size)
 
 
 class TagList(QListWidget):
@@ -60,10 +57,10 @@ class TagList(QListWidget):
         super().__init__(tag_filter_widget)
         self.tag_filter_widget = tag_filter_widget
         self.setResizeMode(QListView.ResizeMode.Adjust)
-        # self.setGridSize(QSize(64, 64))
         self.setSortingEnabled(True)
         self.setFlow(QListView.Flow.LeftToRight)
         self.setWrapping(True)
+        self.setSpacing(1)
         self.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.setSelectionMode(QListWidget.SelectionMode.ExtendedSelection)
@@ -72,7 +69,6 @@ class TagList(QListWidget):
         self.setHorizontalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
         self.setResizeMode(QListWidget.ResizeMode.Adjust)
-        self.setFixedHeight(50)
 
 
 class TagFilterWidget(QWidget):
@@ -99,14 +95,13 @@ class TagFilterWidget(QWidget):
 
     def setup_initial_state(self):
         for document in self.get_tag_documents():
-            # Item
             item = QListWidgetItem()
-            item.setText(document["tag"])
-
-            # Widget
             widget = TagListWidget(tag_document=document, item=item)
             self.list_widget.addItem(item)
             self.list_widget.setItemWidget(item, widget)
+
+            # Now the widget is parented and layout is computable
+            widget.update_item_size_hint()
 
     @property
     def selected_tags(self) -> list[dict]:

@@ -9,7 +9,7 @@ from PySide6.QtWidgets import (
 
 
 class TagWidget(QFrame):
-    def __init__(self, tag_document: dict[str, str], size: int = 24):
+    def __init__(self, tag_document: dict[str, str], size: int = 28):
         super().__init__()
         self.document = tag_document
         self._size = size
@@ -30,6 +30,7 @@ class TagWidget(QFrame):
         self.icon_label = QLabel()
         self.text_label = QLabel(self._tag)
         self.text_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.text_label.setMargin(2)
         layout.addWidget(self.icon_label)
         layout.addWidget(self.text_label)
         self.setLayout(layout)
@@ -56,7 +57,8 @@ class TagWidget(QFrame):
             background-color: {self._tag_color};
             color: {self._tag_text_color};
             font-weight: bold;
-            border-radius: {self._size / 2}px;
+            font-size:{int(self._size * 0.5)}px;
+            border-radius: {int(self._size / 2)}px;
             padding-left:{left_padding}px;
             padding-right:{right_padding}px;
             """
