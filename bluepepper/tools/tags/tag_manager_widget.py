@@ -302,6 +302,6 @@ def show_tag_manager_dialog(tag_collection: str) -> list[dict[str, str]] | None:
 if __name__ == "__main__":
     init_logging("sandbox")
     parser = ArgumentParser()
-    parser.add_argument("-t", "--tag_collection", required=True)
+    parser.add_argument("-c", "--tag_collection", required=True)
     args = parser.parse_args()
     print(show_tag_manager_dialog(args.tag_collection))
