@@ -65,7 +65,6 @@ class TagList(QListWidget):
 
         # UI
         self.setResizeMode(QListView.ResizeMode.Adjust)
-        self.setSortingEnabled(True)
         self.setFlow(QListView.Flow.LeftToRight)
         self.setWrapping(True)
         self.setSpacing(1)
