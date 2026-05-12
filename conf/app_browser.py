@@ -122,7 +122,7 @@ def get_tool_config() -> AppConfig:
         qta_icon="mdi.tag-plus",
         module="bluepepper.tools.browser.browser_actions",
         function="asset_add_tag",
-        kwargs={"documents": "<documents>"},
+        kwargs={"browser": "<browser>", "documents": "<documents>"},
         doc_filter=is_asset,
         mode="all",
     )
@@ -131,7 +131,7 @@ def get_tool_config() -> AppConfig:
         qta_icon="mdi.tag-minus",
         module="bluepepper.tools.browser.browser_actions",
         function="asset_remove_tag",
-        kwargs={"documents": "<documents>"},
+        kwargs={"browser": "<browser>", "documents": "<documents>"},
         doc_filter=is_asset,
         mode="all",
     )
@@ -140,7 +140,7 @@ def get_tool_config() -> AppConfig:
         qta_icon="mdi.tag-plus",
         module="bluepepper.tools.browser.browser_actions",
         function="shot_add_tag",
-        kwargs={"documents": "<documents>"},
+        kwargs={"browser": "<browser>", "documents": "<documents>"},
         doc_filter=is_shot,
         mode="all",
     )
@@ -149,7 +149,7 @@ def get_tool_config() -> AppConfig:
         qta_icon="mdi.tag-minus",
         module="bluepepper.tools.browser.browser_actions",
         function="shot_remove_tag",
-        kwargs={"documents": "<documents>"},
+        kwargs={"browser": "<browser>", "documents": "<documents>"},
         doc_filter=is_shot,
         mode="all",
     )
@@ -324,7 +324,7 @@ def get_tool_config() -> AppConfig:
         entity.add_document_action(asset_remove_tag_action)
         if is_aquarium_available():
             entity.add_document_action(shot_show_in_aquarium_action)
-        entity.add_document_action(shot_fetch_breakdownlist_action)
+            entity.add_document_action(shot_fetch_breakdownlist_action)
         entity.add_document_action(shot_document_help_me_action)
         entity.add_document_action(shot_add_tag_action)
         entity.add_document_action(shot_remove_tag_action)

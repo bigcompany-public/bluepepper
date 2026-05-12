@@ -15,6 +15,7 @@ from bluepepper.core import codex
 from bluepepper.entities import Asset, Shot
 from bluepepper.openfile import open_file, show_in_explorer
 from bluepepper.softwares.vscode_launcher import VsCodeLauncher
+from bluepepper.tools.browser.browser_widget import BrowserWidget
 from bluepepper.tools.helpme.helpme_widget import show_dialog as show_helpme_dialog
 from bluepepper.tools.tags.tag_manager_widget import show_tag_manager_dialog
 
@@ -27,7 +28,7 @@ def shot_document_help_me(document: dict):
     show_helpme_dialog(shot_id=document["_id"])
 
 
-def asset_add_tag(documents: list[dict]):
+def asset_add_tag(browser: BrowserWidget, documents: list[dict]):
     tag_documents = show_tag_manager_dialog(tag_collection="assets")
     if not tag_documents:  # Cancelled by the user
         return
@@ -37,8 +38,10 @@ def asset_add_tag(documents: list[dict]):
         for tag_document in tag_documents:
             asset.add_tag(tag=tag_document["tag"])
 
+    browser.update_documents()
 
-def asset_remove_tag(documents: list[dict]):
+
+def asset_remove_tag(browser: BrowserWidget, documents: list[dict]):
     tag_documents = show_tag_manager_dialog(tag_collection="assets")
     if not tag_documents:  # Cancelled by the user
         return
@@ -48,8 +51,10 @@ def asset_remove_tag(documents: list[dict]):
         for tag_document in tag_documents:
             asset.remove_tag(tag=tag_document["tag"])
 
+    browser.update_documents()
 
-def shot_add_tag(documents: list[dict]):
+
+def shot_add_tag(browser: BrowserWidget, documents: list[dict]):
     tag_documents = show_tag_manager_dialog(tag_collection="shots")
     if not tag_documents:  # Cancelled by the user
         return
@@ -59,8 +64,10 @@ def shot_add_tag(documents: list[dict]):
         for tag_document in tag_documents:
             shot.add_tag(tag=tag_document["tag"])
 
+    browser.update_documents()
 
-def shot_remove_tag(documents: list[dict]):
+
+def shot_remove_tag(browser: BrowserWidget, documents: list[dict]):
     tag_documents = show_tag_manager_dialog(tag_collection="shots")
     if not tag_documents:  # Cancelled by the user
         return
@@ -69,6 +76,8 @@ def shot_remove_tag(documents: list[dict]):
         shot = Shot(document["_id"])
         for tag_document in tag_documents:
             shot.remove_tag(tag=tag_document["tag"])
+
+    browser.update_documents()
 
 
 def file_help_me(path: Path):
