@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 from argparse import ArgumentParser
 
-from qtpy.QtCore import QEvent, Signal
+from qtpy.QtCore import QEvent, Qt, Signal
 from qtpy.QtWidgets import (
     QFrame,
     QHBoxLayout,
@@ -75,11 +75,9 @@ def show_tag_deletion_warning_dialog(tag: str, num: int, parent=None) -> int:
     return dialog.exec()
 
 
-class EditableTagWidget(QWidget):
+class TagTableWidget(QFrame):
     """
-    Warning: adding a widget to a QTableWidgetItem somehow messes up its size policy, which expands to fill the
-    cell. To fix this, this widget acts as a container for the actual TagWidget, with a stretch added to properly
-    align the TagWidget to the left
+    Frame that contains the actual TagWidget, mostly for having a good looking and well spaced table items
     """
 
     def __init__(
@@ -91,8 +89,17 @@ class EditableTagWidget(QWidget):
         self.tag_document = tag_document
         self.tag_document_widget = tag_manager
 
-        self._layout = QHBoxLayout(self)
-        self._layout.setContentsMargins(0, 0, 0, 0)
+        # Add a container with a few pixels of margin to make the selection more visually clear in the JobTableWidget
+        margin_layout = QVBoxLayout(self)
+        margin_layout.setContentsMargins(2, 0, 0, 0)
+
+        # Main frame containing the tag widget
+        inner_frame = QFrame()
+        inner_frame.setProperty("depth", "4")
+        margin_layout.addWidget(inner_frame)
+        self._layout = QHBoxLayout(inner_frame)
+        self._layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        self._layout.setContentsMargins(2, 2, 2, 2)
         self._widget = TagWidget(tag_document=tag_document)
         self._layout.addWidget(self._widget)
         self._layout.addStretch()
@@ -109,7 +116,7 @@ class EditableTagWidget(QWidget):
             self.update_tag_widget()
 
 
-class TagTableWidget(QTableWidget):
+class TagTable(QTableWidget):
     def __init__(self, tag_manager: TagManagerWidget):
         super().__init__(tag_manager)
         self.tag_manager = tag_manager
@@ -129,21 +136,21 @@ class TagTableWidget(QTableWidget):
         documents = self.tag_manager.get_tag_documents()
         self.setRowCount(len(documents))
         for row, document in enumerate(documents):
-            widget = EditableTagWidget(document, self.tag_manager)
+            widget = TagTableWidget(document, self.tag_manager)
             item = QTableWidgetItem()
             self.setItem(row, 0, item)
             self.setCellWidget(row, 0, widget)
-            self.setRowHeight(row, widget.sizeHint().height() + 4)
+            self.setRowHeight(row, widget.sizeHint().height())
 
             # Restore selection
             if document["_id"] in selection:
                 item.setSelected(True)
 
-    def get_tag_widget_at_row(self, row: int) -> EditableTagWidget:
+    def get_tag_widget_at_row(self, row: int) -> TagTableWidget:
         return self.cellWidget(row, 0)  # type: ignore
 
     @property
-    def selected_tag_widgets(self) -> list[EditableTagWidget]:
+    def selected_tag_widgets(self) -> list[TagTableWidget]:
         return [self.get_tag_widget_at_row(item.row()) for item in self.selectedItems()]
 
     @property
@@ -162,7 +169,7 @@ class TagTableWidget(QTableWidget):
 
 
 class TagManagerMenu(QMenu):
-    def __init__(self, table_widget: TagTableWidget):
+    def __init__(self, table_widget: TagTable):
         super().__init__(table_widget)
         self.table_widget = table_widget
 
@@ -236,7 +243,7 @@ class TagManagerWidget(QWidget):
         frame_layout = QVBoxLayout()
         frame.setLayout(frame_layout)
         frame_layout.setContentsMargins(3, 3, 3, 3)
-        self.table_widget = TagTableWidget(self)
+        self.table_widget = TagTable(self)
         frame_layout.addWidget(self.table_widget)
         button_row = QHBoxLayout()
         button_row.addStretch()
