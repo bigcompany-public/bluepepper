@@ -9,7 +9,7 @@ from qtpy.QtGui import QIcon, QPixmap
 from qtpy.QtWidgets import QListWidget, QListWidgetItem, QWidget
 
 from bluepepper.core import codex, database
-from bluepepper.gui.screenshot_gink import capture_screenshot
+
 from bluepepper.gui.utils import format_widgets, get_stylesheet, get_theme
 from bluepepper.gui.widgets.container import (
     ContainerDialog,
@@ -178,6 +178,9 @@ class HelpMeWidget(Ui_helpme_widget):
             self.l_traceback.setHidden(True)
 
     def pb_screenshot_clicked(self):
+        # Note : the import was moved here because pyautogui triggers a qtpy warning message at bluepepper's launch
+        from bluepepper.gui.screenshot_gink import capture_screenshot
+
         self._parent.showMinimized()
         path = capture_screenshot()
         self._parent.showNormal()
