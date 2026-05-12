@@ -19,9 +19,9 @@ from conf.naming_conventions import codex
 
 # TODO : add retries mechanisms with the tenacity package
 
-_SOCKET_TIMEOUT_S = 0.5
 _LOCAL_STARTUP_RETRIES = 20
-_LOCAL_STARTUP_TIMEOUT_S = 0.2
+_LOCAL_STARTUP_TIMEOUT_S = 0.5
+_LOCAL_STARTUP_SLEEP_S = 0.5
 
 
 class AssetNotFoundError(Exception):
@@ -197,10 +197,12 @@ class BigMongoClient(MongoClient):
         register(lambda: proc.terminate() if proc.poll() is None else None)
 
         for attempt in range(1, _LOCAL_STARTUP_RETRIES + 1):
-            logging.debug(f"Waiting for local mongod (attempt {attempt}/{_LOCAL_STARTUP_RETRIES})")
+            logging.info(f"Waiting for local mongod (attempt {attempt}/{_LOCAL_STARTUP_RETRIES})")
+            print("A")
             if self._socket_reachable("127.0.0.1", 27017, _LOCAL_STARTUP_TIMEOUT_S):
                 logging.info("Local MongoDB server is ready")
                 return
+            time.sleep(_LOCAL_STARTUP_SLEEP_S)
 
         raise errors.ConnectionFailure(f"Local mongod did not become reachable after {_LOCAL_STARTUP_RETRIES} attempts")
 
