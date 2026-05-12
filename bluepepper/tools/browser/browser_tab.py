@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from qtpy.QtCore import Qt
 from qtpy.QtWidgets import (
     QCheckBox,
     QComboBox,
@@ -22,6 +23,7 @@ from bluepepper.tools.browser.table_documents import TableDocuments
 from bluepepper.tools.browser.table_files import TableFiles
 from bluepepper.tools.browser.table_kinds import TableFileKinds
 from bluepepper.tools.browser.table_tasks import TableTasks
+from bluepepper.tools.tags.tag_filter_widget import TagFilterWidget
 
 # Imports used only for type checking : these will not be imported at runtime
 if TYPE_CHECKING:
@@ -70,7 +72,7 @@ class EntityTab(QWidget):
         # Frame for filters
         self.frame_filters_and_tags = QFrame(self)
         self.frame_filters_and_tags.setObjectName(f"frame_filters_{self.entity.name}")
-        self.frame_filters_and_tags.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.frame_filters_and_tags.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         # self.frame_filters_and_tags.setProperty("depth", "0")
         self.layout_filters_and_tags = QVBoxLayout(self.frame_filters_and_tags)
         self.tab_layout.addWidget(self.frame_filters_and_tags)
@@ -89,17 +91,25 @@ class EntityTab(QWidget):
         self.frame_tags = QFrame(self.frame_filters_and_tags)
         self.layout_tags = QHBoxLayout(self.frame_tags)
         self.label_tags = QLabel("Tags", self.frame_tags)
+        self.label_tags.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.label_tags.setMinimumWidth(60)
         self.layout_tags.setContentsMargins(3, 3, 3, 3)
         self.label_tags.setProperty("tag", "H2")
-        self.layout_tags.addWidget(self.label_tags)
+        self.layout_tags.addWidget(self.label_tags, alignment=Qt.AlignmentFlag.AlignTop)
         self.layout_filters_and_tags.addWidget(self.frame_tags)
+        self.tag_filter_widget = TagFilterWidget(tag_collection=self.entity.collection)
+        self.tag_filter_widget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        if len(self.tag_filter_widget.get_tag_documents()) < 8:
+            self.tag_filter_widget.setFixedHeight(38)
+        else:
+            self.tag_filter_widget.setFixedHeight(70)
+        self.layout_tags.addWidget(self.tag_filter_widget)
 
         # Add frame for other miscellaneous buttons
         self.frame_misc = QFrame(self)
         self.layout_misc = QHBoxLayout(self.frame_misc)
         self.layout_misc.setContentsMargins(0, 0, 0, 0)
-        spacer = QSpacerItem(10, 10, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        spacer = QSpacerItem(10, 10, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
         self.layout_misc.addItem(spacer)
         self.pause_update_checkbox = QCheckBox("Pause File Update")
         self.layout_misc.addWidget(self.pause_update_checkbox)
@@ -112,7 +122,7 @@ class EntityTab(QWidget):
         self.frame_results = QFrame(self)
         self.frame_results.setObjectName(f"frame_results_{self.entity.name}")
         self.frame_results.setProperty("depth", "0")
-        self.frame_results.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.frame_results.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.layout_results = QHBoxLayout(self.frame_results)
         self.layout_results.setContentsMargins(3, 3, 3, 3)
         self.tab_layout.addWidget(self.frame_results)
@@ -133,7 +143,7 @@ class EntityTab(QWidget):
             self.layout_filters.addWidget(combobox)
             self.filter_comboboxes.append(combobox)
 
-        spacer = QSpacerItem(10, 10, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        spacer = QSpacerItem(10, 10, QSizePolicy.Policy.Expanding, QSizePolicy.Minimum)
         self.layout_filters.addItem(spacer)
 
     def add_document_table(self):
@@ -161,9 +171,14 @@ class EntityTab(QWidget):
 
     def setup_signals(self):
         self.update_files_button.clicked.connect(self.update_files_clicked)
+        self.tag_filter_widget.list_widget.itemSelectionChanged.connect(self.document_table.update_items)
 
     def update_files_clicked(self):
         self.file_table.update_items(force=True)
+
+    @property
+    def selected_tags(self) -> list[str]:
+        return self.tag_filter_widget.selected_tags
 
 
 class FilterComboBox(QComboBox):

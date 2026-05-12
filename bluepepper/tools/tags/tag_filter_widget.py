@@ -87,6 +87,17 @@ class TagList(QListWidget):
             widget: TagListWidget = self.itemWidget(item)  # type: ignore
             widget.update_color(grey_out=not item.isSelected())
 
+    @property
+    def selected_tags(self) -> list[str]:
+        tags = []
+        for i in range(self.count()):
+            item = self.item(i)
+            if not item.isSelected():
+                continue
+            widget: TagListWidget = self.itemWidget(item)  # type: ignore
+            tags.append(widget.tag_document["tag"])
+        return tags
+
 
 class TagFilterWidget(QWidget):
     confirmed: Signal = Signal(object)
@@ -95,11 +106,11 @@ class TagFilterWidget(QWidget):
         self.tag_collection = tag_collection
         super().__init__()
         self.setup_ui()
-        self.setup_signals()
         self.setup_initial_state()
 
     def setup_ui(self) -> None:
         layout = QVBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
         self.list_widget = TagList(self)
         layout.addWidget(self.list_widget)
 
@@ -107,10 +118,11 @@ class TagFilterWidget(QWidget):
         documents = list(database.tags.find({"tagCollection": self.tag_collection}))
         return sorted(documents, key=lambda doc: doc["tag"])
 
-    def setup_signals(self):
-        pass
-
     def setup_initial_state(self):
+        self.update_items()
+
+    def update_items(self):
+        self.list_widget.clear()
         for document in self.get_tag_documents():
             item = QListWidgetItem()
             widget = TagListWidget(tag_document=document, item=item)
@@ -121,11 +133,11 @@ class TagFilterWidget(QWidget):
             widget.update_item_size_hint()
 
     @property
-    def selected_tags(self) -> list[dict]:
-        return []
+    def selected_tags(self) -> list[str]:
+        return self.list_widget.selected_tags
 
 
-def show_dialog(tag_collection: str) -> list[dict[str, str]] | None:
+def show_dialog(tag_collection: str) -> list[str] | None:
     app = get_qt_app()
     icon = get_qta_icon(name="mdi.tag-text", scale_factor=1.25)
     widget = TagFilterWidget(tag_collection)

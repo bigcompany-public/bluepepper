@@ -84,7 +84,7 @@ class TableDocuments(QTableWidget):
             except JSONDecodeError:
                 return {"error": "Invalid query"}
 
-        query: dict[str, str] = {}
+        query: dict = {}
 
         # Get exact value for non-name fields
         query = {
@@ -102,6 +102,10 @@ class TableDocuments(QTableWidget):
             for string in name_search_list:
                 name_query.append({self.entity.name: {"$regex": string, "$options": "i"}})
             query["$or"] = name_query
+
+        # Add tag filter
+        if self.tab.selected_tags:
+            query["_tags"] = {"$in": self.tab.selected_tags}
 
         return query
 
