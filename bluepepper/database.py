@@ -198,7 +198,6 @@ class BigMongoClient(MongoClient):
 
         for attempt in range(1, _LOCAL_STARTUP_RETRIES + 1):
             logging.info(f"Waiting for local mongod (attempt {attempt}/{_LOCAL_STARTUP_RETRIES})")
-            print("A")
             if self._socket_reachable("127.0.0.1", 27017, _LOCAL_STARTUP_TIMEOUT_S):
                 logging.info("Local MongoDB server is ready")
                 return
@@ -528,6 +527,6 @@ database = BigMongoClient()
 if __name__ == "__main__":
     # doc = database.get_asset_document_by_string("D:/projects/myAwesomeProject/library/fx/dev00/dev00_v035.ma")
     # print(doc)
-    # database.dump()
+    database.dump()
     # print(database.get_backup_dump_path())
-    database.restore_database_dump(Path(r"D:\gitWorkspace\BP_PROJECT_DEV\bluepepper_database_dumps\2026_05_05.json"))
+    # database.restore_database_dump(Path(r"D:\gitWorkspace\BP_PROJECT_DEV\bluepepper_database_dumps\2026_05_05.json"))
