@@ -2,7 +2,7 @@ import qtawesome
 from qtpy.QtCore import Signal
 from qtpy.QtWidgets import QLabel, QPushButton, QVBoxLayout, QWidget
 
-from bluepepper.clipboard import send_html_to_clipboard
+from bluepepper.clipboard import send_html_to_clipboard, send_text_to_clipboard
 from bluepepper.core import root_dir
 from bluepepper.gui.utils import get_theme
 from bluepepper.gui.widgets.container import ContainerDialog, ContainerWidget, get_qt_app
@@ -69,7 +69,10 @@ def send_ticket_content_to_clipboard(ticket: TicketModel):
     paragraphs.append(f"description: {ticket.description}")
 
     paragraphs += ticket.screenshots
-    send_html_to_clipboard(paragraphs)
+    if ticket.screenshots:
+        send_html_to_clipboard(paragraphs)
+    else:
+        send_text_to_clipboard("\n".join(paragraphs))
 
 
 def show_widget(ticket: TicketModel):
