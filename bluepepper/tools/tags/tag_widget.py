@@ -1,6 +1,6 @@
 import qtawesome
-from PySide6.QtCore import Qt
-from PySide6.QtWidgets import (
+from qtpy.QtCore import Qt
+from qtpy.QtWidgets import (
     QFrame,
     QHBoxLayout,
     QLabel,
@@ -35,13 +35,23 @@ class TagWidget(QFrame):
         layout.addWidget(self.text_label)
         self.setLayout(layout)
 
-    def update_preview(self):
+    def update_preview(self, greyed_out: bool = False):
+        # Adjust colors if greyed out
+        tag_color = self._tag_color
+        tag_text_color = self._tag_text_color
+        tag_icon_color = self._tag_icon_color
+        if greyed_out:
+            tag_color = "#8A8A8A"
+            tag_text_color = "#111111"
+            tag_icon_color = "#111111"
 
+        # Set text value
         self.text_label.setText(self._tag)
 
+        # Set icon
         if self._tag_icon:
             try:
-                icon = qtawesome.icon(self._tag_icon, color=self._tag_icon_color)
+                icon = qtawesome.icon(self._tag_icon, color=tag_icon_color)
                 self.icon_label.setPixmap(icon.pixmap(int(self._size * 0.75), int(self._size * 0.75)))
                 self.icon_label.setHidden(False)
             except Exception:
@@ -49,13 +59,13 @@ class TagWidget(QFrame):
         else:
             self.icon_label.setHidden(True)
 
+        # Set stylesheet
         right_padding = self._size / 2
         left_padding = right_padding if self.icon_label.isHidden() else right_padding / 2
-
         self.setStyleSheet(
             f"""
-            background-color: {self._tag_color};
-            color: {self._tag_text_color};
+            background-color: {tag_color};
+            color: {tag_text_color};
             font-weight: bold;
             font-size:{int(self._size * 0.5)}px;
             border-radius: {int(self._size / 2)}px;

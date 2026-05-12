@@ -32,17 +32,20 @@ class TagListWidget(QFrame):
         self.item = item
 
         margin_layout = QVBoxLayout(self)
-        margin_layout.setContentsMargins(2, 2, 2, 2)
+        margin_layout.setContentsMargins(0, 0, 0, 0)
 
         inner_frame = QFrame()
-        inner_frame.setProperty("depth", "4")
+        inner_frame.setProperty("depth", "1")
+        inner_frame.setContentsMargins(0, 0, 0, 0)
+        inner_frame.setStyleSheet("")
         margin_layout.addWidget(inner_frame)
         self._layout = QHBoxLayout(inner_frame)
         self._layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        self._layout.setContentsMargins(2, 2, 2, 2)
+        self._layout.setContentsMargins(0, 0, 0, 0)
         self._widget = TagWidget(tag_document=tag_document)
         self._layout.addWidget(self._widget)
         self._layout.addStretch()
+        self.update_color()
 
     def update_item_size_hint(self):
         """Call this after setItemWidget() so layout is finalized."""
@@ -51,11 +54,16 @@ class TagListWidget(QFrame):
         size.setHeight(size.height() + 2)
         self.item.setSizeHint(size)
 
+    def update_color(self, grey_out=True):
+        self._widget.update_preview(greyed_out=grey_out)
+
 
 class TagList(QListWidget):
     def __init__(self, tag_filter_widget: TagFilterWidget):
         super().__init__(tag_filter_widget)
         self.tag_filter_widget = tag_filter_widget
+
+        # UI
         self.setResizeMode(QListView.ResizeMode.Adjust)
         self.setSortingEnabled(True)
         self.setFlow(QListView.Flow.LeftToRight)
@@ -69,6 +77,15 @@ class TagList(QListWidget):
         self.setHorizontalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
         self.setResizeMode(QListWidget.ResizeMode.Adjust)
+
+        # Signals
+        self.itemSelectionChanged.connect(self.selection_changed)
+
+    def selection_changed(self):
+        for i in range(self.count()):
+            item = self.item(i)
+            widget: TagListWidget = self.itemWidget(item)  # type: ignore
+            widget.update_color(grey_out=not item.isSelected())
 
 
 class TagFilterWidget(QWidget):
