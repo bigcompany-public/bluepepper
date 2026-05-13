@@ -67,6 +67,14 @@ class TableDocuments(QTableWidget):
         """Sets ut the signals of the table widget"""
         self.itemSelectionChanged.connect(self.document_selection_changed)
 
+    @property
+    def all_items(self) -> list[DocumentItem]:
+        items = []
+        for row in range(self.rowCount()):
+            item = self.item(row, 0)
+            items.append(item)
+        return items
+
     def document_selection_changed(self):
         """This method is triggered when the document's selection has changed"""
         document_names = [doc.text() for doc in self.selectedItems()]
