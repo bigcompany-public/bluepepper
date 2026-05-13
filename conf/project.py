@@ -1,6 +1,3 @@
-from typing import List
-
-
 class ProjectSettings:
     project_name: str = "projectName"
     project_code: str = "code"
@@ -8,4 +5,4 @@ class ProjectSettings:
     height: int = 1080
     fps: float = 25.0
     start_frame: int = 101
-    production_trackers: List[str] = []
+    production_trackers: list[str] = []

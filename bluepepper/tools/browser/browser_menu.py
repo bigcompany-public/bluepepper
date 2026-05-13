@@ -3,7 +3,7 @@ from __future__ import annotations
 import importlib
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Callable, Optional
 
 import qtawesome
 from lucent import Convention
@@ -125,16 +125,16 @@ class BrowserMenu(QMenu):
 
     def resolve_kwargs(
         self,
-        kwargs: Dict[str, Any],
+        kwargs: dict[str, Any],
         item: Any = None,
-        items: Optional[List[Any]] = None,
-    ) -> Dict[str, Any]:
-        resolved_kwargs: Dict[str, Any] = {}
+        items: Optional[list[Any]] = None,
+    ) -> dict[str, Any]:
+        resolved_kwargs: dict[str, Any] = {}
         for key, value in kwargs.items():
             resolved_kwargs[key] = self.resolve_value(value, item=item, items=items)
         return resolved_kwargs
 
-    def resolve_value(self, value: Any, item: Any = None, items: Optional[List[Any]] = None) -> Any:
+    def resolve_value(self, value: Any, item: Any = None, items: Optional[list[Any]] = None) -> Any:
         if isinstance(value, dict):
             return {key: self.resolve_value(sub_value, item=item, items=items) for key, sub_value in value.items()}
         if isinstance(value, list):

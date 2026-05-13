@@ -2,7 +2,7 @@ import json
 import logging
 import shutil
 from pathlib import Path
-from typing import Any, List, Optional
+from typing import Any, Optional
 
 from lucent import Convention
 
@@ -121,9 +121,9 @@ def shot_fetch_breakdownlist(document_id: str):
     shot.update_database_breakdown()
 
 
-def kind_show_in_explorer(documents: List[dict], convention: Convention):
+def kind_show_in_explorer(documents: list[dict], convention: Convention):
     # Get unique paths to reveal in explorer
-    paths_to_show: List[Path] = []
+    paths_to_show: list[Path] = []
     for document in documents:
         glob_pattern = Path(convention.glob_pattern(document))
         parts = []
@@ -142,14 +142,14 @@ def kind_show_in_explorer(documents: List[dict], convention: Convention):
         open_file(path)
 
 
-def kind_copy_path(documents: List[dict], convention: Convention):
+def kind_copy_path(documents: list[dict], convention: Convention):
     strings = []
     for document in documents:
         strings.append(convention.human_readable_pattern(document))
     send_strings_to_clipboard(strings)
 
 
-def kind_copy_filename(documents: List[dict], convention: Convention):
+def kind_copy_filename(documents: list[dict], convention: Convention):
     strings = []
     for document in documents:
         strings.append(Path(convention.human_readable_pattern(document)).name)

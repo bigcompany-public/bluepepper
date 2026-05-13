@@ -119,7 +119,7 @@ class ProjectSettings:
     height: int = 1080
     fps: float = 25.0
     start_frame: int = 101
-    production_trackers: List[str] = []
+    production_trackers: list[str] = []
 ```
 
 ## Configuring the Database

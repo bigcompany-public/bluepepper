@@ -4,7 +4,7 @@ import json
 import sys
 from contextlib import suppress
 from dataclasses import dataclass
-from typing import Callable, Dict, List
+from typing import TYPE_CHECKING, Callable
 
 from lucent import Rule
 from qtpy.QtWidgets import (
@@ -21,7 +21,6 @@ from qtpy.QtWidgets import (
     QWidget,
 )
 
-from bluepepper.app.main_window.main_window import BluePepperApp
 from bluepepper.asset_creator import AssetCreator
 from bluepepper.core import codex, database
 from bluepepper.database import Collection
@@ -30,12 +29,15 @@ from bluepepper.gui.widgets.outcome_popups.outcome_popups import OutcomePopup
 from bluepepper.shot_creator import ShotCreator
 from bluepepper.tools.browser.browser_widget import BrowserWidget
 
+if TYPE_CHECKING:
+    from bluepepper.app.main_window.main_window import BluePepperApp
+
 
 class FieldLabel(QLabel):
     def __init__(self, field: str, entity: str):
         super().__init__(field)
         self.setObjectName(f"label_{entity}_{field}")
-        size_policy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        size_policy = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.setSizePolicy(size_policy)
 
 
@@ -109,7 +111,7 @@ class FieldComboBox(QComboBox):
 
         # Otherwise, get all documents that match the previous fields
         query = self.entity_tab._previous_query(self.row_index)
-        documents: List[dict[str, str]] = list(self.collection.find(query))
+        documents: list[dict[str, str]] = list(self.collection.find(query))
         values = {doc.get(self.field, "").strip() for doc in documents}
         values = sorted([value for value in values if value.strip()], key=str.lower)
         return values
@@ -149,8 +151,8 @@ class EntityTab(QWidget):
         entitycreator: EntityCreatorWidget,
         entity: str,
         collection: Collection,
-        required_fields: List[str],
-        create_callback: Callable[[Dict[str, str]], None],
+        required_fields: list[str],
+        create_callback: Callable[[dict[str, str]], None],
     ):
         super().__init__(parent)
         self._parent = parent
@@ -161,14 +163,14 @@ class EntityTab(QWidget):
         self.collection = collection
         self.create_callback = create_callback
 
-        self._rows: List[FieldRow] = []
+        self._rows: list[FieldRow] = []
 
         self.setup_ui()
         self.setup_initial_state()
 
     def setup_ui(self) -> None:
         # Make sure the widget is as small as it can be
-        size_policy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        size_policy = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.setSizePolicy(size_policy)
         main_layout = QVBoxLayout(self)
         main_layout.setSizeConstraint(QVBoxLayout.SetFixedSize)
@@ -199,7 +201,7 @@ class EntityTab(QWidget):
 
         # Add create button
         self._create_button = QPushButton("Create")
-        self._create_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self._create_button.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self._create_button.clicked.connect(self._on_create_clicked)
         self._create_button.setProperty("status", "important")
 

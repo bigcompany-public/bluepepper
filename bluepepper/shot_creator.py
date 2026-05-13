@@ -1,6 +1,6 @@
 import logging
 from argparse import ArgumentParser
-from typing import Dict, Optional
+from typing import Optional
 
 from aquarium.aquarium import Shot as AqShot
 from bson import ObjectId
@@ -17,7 +17,7 @@ class ShotAlreadyExistsError(Exception):
 
 
 class ShotCreator:
-    def __init__(self, fields: Dict[str, str]):
+    def __init__(self, fields: dict[str, str]):
         self.fields = fields
         self.document: dict[str, str] = {}
         self.aquarium_shot: Optional[AqShot] = None

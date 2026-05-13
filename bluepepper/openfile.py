@@ -12,7 +12,6 @@ import os
 import subprocess
 import webbrowser
 from pathlib import Path
-from typing import List
 
 
 def open_file(path: Path, os_default=False):
@@ -64,7 +63,7 @@ def show_in_explorer(path: Path):
     subprocess.Popen(f'explorer.exe /select,"{path}"')
 
 
-def read_as_vlc_playlist(paths: List[Path]):
+def read_as_vlc_playlist(paths: list[Path]):
     vlc = Path(r"C:\Program Files\VideoLAN\VLC\vlc.exe").as_posix()
     paths = [str(Path(path)) for path in paths]
     command = [vlc] + paths

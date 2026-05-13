@@ -1,13 +1,13 @@
 import logging
 from argparse import ArgumentParser
-from typing import Dict, Optional
+from typing import Optional
 
 from aquarium.aquarium import Asset as AqAsset
 from bson import ObjectId
-from conf.project import ProjectSettings
 
 from bluepepper.aqua import get_aqua
 from bluepepper.core import codex, database, init_logging
+from conf.project import ProjectSettings
 
 
 class AssetAlreadyExistsError(Exception):
@@ -17,7 +17,7 @@ class AssetAlreadyExistsError(Exception):
 
 
 class AssetCreator:
-    def __init__(self, fields: Dict[str, str]):
+    def __init__(self, fields: dict[str, str]):
         self.fields = fields.copy()
         self.document: dict[str, str] = {}
         self.aquarium_asset: Optional[AqAsset] = None

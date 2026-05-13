@@ -2,7 +2,7 @@ import logging
 import sys
 import time
 from threading import Thread
-from typing import Callable, List
+from typing import Callable
 
 from windows_toasts import (
     InteractableWindowsToaster,
@@ -16,7 +16,7 @@ from windows_toasts import (
 from bluepepper.core import init_logging
 
 
-def handle_event(handler: List[dict], args: ToastActivatedEventArgs) -> None:
+def handle_event(handler: list[dict], args: ToastActivatedEventArgs) -> None:
     """
     Returns a dictionary with two entries:
     - arguments: value of the button clicked to activate the Toast
@@ -66,16 +66,12 @@ def show_toast_with_callback(
 
         if activated_handler:
             if isinstance(toaster, InteractableWindowsToaster):
-                interactable_toast_activated(
-                    activated_handler, callback, dismissed_callback
-                )
+                interactable_toast_activated(activated_handler, callback, dismissed_callback)
             else:
                 non_interactable_toast_activated(activated_handler, callback)
 
 
-def non_interactable_toast_activated(
-    activated_handler: List[dict], callback: Callable
-) -> None:
+def non_interactable_toast_activated(activated_handler: list[dict], callback: Callable) -> None:
     # Clear handler to prevent callback being called multiple times
     # It may happen if the Toast logic is part of a loop
     activated_handler.clear()
@@ -86,7 +82,7 @@ def non_interactable_toast_activated(
 
 
 def interactable_toast_activated(
-    activated_handler: List[dict], callback: Callable, dismissed_callback: Callable
+    activated_handler: list[dict], callback: Callable, dismissed_callback: Callable
 ) -> None:
     button_result = activated_handler[0]["arguments"]
     kwargs = activated_handler[0]["inputs"]
@@ -141,9 +137,7 @@ if __name__ == "__main__":
     toaster = WindowsToaster("PrintStuff")
     toast = Toast(["Click to print stuff"])
     start_toast_with_callback_thread(toast, print_stuff, print_dismissed)
-    time.sleep(
-        1
-    )  # Wait a second to prevent windows displaying toasts in the wrong order
+    time.sleep(1)  # Wait a second to prevent windows displaying toasts in the wrong order
 
     # Example of interactive toast
     toast = Toast(["Please enter your details"])

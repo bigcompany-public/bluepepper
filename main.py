@@ -16,7 +16,7 @@ import uuid
 from argparse import ArgumentParser, Namespace
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, NoReturn
+from typing import NoReturn
 
 from conf.project import ProjectSettings
 from install.install import BluePepperInstaller
@@ -137,7 +137,7 @@ class BluePepperIgniter:
         sys.exit(process.wait())
 
     @property
-    def bluepepper_env(self) -> Dict[str, str]:
+    def bluepepper_env(self) -> dict[str, str]:
         """
         Get BluePepper environment variables.
 
