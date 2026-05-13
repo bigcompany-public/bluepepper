@@ -86,7 +86,7 @@ class BluePepperApp(FramelessMainWindow):
                 return widget
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
-        if event.button() == Qt.LeftButton and self.ui.frame_topbar.underMouse():
+        if event.button() == Qt.MouseButton.LeftButton and self.ui.frame_topbar.underMouse():
             self.dragging = True
             self.click_count += 1
             self.click_timer.start(_DOUBLE_CLICK_MS)
@@ -101,7 +101,7 @@ class BluePepperApp(FramelessMainWindow):
             self.window().move(event.globalPos() - self.offset)
 
     def mouseReleaseEvent(self, event: QMouseEvent) -> None:
-        if event.button() == Qt.LeftButton:
+        if event.button() == Qt.MouseButton.LeftButton:
             self.dragging = False
 
     def _on_doubleclick_timeout(self) -> None:
@@ -149,7 +149,7 @@ class BluePepperApp(FramelessMainWindow):
         self.ui.setupUi(self.central_widget)
         self.ui.label_version.setText(f"v{version}")
         image_path = get_icon("bluepepper_transparent.png")
-        pixmap = QPixmap(image_path).scaledToWidth(24, Qt.SmoothTransformation)
+        pixmap = QPixmap(image_path).scaledToWidth(24, Qt.TransformationMode.SmoothTransformation)
         icon_label = QLabel()
         icon_label.setPixmap(pixmap)
         self.ui.layout_icon.addWidget(icon_label)
