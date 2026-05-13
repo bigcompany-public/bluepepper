@@ -1,11 +1,11 @@
 import logging
 import sys
 
-from bluepepper.core import get_temp_path, init_logging
-from bluepepper.temp import get_temp_path
 from qtpy.QtCore import QPoint, QRect, QSize, Qt
 from qtpy.QtGui import QGuiApplication, QMouseEvent, QPainter, QPixmap
 from qtpy.QtWidgets import QApplication, QDialog, QRubberBand, QVBoxLayout, QWidget
+
+from bluepepper.core import get_temp_path, init_logging
 
 
 class Screenshot(QDialog):
@@ -13,7 +13,7 @@ class Screenshot(QDialog):
         super().__init__()
 
         # Create transparent frameless window
-        self.setAttribute(Qt.WA_TranslucentBackground)
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
 
         # Create semi-transparent widget on which the QRubberBand selection can be drawn
@@ -110,7 +110,7 @@ class Screenshot(QDialog):
         return full.copy(rect)
 
     def keyPressEvent(self, event):
-        if event.key() == Qt.Key_Escape:
+        if event.key() == Qt.Key.Key_Escape:
             self.close()
             return
         super().keyPressEvent(event)
