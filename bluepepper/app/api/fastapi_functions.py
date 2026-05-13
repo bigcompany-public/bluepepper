@@ -121,6 +121,10 @@ def select_documents(bluepepper_app: BluePepperApp, entity: str, document_ids: l
     if not browser:
         return
 
+    # Show browser page
+    index = bluepepper_app.page_widgets.index(browser)
+    bluepepper_app.page_buttons[index].click()
+
     # Get tab and select it
     tabs = [tab for tab in browser.all_tabs if tab.entity.name == entity]
     if not tabs:
