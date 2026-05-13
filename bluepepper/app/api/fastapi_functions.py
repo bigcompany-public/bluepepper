@@ -116,12 +116,19 @@ def reboot(bluepepper_app: BluePepperApp):
     start_toast_with_callback_thread(toast, callback=callback, dismissed_callback=dismissed_callback)
 
 
-def select_documents(bluepepper_app: BluePepperApp, entity: str, document_ids: list[str]):
+def select_documents(bluepepper_app: BluePepperApp, entity: str, document_ids: list[str], sender: str = ""):
     browser = bluepepper_app.browser
     if not browser:
         return
 
-    tab = [tab for tab in browser.all_tabs if tab.entity.name == entity][0]
+    # Get tab and select it
+    tabs = [tab for tab in browser.all_tabs if tab.entity.name == entity]
+    if not tabs:
+        raise RuntimeError(f"Tab for entity {entity} does not exist")
+    tab = tabs[0]
+    browser.tab_widget.setCurrentWidget(tab)
+
+    # Get documents
     object_ids = [ObjectId(_id) for _id in document_ids]
     documents = list(database.db[tab.entity.collection].find({"_id": {"$in": object_ids}}))
 
@@ -148,6 +155,10 @@ def select_documents(bluepepper_app: BluePepperApp, entity: str, document_ids: l
     # Restore file refresh status & refresh files
     tab.pause_update_checkbox.setChecked(pause_status)
     tab.file_table.update_items()
+
+    # Show notification
+    if sender:
+        show_toast(bluepepper_app, message=f"{sender} sent you a selection of {entity}s")
 
 
 def time_consuming_function(bluepepper_app: BluePepperApp):
