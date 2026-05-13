@@ -16,18 +16,18 @@ from qtpy.QtWidgets import *
 class Ui_success_widget(object):
     def setupUi(self, success_widget):
         if not success_widget.objectName():
-            success_widget.setObjectName(u"success_widget")
+            success_widget.setObjectName("success_widget")
         success_widget.resize(271, 132)
         self.verticalLayout = QVBoxLayout(success_widget)
-        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.verticalLayout.setObjectName("verticalLayout")
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.main_widget = QWidget(success_widget)
-        self.main_widget.setObjectName(u"main_widget")
+        self.main_widget.setObjectName("main_widget")
         self.verticalLayout_2 = QVBoxLayout(self.main_widget)
-        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.label_title = QLabel(self.main_widget)
-        self.label_title.setObjectName(u"label_title")
-        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+        self.label_title.setObjectName("label_title")
+        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Policy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_title.sizePolicy().hasHeightForWidth())
@@ -36,61 +36,57 @@ class Ui_success_widget(object):
         self.verticalLayout_2.addWidget(self.label_title)
 
         self.main_frame = QFrame(self.main_widget)
-        self.main_frame.setObjectName(u"main_frame")
+        self.main_frame.setObjectName("main_frame")
         self.main_frame.setFrameShape(QFrame.StyledPanel)
         self.main_frame.setFrameShadow(QFrame.Raised)
         self.formLayout = QFormLayout(self.main_frame)
-        self.formLayout.setObjectName(u"formLayout")
+        self.formLayout.setObjectName("formLayout")
         self.formLayout.setContentsMargins(9, 9, 9, 9)
         self.label_message = QLabel(self.main_frame)
-        self.label_message.setObjectName(u"label_message")
+        self.label_message.setObjectName("label_message")
 
         self.formLayout.setWidget(0, QFormLayout.LabelRole, self.label_message)
-
 
         self.verticalLayout_2.addWidget(self.main_frame)
 
         self.frame_bottom = QFrame(self.main_widget)
-        self.frame_bottom.setObjectName(u"frame_bottom")
+        self.frame_bottom.setObjectName("frame_bottom")
         sizePolicy.setHeightForWidth(self.frame_bottom.sizePolicy().hasHeightForWidth())
         self.frame_bottom.setSizePolicy(sizePolicy)
         self.frame_bottom.setFrameShape(QFrame.StyledPanel)
         self.frame_bottom.setFrameShadow(QFrame.Raised)
         self.horizontalLayout = QHBoxLayout(self.frame_bottom)
-        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.horizontalLayout.setObjectName("horizontalLayout")
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.horizontalLayout.addItem(self.horizontalSpacer)
 
         self.button_ok = QPushButton(self.frame_bottom)
-        self.button_ok.setObjectName(u"button_ok")
+        self.button_ok.setObjectName("button_ok")
         self.button_ok.setMinimumSize(QSize(80, 0))
         self.button_ok.setAutoDefault(True)
 
         self.horizontalLayout.addWidget(self.button_ok)
 
-
         self.verticalLayout_2.addWidget(self.frame_bottom)
 
-
         self.verticalLayout.addWidget(self.main_widget)
-
 
         self.retranslateUi(success_widget)
 
         self.button_ok.setDefault(True)
 
-
         QMetaObject.connectSlotsByName(success_widget)
+
     # setupUi
 
     def retranslateUi(self, success_widget):
-        success_widget.setWindowTitle(QCoreApplication.translate("success_widget", u"Form", None))
-        self.label_title.setText(QCoreApplication.translate("success_widget", u"Success", None))
-        self.label_title.setProperty("tag", QCoreApplication.translate("success_widget", u"H2", None))
-        self.label_message.setText(QCoreApplication.translate("success_widget", u"Everything worked perfectly", None))
-        self.button_ok.setText(QCoreApplication.translate("success_widget", u"Ok", None))
-        self.button_ok.setProperty("status", QCoreApplication.translate("success_widget", u"important", None))
-    # retranslateUi
+        success_widget.setWindowTitle(QCoreApplication.translate("success_widget", "Form", None))
+        self.label_title.setText(QCoreApplication.translate("success_widget", "Success", None))
+        self.label_title.setProperty("tag", QCoreApplication.translate("success_widget", "H2", None))
+        self.label_message.setText(QCoreApplication.translate("success_widget", "Everything worked perfectly", None))
+        self.button_ok.setText(QCoreApplication.translate("success_widget", "Ok", None))
+        self.button_ok.setProperty("status", QCoreApplication.translate("success_widget", "important", None))
 
+    # retranslateUi
