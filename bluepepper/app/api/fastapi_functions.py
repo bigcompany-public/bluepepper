@@ -9,7 +9,7 @@ import subprocess
 import time
 from pathlib import Path
 
-from windows_toasts import Toast, ToastButton
+from windows_toasts import Toast, ToastButton, WindowsToaster
 
 from bluepepper.app.main_window.main_window import BluePepperApp
 from bluepepper.toast import start_toast_with_callback_thread
@@ -90,6 +90,12 @@ def submit_batcher_job(
         notify_message=notify_message,
     )
     bluepepper_app.batcher.add_job(job_data)
+
+
+def show_toast(bluepepper_app: BluePepperApp, message: str):
+    toaster = WindowsToaster("BluePepper")
+    toast = Toast([message])
+    toaster.show_toast(toast)
 
 
 def reboot(bluepepper_app: BluePepperApp):
