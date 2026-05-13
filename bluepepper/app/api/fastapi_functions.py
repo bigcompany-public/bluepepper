@@ -7,11 +7,13 @@ import logging
 import os
 import subprocess
 import time
+from pathlib import Path
 
 from windows_toasts import Toast, ToastButton
 
 from bluepepper.app.main_window.main_window import BluePepperApp
 from bluepepper.toast import start_toast_with_callback_thread
+from bluepepper.tools.batcher.job_model import JobData
 
 
 def close(bluepepper_app: BluePepperApp):
@@ -57,6 +59,37 @@ def update_browser_tags(bluepepper_app: BluePepperApp):
         return
     for tab in bluepepper_app.browser.entity_tab_widgets:
         tab.tag_filter_widget.update_items()
+
+
+def submit_batcher_job(
+    bluepepper_app: BluePepperApp,
+    name: str,
+    description: str,
+    script_path: str = "",
+    script_args: list[str] | None = None,
+    module: str = "",
+    func: str = "",
+    kwargs: dict | None = None,
+    priority: int = 50,
+    notify_when_done: bool = False,
+    notify_message: str = "",
+):
+    if not bluepepper_app.batcher:
+        return
+
+    job_data = JobData(
+        name=name,
+        description=description,
+        script_path=Path(script_path) if script_path else Path(),
+        script_args=script_args or [],
+        module=module,
+        func=func,
+        kwargs=kwargs or {},
+        priority=priority,
+        notify_when_done=notify_when_done,
+        notify_message=notify_message,
+    )
+    bluepepper_app.batcher.add_job(job_data)
 
 
 def reboot(bluepepper_app: BluePepperApp):
