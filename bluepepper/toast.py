@@ -16,6 +16,12 @@ from windows_toasts import (
 from bluepepper.core import init_logging
 
 
+def show_message_toast(message: str):
+    toaster = WindowsToaster("BluePepper")
+    toast = Toast([message])
+    toaster.show_toast(toast)
+
+
 def handle_event(handler: list[dict], args: ToastActivatedEventArgs) -> None:
     """
     Returns a dictionary with two entries:
