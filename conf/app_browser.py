@@ -1,3 +1,4 @@
+from functools import partial
 from pathlib import Path
 
 from bluepepper.core import codex
@@ -38,6 +39,10 @@ def is_binary(path: Path) -> bool:
 
 def is_aquarium_available() -> bool:
     return "aquarium" in PROJECT_SETTINGS.production_trackers
+
+
+def has_tag(doc: dict, tag: str):
+    return tag in doc.get("_tags", [])
 
 
 def get_tool_config() -> AppConfig:
@@ -177,6 +182,15 @@ def get_tool_config() -> AppConfig:
         kwargs={"documents": "<documents>"},
         doc_filter=is_asset,
         mode="all",
+    )
+    say_hello_action = MenuAction(
+        label="Say Hello to Sprite",
+        qta_icon="ri.kakao-talk-fill",
+        module="bluepepper.toast",
+        function="show_message_toast",
+        kwargs={"message": '<document_name> says "Hello" as well'},
+        doc_filter=partial(has_tag, tag="sprite"),
+        mode="each",
     )
     copy_id_action = MenuAction(
         label="Copy ID",
@@ -329,6 +343,7 @@ def get_tool_config() -> AppConfig:
         entity.add_document_action(shot_add_tag_action)
         entity.add_document_action(shot_remove_tag_action)
         entity.add_document_action(document_python_script_action)
+        entity.add_document_action(say_hello_action)
         for task in entity.tasks.values():
             for kind in task.kinds.values():
                 # Kind actions
