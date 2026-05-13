@@ -8,13 +8,11 @@ import sys
 import traceback
 from importlib import import_module
 from pathlib import Path
-from threading import Thread
 from typing import Any, Callable
 
 import qtawesome
-from PySide6.QtGui import QCloseEvent
 from qtpy.QtCore import QSize, Qt, QTimer
-from qtpy.QtGui import QIcon, QMouseEvent, QPixmap
+from qtpy.QtGui import QCloseEvent, QIcon, QMouseEvent, QPixmap
 from qtpy.QtWidgets import QLabel, QPushButton, QWidget
 
 from bluepepper.app.api.fastapi_bridge import fastapi_bridge
@@ -25,6 +23,9 @@ from bluepepper.core import init_logging, root_dir, version
 from bluepepper.gui.utils import format_widgets, get_icon, get_qt_app, get_stylesheet, get_theme
 from bluepepper.gui.widgets.outcome_popups import show_error
 from bluepepper.tools.batcher.batcher_widget import BatcherWidget
+from bluepepper.tools.browser.browser_widget import BrowserWidget
+from bluepepper.tools.entitycreator.entitycreator_widget import EntityCreatorWidget
+from bluepepper.tools.launcher.launcher_widget import LauncherWidget
 from conf.fastapi import FastApiSettings
 from conf.project import ProjectSettings
 
@@ -53,9 +54,36 @@ class BluePepperApp(FramelessMainWindow):
         self._setup_fastapi()
         self.setStyleSheet("border:none")
 
+        # Register the main components of bluepepper
+        self.launcher = self.get_launcher()
+        self.browser = self.get_browser()
+        self.batcher = self.get_batcher()
+        self.entitycreator = self.get_entitycreator()
+
+        # Add double click handler
         self.click_timer = QTimer(self)
         self.click_timer.setSingleShot(True)
         self.click_timer.timeout.connect(self._on_doubleclick_timeout)
+
+    def get_launcher(self) -> LauncherWidget | None:
+        for widget in self.page_widgets:
+            if isinstance(widget, LauncherWidget):
+                return widget
+
+    def get_batcher(self) -> BatcherWidget | None:
+        for widget in self.page_widgets:
+            if isinstance(widget, BatcherWidget):
+                return widget
+
+    def get_browser(self) -> BrowserWidget | None:
+        for widget in self.page_widgets:
+            if isinstance(widget, BrowserWidget):
+                return widget
+
+    def get_entitycreator(self) -> EntityCreatorWidget | None:
+        for widget in self.page_widgets:
+            if isinstance(widget, EntityCreatorWidget):
+                return widget
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
         if event.button() == Qt.LeftButton and self.ui.frame_topbar.underMouse():
@@ -107,7 +135,13 @@ class BluePepperApp(FramelessMainWindow):
         from bluepepper.app.api import fastapi_functions
 
         func: Callable = getattr(fastapi_functions, func_str)
-        Thread(target=func, kwargs=kwargs, daemon=True).start()
+
+        # WARNING: an older method used to run the requested function in a Thread like this :
+        # Thread(target=func, kwargs=kwargs, daemon=True).start()
+        # but some functions that interacts with the gui could not be handled in a different Thread and froze the app
+        # Ideally, this should be handled using a QThread, but most functions executed using fastapi are quick, so
+        # it is not an issue at the moment
+        func(**kwargs)
 
     def _setup_ui(self) -> None:
         self.setMinimumSize(QSize(600, 350))
