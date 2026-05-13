@@ -9,9 +9,11 @@ import subprocess
 import time
 from pathlib import Path
 
+from bson import ObjectId
 from windows_toasts import Toast, ToastButton, WindowsToaster
 
 from bluepepper.app.main_window.main_window import BluePepperApp
+from bluepepper.core import database
 from bluepepper.toast import start_toast_with_callback_thread
 from bluepepper.tools.batcher.job_model import JobData
 
@@ -112,6 +114,40 @@ def reboot(bluepepper_app: BluePepperApp):
         logging.info("Reboot cancelled by the user")
 
     start_toast_with_callback_thread(toast, callback=callback, dismissed_callback=dismissed_callback)
+
+
+def select_documents(bluepepper_app: BluePepperApp, entity: str, document_ids: list[str]):
+    browser = bluepepper_app.browser
+    if not browser:
+        return
+
+    tab = [tab for tab in browser.all_tabs if tab.entity.name == entity][0]
+    object_ids = [ObjectId(_id) for _id in document_ids]
+    documents = list(database.db[tab.entity.collection].find({"_id": {"$in": object_ids}}))
+
+    # Clear search
+    tab.search_bar.setText("")
+
+    # Set filter values
+    for combobox in tab.filter_comboboxes:
+        all_values = [document[combobox.filter] for document in documents]
+        value = all_values.pop() if len(all_values) == 1 else "*"
+        combobox.setCurrentText(value)
+
+    # Pause refresh for performance
+    pause_status = tab.pause_update_checkbox.isChecked()
+    tab.pause_update_checkbox.setChecked(True)
+
+    # Select documents
+    table = tab.document_table
+    table.clearSelection()
+    for item in table.all_items:
+        if item.document["_id"] in document_ids:
+            item.setSelected(True)
+
+    # Restore file refresh status & refresh files
+    tab.pause_update_checkbox.setChecked(pause_status)
+    tab.file_table.update_items()
 
 
 def time_consuming_function(bluepepper_app: BluePepperApp):
