@@ -103,8 +103,6 @@ class ColorButton(QPushButton):
         super().leaveEvent(event)
 
     def keyPressEvent(self, event: QKeyEvent):
-        from PySide6.QtCore import Qt
-
         if self._hovered:
             if event.key() == Qt.Key.Key_C and event.modifiers() == Qt.KeyboardModifier.ControlModifier:
                 QApplication.clipboard().setText(self._color)
