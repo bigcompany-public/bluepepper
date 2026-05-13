@@ -3,12 +3,6 @@ from __future__ import annotations
 import math
 
 import qtawesome
-from bluepepper.gui.utils import stylesheet
-from bluepepper.gui.widgets.container import (
-    ContainerDialog,
-    ContainerWidget,
-    get_qt_app,
-)
 from qtpy.QtCore import QEvent, QPointF, Qt, QTimer, Signal
 from qtpy.QtGui import QColor, QImage, QPainter, QPainterPath, QPen
 from qtpy.QtWidgets import (
@@ -20,6 +14,13 @@ from qtpy.QtWidgets import (
     QSlider,
     QVBoxLayout,
     QWidget,
+)
+
+from bluepepper.gui.utils import stylesheet
+from bluepepper.gui.widgets.container import (
+    ContainerDialog,
+    ContainerWidget,
+    get_qt_app,
 )
 
 
@@ -69,7 +70,7 @@ class HexLineEdit(QLineEdit):
         self._last_valid_hex = hex_color
 
     def keyPressEvent(self, event):
-        if event.key() in (Qt.Key_Return, Qt.Key_Enter):
+        if event.key() in (Qt.Key.Key_Return, Qt.Key.Key_Enter):
             self._commit()
             # Consume the event so it never reaches the dialog's button-box
             event.accept()
@@ -240,7 +241,7 @@ class BrightnessSlider(QSlider):
         super().__init__(Qt.Vertical)
         self.setRange(0, 255)
         self.setValue(255)
-        self.setSizePolicy(QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred))
+        self.setSizePolicy(QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Preferred))
 
     def set_hex_color(self, hex_color: str):
         """Set slider brightness from a '#RRGGBB' hex color string."""
@@ -265,9 +266,7 @@ class ColorPreview(QLabel):
         qcolor = _hex_to_qcolor(hex_color)
         if not qcolor.isValid():
             return
-        self.setStyleSheet(
-            f"background:{hex_color};border:1px solid black;border-radius:8px;"
-        )
+        self.setStyleSheet(f"background:{hex_color};border:1px solid black;border-radius:8px;")
 
 
 class ColorPicker(QWidget):
@@ -291,7 +290,7 @@ class ColorPicker(QWidget):
         slider_layout.addWidget(self.slider)
         self.preview = ColorPreview()
         self.hex = HexLineEdit()
-        self.hex.setSizePolicy(QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed))
+        self.hex.setSizePolicy(QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed))
         self.preview.setFixedHeight(self.hex.sizeHint().height())
 
         parent_layout = QVBoxLayout()
@@ -302,7 +301,7 @@ class ColorPicker(QWidget):
 
         main_layout = QVBoxLayout()
         parent_widget.setLayout(main_layout)
-        parent_widget.setSizePolicy(QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed))
+        parent_widget.setSizePolicy(QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed))
 
         top_widget = QWidget()
         main_layout.addWidget(top_widget)
@@ -311,7 +310,7 @@ class ColorPicker(QWidget):
         top_layout.setContentsMargins(0, 0, 0, 0)
         top_widget.setLayout(top_layout)
         top_layout.addWidget(self.wheel)
-        top_widget.setSizePolicy(QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed))
+        top_widget.setSizePolicy(QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed))
         top_layout.addWidget(slider_container)
 
         bottom_widget = QWidget()
