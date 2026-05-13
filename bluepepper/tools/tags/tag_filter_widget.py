@@ -87,6 +87,15 @@ class TagList(QListWidget):
             widget.update_color(grey_out=not item.isSelected())
 
     @property
+    def all_widgets(self) -> list[TagListWidget]:
+        widgets = []
+        for i in range(self.count()):
+            item = self.item(i)
+            widget: TagListWidget = self.itemWidget(item)  # type: ignore
+            widgets.append(widget)
+        return widgets
+
+    @property
     def selected_tags(self) -> list[str]:
         tags = []
         for i in range(self.count()):
@@ -134,6 +143,10 @@ class TagFilterWidget(QWidget):
     @property
     def selected_tags(self) -> list[str]:
         return self.list_widget.selected_tags
+
+    @property
+    def all_widgets(self) -> list[TagListWidget]:
+        return self.list_widget.all_widgets
 
 
 def show_dialog(tag_collection: str) -> list[str] | None:
