@@ -3,9 +3,9 @@ from __future__ import annotations
 import sys
 
 import qtawesome as qta
-from PySide6.QtCore import QEasingCurve, QEvent, QPropertyAnimation, QRect, QSize
-from PySide6.QtGui import QFont
-from PySide6.QtWidgets import (
+from qtpy.QtCore import QEasingCurve, QEvent, QPropertyAnimation, QRect, QSize
+from qtpy.QtGui import QFont
+from qtpy.QtWidgets import (
     QApplication,
     QLabel,
     QPushButton,
@@ -44,7 +44,7 @@ class HelpMeButton(QWidget):
         self._derive_metrics()
 
         self.setFixedHeight(self._size)
-        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Policy.Fixed)
 
         # Inner button
         self._btn = QPushButton(self)
@@ -113,9 +113,7 @@ class HelpMeButton(QWidget):
         self._btn.setStyleSheet(_stylesheet)
 
     def _set_icon(self, with_text: bool = False) -> None:
-        icon = qta.icon(
-            "fa5s.hand-sparkles", scale_factor=1, color=self.colors["icon_color"]
-        )
+        icon = qta.icon("fa5s.hand-sparkles", scale_factor=1, color=self.colors["icon_color"])
         self._btn.setIcon(icon)
         if with_text:
             self._btn.setText(" Help Me")
