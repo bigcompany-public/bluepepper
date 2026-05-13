@@ -41,6 +41,8 @@ BluePepper is a pipeline application designed for 2D/3D animation studios. The p
 - [Launcher Configuration](#launcher-configuration)
     - [About Qt Dialogs](#about-qt-dialogs)
     - [About Beautiful Qt Dialogs](#about-beautiful-qt-dialogs)
+- [Embedded FastAPI Server](#embedded-fastapi-server)
+    - [Sending a Request](#sending-a-request)
 - [Design Philosophy](#design-philosophy)
 
 </details>
@@ -88,6 +90,117 @@ From here, we advise you to create a few assets and shots using the EntityCreato
 ![quickstart browser](docs/img/quickstart_browser.jpg)
 
 If you're feeling adventurous, you can explore the files in the `conf` folder and get a sneak peek at the inner workings of BluePepper.
+
+---
+
+# User Documentation
+
+## BluePepper App
+
+A shortcut to the BluePepper App is available in the installation folder. You may copy it to your desktop or pin it to the task bar if you wish. 
+
+![bluepepper_shortcut](docs/img/bluepepper_shortcut.jpg)
+
+The various components of BluePepper can be accessed through the left sidebar.
+
+![pages](docs/img/bluepepper_pages.jpg)
+
+1. The `Launcher`, which contains shortcuts to your software and tools.
+2. The `Browser`, which allows you to browse files related to assets and shots.
+3. The `Batcher`, where background jobs can be monitored.
+4. The `EntityCreator`, which allows you to create new assets and shots. (Warning: This tool should only be used by sups/leads)
+5. There is also a link to the official `BluePepper documentation`
+6. and a button to toggle the `System Console`.
+
+## Launcher
+
+The Launcher is pretty straightforward: double-click on an icon to launch the desired software/tool.
+
+![launcher app](docs/img/launcher_app.jpg)
+
+## Browser
+
+The Browser allows you to browse files related to assets and shots. To look for files :
+
+![browser_structure](docs/img/browser_structure.jpg)
+
+- Select the entity type (`1`)
+- Select your asset/shot (`2`)
+- File Kinds (`4`) are regrouped under tasks (`3`)
+- Selecting an asset/shot document and a File Kind triggers a file search: all files matching the naming convention appear in the right hand side (`5`).
+
+:warning:**Warning:** This also mean that files that do not **strictly** match the naming convention will **not** appear.
+
+![browser_no_match](docs/img/browser_no_match.jpg)
+
+### Selection
+
+Searching for files with a single document selected will reveal **all** the files for this specific document.
+
+![browser_selection_single](docs/img/browser_selection_single.jpg)
+
+On the other hand, looking for files with multiple documents selected will show the **last file** found for each.
+
+![browser_selection_multiple](docs/img/browser_selection_multiple.jpg)
+
+The `Documents` and `Files` columns have an extended selection mode, so various shortcuts are available:
+- `Ctrl` + `click` -> additive selection 
+- `Shift` + `click` -> contiguous selection
+- `Ctrl` + `A` -> Select all
+- `Shift` + `up/down arrow` -> Extend selection up/down
+- `Ctrl` + `Space` -> Unselect last selected item
+
+### Filters
+
+The Browser comes with various filtering options to help you find your documents.
+
+#### Name Filter
+
+The name filter looks for documents names that *contain* the search string, and is case insensitive.\
+For instance:
+
+- `CAT` will return `catherine` and `blackCat`
+- `er` will return `terry` and `pepper`
+
+![browser_filter_name](docs/img/browser_filter_name.jpg)
+
+Multiple search strings can be used at once, using the `;` separator:
+
+- `CAT;ry` will return `catherine`, `blackCat`, `terry` and `curry`
+
+#### Field Filter
+
+Field filters are here to filter documents by other attributes than their name.
+The filters are in order: from the less specific to the more specific, which helps you narrow down your query.
+
+![browser_filter_fields](docs/img/browser_filter_fields.jpg)
+
+#### Tag Filter
+
+*(Coming soon. the Tag feature has not been released yet.)*
+
+### Actions
+
+Various actions can be performed on the various elements of the Browser. BluePepper comes with a few handy actions out of the box, feel free to try them out.
+
+![browser_action_document](docs/img/browser_action_document.jpg) ![browser_action_file](docs/img/browser_action_file.jpg)
+
+### Tips And Tricks
+
+:bulb:You can hover above documents to display the full document.
+
+![browser_hover_document](docs/img/browser_hover_document.jpg)
+
+:bulb:This option is more advanced, but if you know what you are doing, you can write a MondoDB query as a filter:
+- `{"asset" : "cat"}` will return `cat` but **not** `blackCat`
+
+## Batcher
+
+*(Coming soon. the Batcher feature has not been released yet.)*
+
+## Entity Creator
+
+---
 
 ## Core Concepts
 
@@ -520,6 +633,31 @@ action = MenuAction(
 
 *(Coming soon. the Batcher feature has not been released yet.)*
 
+#### Creating a Batcher Job using FastAPI
+
+It is also possible to submit a job using a web request. All arguments needed to create the job shall be passed through the request's payload.
+Here is an example using BluePepper's builtin client:
+
+```python
+from bluepepper.app.api.fastapi_client import run_bluepepper_app_action
+
+run_bluepepper_app_action(
+    route="run_app_function/submit_batcher_job",
+    payload={
+        "name": "FastAPI Job",
+        "description": "This job was submitted using a web request",
+        "module": "pprint",
+        "func": "pprint",
+        "kwargs": {"object": "Hello World"},
+        "priority": 100,
+        "notify_when_done": True,
+        "notify_message": "FastAPI job is now done",
+    },
+)
+```
+
+For more information about BluePepper's FastAPI Server, see [Embedded FastAPI Server](#embedded-fastapi-server)
+
 ## Launcher Configuration
 
 Let's add a simple icon to the Launcher that opens VLC.
@@ -640,6 +778,23 @@ The result will be identical in functionality, but with considerably more style 
 
 If you need a reminder on how to use QtAwesome icons, see [Adding Icons to Menu Actions](#adding-icons-to-menu-actions).
 
+# Embedded FastAPI Server
+
+BluePepper has an embedded FastAPI server, that starts when BluePepper is launched. This allows to run actions using web requests, meaning that you can interact with BluePepper from the outside (another DCC, another computer, and so on)
+
+By default, the server runs on port 9999, but you may set your own port in the `conf/fastapi.py` configuration file.
+
+```python
+from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class FastApiSettings:
+    fastapi_port: int = 9999
+```
+
+## Sending a Request
+
+
 # Design Philosophy
 
 BluePepper makes minimal use of complex software architecture. While modular architectures are often considered best practice, they can be difficult to code, test, update, and deploy.
@@ -660,109 +815,3 @@ These choices aim to:
 
 ---
 
-# User Documentation
-
-## BluePepper App
-
-A shortcut to the BluePepper App is available in the installation folder. You may copy it to your desktop or pin it to the task bar if you wish. 
-
-![bluepepper_shortcut](docs/img/bluepepper_shortcut.jpg)
-
-The various components of BluePepper can be accessed through the left sidebar.
-
-![pages](docs/img/bluepepper_pages.jpg)
-
-1. The `Launcher`, which contains shortcuts to your software and tools.
-2. The `Browser`, which allows you to browse files related to assets and shots.
-3. The `Batcher`, where background jobs can be monitored.
-4. The `EntityCreator`, which allows you to create new assets and shots. (Warning: This tool should only be used by sups/leads)
-5. There is also a link to the official `BluePepper documentation`
-6. and a button to toggle the `System Console`.
-
-## Launcher
-
-The Launcher is pretty straightforward: double-click on an icon to launch the desired software/tool.
-
-![launcher app](docs/img/launcher_app.jpg)
-
-## Browser
-
-The Browser allows you to browse files related to assets and shots. To look for files :
-
-![browser_structure](docs/img/browser_structure.jpg)
-
-- Select the entity type (`1`)
-- Select your asset/shot (`2`)
-- File Kinds (`4`) are regrouped under tasks (`3`)
-- Selecting an asset/shot document and a File Kind triggers a file search: all files matching the naming convention appear in the right hand side (`5`).
-
-:warning:**Warning:** This also mean that files that do not **strictly** match the naming convention will **not** appear.
-
-![browser_no_match](docs/img/browser_no_match.jpg)
-
-### Selection
-
-Searching for files with a single document selected will reveal **all** the files for this specific document.
-
-![browser_selection_single](docs/img/browser_selection_single.jpg)
-
-On the other hand, looking for files with multiple documents selected will show the **last file** found for each.
-
-![browser_selection_multiple](docs/img/browser_selection_multiple.jpg)
-
-The `Documents` and `Files` columns have an extended selection mode, so various shortcuts are available:
-- `Ctrl` + `click` -> additive selection 
-- `Shift` + `click` -> contiguous selection
-- `Ctrl` + `A` -> Select all
-- `Shift` + `up/down arrow` -> Extend selection up/down
-- `Ctrl` + `Space` -> Unselect last selected item
-
-### Filters
-
-The Browser comes with various filtering options to help you find your documents.
-
-#### Name Filter
-
-The name filter looks for documents names that *contain* the search string, and is case insensitive.\
-For instance:
-
-- `CAT` will return `catherine` and `blackCat`
-- `er` will return `terry` and `pepper`
-
-![browser_filter_name](docs/img/browser_filter_name.jpg)
-
-Multiple search strings can be used at once, using the `;` separator:
-
-- `CAT;ry` will return `catherine`, `blackCat`, `terry` and `curry`
-
-#### Field Filter
-
-Field filters are here to filter documents by other attributes than their name.
-The filters are in order: from the less specific to the more specific, which helps you narrow down your query.
-
-![browser_filter_fields](docs/img/browser_filter_fields.jpg)
-
-#### Tag Filter
-
-*(Coming soon. the Tag feature has not been released yet.)*
-
-### Actions
-
-Various actions can be performed on the various elements of the Browser. BluePepper comes with a few handy actions out of the box, feel free to try them out.
-
-![browser_action_document](docs/img/browser_action_document.jpg) ![browser_action_file](docs/img/browser_action_file.jpg)
-
-### Tips And Tricks
-
-:bulb:You can hover above documents to display the full document.
-
-![browser_hover_document](docs/img/browser_hover_document.jpg)
-
-:bulb:This option is more advanced, but if you know what you are doing, you can write a MondoDB query as a filter:
-- `{"asset" : "cat"}` will return `cat` but **not** `blackCat`
-
-## Batcher
-
-*(Coming soon. the Batcher feature has not been released yet.)*
-
-## Entity Creator
