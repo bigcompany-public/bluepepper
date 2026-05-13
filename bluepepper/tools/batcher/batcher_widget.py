@@ -114,7 +114,7 @@ class BatcherWidget(QWidget):
         # Options content
         self.options_content_frame = QFrame()
         self.options_content_frame.setProperty("depth", 1)
-        self.options_content_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.options_content_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Policy.Fixed)
         self.options_content_frame.setHidden(True)  # Start collapsed
         options_layout.addWidget(self.options_content_frame)
         _layout = QVBoxLayout(self.options_content_frame)

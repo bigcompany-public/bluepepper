@@ -9,7 +9,7 @@ from qtpy.QtWidgets import (
 
 
 class TagWidget(QFrame):
-    def __init__(self, tag_document: dict[str, str], size: int = 28):
+    def __init__(self, tag_document: dict[str, str], size: int = 26):
         super().__init__()
         self.document = tag_document
         self._size = size

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from qtpy.QtWidgets import (
     QApplication,
     QDialog,
@@ -9,12 +11,14 @@ from qtpy.QtWidgets import (
     QWidget,
 )
 
-from bluepepper.app.main_window.main_window import BluePepperApp
 from bluepepper.core import init_logging
 from bluepepper.gui.utils import format_widgets, get_stylesheet
 from bluepepper.tools.batcher.batcher_widget import BatcherWidget
 from bluepepper.tools.browser.browser_config import AppConfig
 from bluepepper.tools.browser.browser_tab import EntityTab
+
+if TYPE_CHECKING:
+    from bluepepper.app.main_window.main_window import BluePepperApp
 
 
 class BrowserWidget(QWidget):

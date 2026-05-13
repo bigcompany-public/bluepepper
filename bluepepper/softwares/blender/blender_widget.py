@@ -1,5 +1,5 @@
 import qtawesome
-from PySide6.QtWidgets import (
+from qtpy.QtWidgets import (
     QApplication,
     QLabel,
     QLineEdit,
@@ -22,9 +22,7 @@ class MyLineEditWidget(QWidget):
         layout.addWidget(self.label)
         layout.addWidget(self.line_edit)
         layout.addWidget(self.ok_button)
-        self.line_edit.textChanged.connect(
-            lambda text: self.ok_button.setEnabled(bool(text.strip()))
-        )
+        self.line_edit.textChanged.connect(lambda text: self.ok_button.setEnabled(bool(text.strip())))
 
 
 # --- Launch ---
@@ -35,8 +33,6 @@ user_widget = MyLineEditWidget()
 icon = qtawesome.icon("ri.settings-4-fill", scale_factor=1.35, color="#000000")
 container = ContainerWidget(user_widget, title="Enter Name", icon=icon)
 container.confirmed.connect(lambda value: print(f"Confirmed: {value!r}"))
-user_widget.ok_button.clicked.connect(
-    lambda: container._confirm(user_widget.line_edit.text())
-)
+user_widget.ok_button.clicked.connect(lambda: container._confirm(user_widget.line_edit.text()))
 
 container.show()
