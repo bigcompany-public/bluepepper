@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 from argparse import ArgumentParser
+from threading import Thread
 
 from qtpy.QtCore import QEvent, Qt, Signal
 from qtpy.QtWidgets import (
@@ -17,7 +18,9 @@ from qtpy.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+from requests.exceptions import ConnectTimeout
 
+from bluepepper.app.api.fastapi_client import run_bluepepper_app_action
 from bluepepper.core import database, init_logging
 from bluepepper.database import Collection, ObjectId
 from bluepepper.gui.utils import get_qta_icon, get_theme
@@ -288,6 +291,13 @@ class TagManagerWidget(QWidget):
         self.table_widget.update_items()
 
 
+def update_app_browser_tags():
+    try:
+        run_bluepepper_app_action(route="run_app_function/update_browser_tags")
+    except ConnectTimeout:
+        pass
+
+
 def show_tag_manager_dialog(tag_collection: str) -> list[dict[str, str]] | None:
     app = get_qt_app()
     icon = get_qta_icon(name="mdi.tag-text", scale_factor=1.25)
@@ -295,7 +305,12 @@ def show_tag_manager_dialog(tag_collection: str) -> list[dict[str, str]] | None:
     container = ContainerWidget(widget=widget, icon=icon, title="Tag Manager")
     dialog = ContainerDialog(container)
     widget.confirmed.connect(dialog.accept)
-    if dialog.exec():
+
+    result = dialog.exec()
+
+    # Update the tags in the browser, in case tags were added or removed
+    Thread(target=update_app_browser_tags, daemon=True).start()
+    if result:
         return widget.selected_documents
 
 
