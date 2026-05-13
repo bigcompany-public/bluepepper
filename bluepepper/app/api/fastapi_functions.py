@@ -8,9 +8,10 @@ import os
 import subprocess
 import time
 
+from windows_toasts import Toast, ToastButton
+
 from bluepepper.app.main_window.main_window import BluePepperApp
 from bluepepper.toast import start_toast_with_callback_thread
-from windows_toasts import Toast, ToastButton
 
 
 def close(bluepepper_app: BluePepperApp):
@@ -25,9 +26,7 @@ def close(bluepepper_app: BluePepperApp):
     def dismissed_callback():
         logging.info("BluePepper closing cancelled by the user")
 
-    start_toast_with_callback_thread(
-        toast, callback=callback, dismissed_callback=dismissed_callback
-    )
+    start_toast_with_callback_thread(toast, callback=callback, dismissed_callback=dismissed_callback)
 
 
 def show(bluepepper_app: BluePepperApp):
@@ -53,6 +52,13 @@ def set_active_tab(bluepepper_app: BluePepperApp, index: int):
     bluepepper_app.page_buttons[index].click()
 
 
+def update_browser_tags(bluepepper_app: BluePepperApp):
+    if not bluepepper_app.browser:
+        return
+    for tab in bluepepper_app.browser.entity_tab_widgets:
+        tab.tag_filter_widget.update_items()
+
+
 def reboot(bluepepper_app: BluePepperApp):
     logging.info("Rebooting computer (FastAPI)")
 
@@ -66,9 +72,7 @@ def reboot(bluepepper_app: BluePepperApp):
     def dismissed_callback():
         logging.info("Reboot cancelled by the user")
 
-    start_toast_with_callback_thread(
-        toast, callback=callback, dismissed_callback=dismissed_callback
-    )
+    start_toast_with_callback_thread(toast, callback=callback, dismissed_callback=dismissed_callback)
 
 
 def time_consuming_function(bluepepper_app: BluePepperApp):
