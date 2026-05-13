@@ -32,3 +32,6 @@ aquarium-python-api
 # Dev stuff
 ruff
 bump2version
+zensical
+mkdocstrings[python]
+pymdown-extensions

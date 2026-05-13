@@ -1,0 +1,98 @@
+# TUTORIAL
+# Edit this file then run this command in the root directory
+# zensical build --clean  
+#
+# When done, a "site" folder should appear
+# To start the server, run the command:
+# python -m http.server 8000 --directory .\site
+#
+# The documentation can be seen by going on chrome :
+# http://localhost:8000/
+
+# ressources :
+# https://gist.github.com/rxaviers/7360908
+
+[project]
+site_name = "bluepepper"
+site_description = "BluePepper is a pipeline application designed for 2D/3D animation studios"
+site_url = "https://bigcompany-public.github.io/bluepepper/"
+repo_url = "https://github.com/bigcompany-public/bluepepper/"
+repo_name = "bigcompany-public/bluepepper"
+edit_uri = "edit/main/docs/" # ??
+extra_css = ["stylesheets/extra.css"]
+nav = [
+    { "Home" = "index.md" },
+    { "Quick Start" = "quick_start.md" },
+    { "Video Tutorials" = "video_tutorials.md" },
+    { "User Documentation" = [
+        { "BluePepper App Overview" = "user_bluepepper_app.md" },
+        { "Launcher" = "user_launcher.md" },
+        { "Browser" = "user_browser.md" },
+        { "Batcher" = "user_batcher.md" },
+        { "EntityCreator" = "user_entitycreator.md" },
+    ]},
+    { "TD/Dev Documentation" = [
+        { "Core Concepts" = "dev_core_concepts.md" },
+        { "Setting Up a Development Environment" = "dev_environment.md" },
+        { "Setting Up The Database" = "dev_database.md" },
+        { "Configuring Naming Conventions" = "dev_naming_conventions.md" },
+        { "Configuring The Browser" = "dev_browser.md" },
+        { "Configuring The Launcher" = "dev_launcher.md" },
+        { "Embedded FastAPI Server" = "dev_fastapi.md" },
+    ]},
+    { "FAQ" = "faq.md" },
+    { "Lab" = "lab.md" },
+]
+
+# Palette toggle for automatic mode
+[[project.theme.palette]]
+media = "(prefers-color-scheme)"
+primary = "indigo"
+accent = "indigo"
+toggle.icon = "lucide/sun-moon"
+toggle.name = "Switch to light mode"
+
+# Palette toggle for light mode
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+primary = "indigo"
+accent = "indigo"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+# Palette toggle for dark mode
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+primary = "indigo"
+accent = "indigo"
+toggle.icon = "lucide/moon-star"
+toggle.name = "Switch to system preference"
+
+[project.theme]
+features = [
+    "navigation.sections",
+    "navigation.top",
+    "search.suggest",
+    "search.highlight",
+    "content.tabs.link",
+    "content.code.annotation",
+    "content.code.copy",
+]
+
+[project.theme.icon]
+repo = "fontawesome/brands/github"
+
+# [project.markdown_extensions.pymdownx.highlight]
+# anchor_linenums = true
+
+# [project.markdown_extensions.pymdownx.superfences]
+
+# [project.markdown_extensions.pymdownx.tabbed]
+# alternate_style = true
+
+# [project.markdown_extensions.pymdownx.magiclink]
+
+# [project.markdown_extensions.toc]
+# permalink = true
