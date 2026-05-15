@@ -12,7 +12,15 @@
 ## Installation
 
 - Run `install_dev.bat`.
+
+    ??? question "Why is there two installation scripts?"
+        You may have noticed bluepepper's directory contains a `install_dev.bat` file and a `install_enduser.bat`.
+        
+        The first initializes the repository in a way that prevents the update callback from triggering. This way, you can do your own thing without having BluePepper scrapping all your changes at launch.
+
 - You can now open the app using the newly created BluePepper shortcut, but let's do some configuration first.
+
+
 
 
 ## Configuring the Project
