@@ -14,7 +14,7 @@ class Screenshot(QDialog):
 
         # Create transparent frameless window
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
+        self.setWindowFlags(Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint)
 
         # Create semi-transparent widget on which the QRubberBand selection can be drawn
         self.main_layout = QVBoxLayout()

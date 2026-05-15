@@ -23,14 +23,15 @@ from typing import Type
 
 import pyperclip
 import qtawesome
+from qtpy.QtCore import Qt, QUrl
+from qtpy.QtWidgets import QWidget
+
 from bluepepper.gui.utils import get_qt_app, get_sound, get_theme
 from bluepepper.gui.widgets.container import ContainerDialog, ContainerWidget
 from bluepepper.gui.widgets.outcome_popups.ui_error_widget import Ui_error_widget
 from bluepepper.gui.widgets.outcome_popups.ui_success_widget import Ui_success_widget
 from bluepepper.tools.helpme.helpme_button import HelpMeButton
 from bluepepper.tools.helpme.helpme_widget import show_dialog as show_helpme_dialog
-from qtpy.QtCore import Qt, QUrl
-from qtpy.QtWidgets import QWidget
 
 try:
     from PySide6.QtMultimedia import QSoundEffect
@@ -146,7 +147,7 @@ def show_success(message: str = "", sound: bool = False) -> None:
         icon=icon,
     )
     dialog: ContainerDialog[SuccessWidget] = ContainerDialog(container=container)
-    dialog.setWindowFlags(dialog.windowFlags() | Qt.WindowStaysOnTopHint)
+    dialog.setWindowFlags(dialog.windowFlags() | Qt.WindowType.WindowStaysOnTopHint)
     dialog.exec_()
 
 
@@ -164,7 +165,7 @@ def show_error(error: str = "", traceback: str = "") -> None:
         icon=icon,
     )
     dialog: ContainerDialog[ErrorWidget] = ContainerDialog(container=container)
-    dialog.setWindowFlags(dialog.windowFlags() | Qt.WindowStaysOnTopHint)
+    dialog.setWindowFlags(dialog.windowFlags() | Qt.WindowType.WindowStaysOnTopHint)
     dialog.exec_()
 
 

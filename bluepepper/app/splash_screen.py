@@ -82,18 +82,18 @@ class BluePepperSplash(QSplashScreen):
         rect = self.rect().adjusted(20, -40, -20, -20)
         painter.setPen(QColor("#FFFFFF"))
         painter.setFont(QFont("Segoe UI", 24, QFont.Bold))
-        painter.drawText(rect, Qt.AlignLeft | Qt.AlignBottom, self.app_name)
+        painter.drawText(rect, Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignBottom, self.app_name)
 
         # Credits
         rect = self.rect().adjusted(0, 0, -10, -10)
         painter.setFont(QFont("Segoe UI", 8))
-        painter.drawText(rect, Qt.AlignRight | Qt.AlignBottom, self.credits)
+        painter.drawText(rect, Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignBottom, self.credits)
 
         # Dynamic status
         rect = self.rect().adjusted(150, -40, -20, -23)
         painter.setPen(self.status_color)
         painter.setFont(self.status_font)
-        painter.drawText(rect, Qt.AlignLeft | Qt.AlignBottom, self.status)
+        painter.drawText(rect, Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignBottom, self.status)
 
     def update_venvs(self):
         if self._update:

@@ -37,10 +37,10 @@ class FramelessMainWindow(QMainWindow):
         self.resize(1200, 700)
         self.setWindowFlags(
             # Hides default frame
-            Qt.FramelessWindowHint
+            Qt.WindowType.FramelessWindowHint
             |
             # Allows win+up to maximize and win+down to minimize
-            Qt.WindowMinMaxButtonsHint
+            Qt.WindowType.WindowMinMaxButtonsHint
         )
         self._activate_window_resizing()
 

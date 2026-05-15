@@ -336,7 +336,7 @@ class FunctionButton(QPushButton):
         self.setIconSize(QSize(_MENU_ICON_SIZE, _MENU_ICON_SIZE))
         self.setProperty("type", "menuItem")
         self.setToolTip(tooltip)
-        self.setFocusPolicy(Qt.NoFocus)
+        self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.clicked.connect(self.button_clicked)
 
     def button_clicked(self) -> None:
