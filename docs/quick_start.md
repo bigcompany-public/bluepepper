@@ -46,6 +46,6 @@ From here, we advise you to create a few assets and shots using the EntityCreato
 If you're feeling adventurous, you can explore the files in the `conf`:open_file_folder: folder and get a sneak peek at the inner workings of BluePepper.
 
 !!! question
-    Don't worry if you feel a bit lost with configuration files. Everything is explained in details in the TD/Dev Documentation. [Test](./faq)
+    Don't worry if you feel a bit lost with configuration files. Everything is explained in details in the [TD/Dev Documentation](./dev_core_concepts).
 
 ![conf_files](img/conf_files.jpg)

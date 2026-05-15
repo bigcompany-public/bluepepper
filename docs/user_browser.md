@@ -85,6 +85,10 @@ Various actions can be performed on the various elements of the Browser. BluePep
 
 ![browser_action_document](img/browser_action_document.jpg) ![browser_action_file](img/browser_action_file.jpg)
 
+When clicked, actions will run for all selected documents.
+
+Please note that some actions (mainly the time consuming ones) will actually start a Batcher job. For more informations, see the [Batcher Documentation](./user_batcher)
+
 ## Tips And Tricks
 
 ### Prefilled Naming Conventions
