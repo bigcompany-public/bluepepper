@@ -57,8 +57,8 @@ Important ones :
 
 
  [data-md-color-scheme="slate"] {
-  --md-default-bg-color--light: #080e1d; /* Background */
-  --md-default-bg-color: #151a24; /* Top bar */
+  --md-default-bg-color--light: #080e1d; /* Top bar Background */
+  --md-default-bg-color: #151a24; /* Background */
   --md-typeset-color: #bfc8da; /* Text */
   --md-code-bg-color: #11131b; /* Code blocks */
   --md-typeset-a-color: #00a2ff; /* Links */
