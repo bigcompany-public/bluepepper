@@ -5,7 +5,7 @@ import zipfile
 from pathlib import Path
 
 import qtawesome
-from qtpy.QtCore import Signal
+from qtpy.QtCore import Qt, Signal
 from qtpy.QtWidgets import QFrame, QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget
 
 from bluepepper.database import database
@@ -92,6 +92,7 @@ def show_dialog():
     dialog = ContainerDialog(container=container)
     widget.confirmed.connect(dialog.accept)
     widget.rejected.connect(dialog.reject)
+    dialog.setWindowFlags(dialog.windowFlags() | Qt.WindowType.WindowStaysOnTopHint)
     if dialog.exec():
         setup_demo_project()
 
