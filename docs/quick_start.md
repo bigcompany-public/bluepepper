@@ -17,11 +17,11 @@
 
     ![demo_project](img/demo_project.jpg)
 
+## Lightning-Quick Overview
+
 The various components of BluePepper can be accessed through the left sidebar.
 
 ![pages](img/bluepepper_pages.jpg)
-
-## Lightning-Quick Overview
 
 1. The `Launcher`, which contains shortcuts to your software and tools.
 2. The `Browser`, which allows you to browse files related to assets and shots.

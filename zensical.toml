@@ -1,10 +1,6 @@
 # TUTORIAL
 # Edit this file then run this command in the root directory
-# zensical build --clean  
-#
-# When done, a "site" folder should appear
-# To start the server, run the command:
-# python -m http.server 8000 --directory .\site
+# zensical serve
 #
 # The documentation can be seen by going on chrome :
 # http://localhost:8000/
@@ -13,7 +9,7 @@
 # https://gist.github.com/rxaviers/7360908
 
 [project]
-site_name = "bluepepper"
+site_name = "BluePepper"
 site_description = "BluePepper is a pipeline application designed for 2D/3D animation studios"
 site_url = "https://bigcompany-public.github.io/bluepepper/"
 repo_url = "https://github.com/bigcompany-public/bluepepper/"
@@ -48,8 +44,8 @@ nav = [
 [[project.theme.palette]]
 media = "(prefers-color-scheme: dark)"
 scheme = "slate"
-primary = "teal"
-accent = "custom"
+primary = "blue"
+accent = "blue"
 toggle.icon = "lucide/moon-star"
 toggle.name = ""
 
