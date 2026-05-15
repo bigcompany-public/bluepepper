@@ -76,7 +76,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="custom">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -134,29 +134,9 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="custom"  aria-label=""  type="radio" name="__palette" id="__palette_0">
     
-      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-sun-moon" viewBox="0 0 24 24"><path d="M12 2v2M14.837 16.385a6 6 0 1 1-7.223-7.222c.624-.147.97.66.715 1.248a4 4 0 0 0 5.26 5.259c.589-.255 1.396.09 1.248.715M16 12a4 4 0 0 0-4-4M19 5l-1.256 1.256M20 12h2"/></svg>
-      </label>
-    
-  
-    
-    
-    
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
-    
-      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
-      </label>
-    
-  
-    
-    
-    
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
-    
-      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+      <label class="md-header__button md-icon" title="" for="__palette_0" hidden>
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-moon-star" viewBox="0 0 24 24"><path d="M18 5h4M20 3v4M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/></svg>
       </label>
     
@@ -285,6 +265,23 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Quick Start
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="././" class="md-nav__link md-nav__link--active">
         
   
@@ -300,6 +297,59 @@
   
 
       </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Installation
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lightning-quick-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Lightning-Quick Overview
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#experimenting-with-configuration-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Experimenting With Configuration Files
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -838,6 +888,11 @@
                       
                     
                     
+                      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+                      <div class="md-sidebar-button__wrapper">
+                        <label class="md-sidebar-button" for="__toc"></label>
+                      </div>
+                    
                   
                   <div class="md-sidebar__inner">
                     
@@ -849,6 +904,47 @@
   
     
   
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Installation
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lightning-quick-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Lightning-Quick Overview
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#experimenting-with-configuration-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Experimenting With Configuration Files
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -867,15 +963,24 @@
 
 
 <h1 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h1>
-<h1 id="try-it-for-yourself">Try It For Yourself<a class="headerlink" href="#try-it-for-yourself" title="Permanent link">&para;</a></h1>
+<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
 <ul>
 <li><a href="https://github.com/bigcompany-public/bluepepper/archive/refs/heads/main.zip">Download the source code</a>.</li>
 <li>Unzip it into a new folder, for example <code>myProject</code>.</li>
 <li>Run <code>install_dev.bat</code>.</li>
 <li>Double-click the newly created BluePepper shortcut.</li>
 </ul>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>If BluePeppers detects the project is empty, you will be prompted if you want to dowload a demo project.</p>
+<p><img alt="download_project" src="../img/download_project.jpg" /></p>
+<p>If you press "Yes", BluePepper will set up a database with a few assets/shots and will download a few blender files
+for you to play with.</p>
+<p><img alt="demo_project" src="../img/demo_project.jpg" /></p>
+</div>
 <p>The various components of BluePepper can be accessed through the left sidebar.</p>
 <p><img alt="pages" src="../img/bluepepper_pages.jpg" /></p>
+<h2 id="lightning-quick-overview">Lightning-Quick Overview<a class="headerlink" href="#lightning-quick-overview" title="Permanent link">&para;</a></h2>
 <ol>
 <li>The <code>Launcher</code>, which contains shortcuts to your software and tools.</li>
 <li>The <code>Browser</code>, which allows you to browse files related to assets and shots.</li>
@@ -887,7 +992,9 @@
 <p>From here, we advise you to create a few assets and shots using the EntityCreator, and play around in the Browser to see what you can do with it.</p>
 <p><img alt="quickstart entitycreator" src="../img/quickstart_entitycreator.jpg" /></p>
 <p><img alt="quickstart browser" src="../img/quickstart_browser.jpg" /></p>
-<p>If you're feeling adventurous, you can explore the files in the <code>conf</code> folder and get a sneak peek at the inner workings of BluePepper.</p>
+<h2 id="experimenting-with-configuration-files">Experimenting With Configuration Files<a class="headerlink" href="#experimenting-with-configuration-files" title="Permanent link">&para;</a></h2>
+<p>If you're feeling adventurous, you can explore the files in the <code>conf</code><img alt="📂" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@16.0.1/assets/svg/1f4c2.svg" title=":open_file_folder:" /> folder and get a sneak peek at the inner workings of BluePepper.</p>
+<p><img alt="conf_files" src="../img/conf_files.jpg" /></p>
 
 
 

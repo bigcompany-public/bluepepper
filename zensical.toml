@@ -44,31 +44,14 @@ nav = [
     { "Lab" = "lab.md" },
 ]
 
-# Palette toggle for automatic mode
-[[project.theme.palette]]
-media = "(prefers-color-scheme)"
-primary = "indigo"
-accent = "indigo"
-toggle.icon = "lucide/sun-moon"
-toggle.name = "Switch to light mode"
-
-# Palette toggle for light mode
-[[project.theme.palette]]
-media = "(prefers-color-scheme: light)"
-scheme = "default"
-primary = "indigo"
-accent = "indigo"
-toggle.icon = "lucide/sun"
-toggle.name = "Switch to dark mode"
-
 # Palette toggle for dark mode
 [[project.theme.palette]]
 media = "(prefers-color-scheme: dark)"
 scheme = "slate"
-primary = "indigo"
-accent = "indigo"
+primary = "teal"
+accent = "custom"
 toggle.icon = "lucide/moon-star"
-toggle.name = "Switch to system preference"
+toggle.name = ""
 
 [project.theme]
 features = [

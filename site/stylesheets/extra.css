@@ -1,3 +1,10 @@
+/* BluePepper Stylesheet */
+:root > * {
+  --md-primary-fg-color: #ee0f0f;
+  --md-primary-fg-color--light: #ecb7b7;
+  --md-primary-fg-color--dark: #90030c;
+}
+
 /* Bigger "Attributes", "Functions", "Methods" section headings (h3) */
 h3[id$="-attributes"],
 h3[id$="-functions"],
