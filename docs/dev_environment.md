@@ -2,7 +2,9 @@
 
 ## Forking and Cloning
 
-- Fork the repository to your personal GitHub page (for example, `bluepepper_myProject`). This will make it easier to edit the configuration and deploy it to your team later.
+- Fork [the repository](https://github.com/bigcompany-public/bluepepper) to your personal GitHub page (for example, `bluepepper_myProject`). This will make it easier to edit the configuration and deploy it to your team later.
+    ![github_fork](img/github_fork.jpg)
+
 - Clone the repository.
 
     ```
@@ -13,7 +15,7 @@
 
 - Run `install_dev.bat`.
 
-    ??? question "Why is there two installation scripts?"
+    ??? question "Why are there two installation scripts?"
         You may have noticed bluepepper's directory contains a `install_dev.bat` file and a `install_enduser.bat`.
         
         The first initializes the repository in a way that prevents the update callback from triggering. This way, you can do your own thing without having BluePepper scrapping all your changes at launch.

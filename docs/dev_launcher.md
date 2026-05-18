@@ -121,4 +121,13 @@ The result will be identical in functionality, but with considerably more style 
 
 ![launcher qt](img/launcher_qt_style.jpg)
 
-If you need a reminder on how to use QtAwesome icons, see [Adding Icons to Menu Actions](#adding-icons-to-menu-actions).
+BluePepper uses QtAwesome for its menu icons. To browse available icons, open a powershell terminal from the Launcher and run the command:
+
+=== "powershell"
+    ```powershell
+    qta-browser
+    ```
+
+![qta browser](img/qta_browser.jpg)
+
+From there, you can copy the icon code.

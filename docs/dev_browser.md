@@ -319,4 +319,4 @@ Here is an example using BluePepper's builtin client:
     )
     ```
 
-For more information about BluePepper's FastAPI Server, see [Embedded FastAPI Server](#embedded-fastapi-server)
+For more information about BluePepper's FastAPI Server, see [Embedded FastAPI Server](./dev_fastapi.md)

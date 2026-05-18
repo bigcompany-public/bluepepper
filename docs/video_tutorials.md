@@ -14,4 +14,4 @@
 !!! info ""
     <div style="text-align: right; font-weight: bold"> Next Sections: </div>
     <a href="Next Section"> <div style="text-align: right; font-weight: bold"> [User Documentation](./user_bluepepper_app) </div>
-    <a href="Next Section"> <div style="text-align: right; font-weight: bold"> [TD/Dev Documentation](./core_concepts.md) </div>
+    <a href="Next Section"> <div style="text-align: right; font-weight: bold"> [TD/Dev Documentation](./dev_core_concepts.md) </div>
