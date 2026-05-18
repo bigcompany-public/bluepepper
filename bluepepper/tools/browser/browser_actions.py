@@ -156,6 +156,10 @@ def kind_copy_filename(documents: list[dict], convention: Convention):
     send_strings_to_clipboard(strings)
 
 
+def kind_copy_convention(convention: Convention):
+    send_strings_to_clipboard([convention.human_readable_pattern()])
+
+
 def file_copy_paths(paths: list[Path]):
     send_strings_to_clipboard([Path(path).as_posix() for path in paths])
 

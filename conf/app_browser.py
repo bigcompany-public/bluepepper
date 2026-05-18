@@ -264,6 +264,14 @@ def get_tool_config() -> AppConfig:
         kwargs={"documents": "<documents>", "convention": "<convention>"},
         mode="all",
     )
+    kind_copy_convention_action = MenuAction(
+        label="Copy Naming Convention",
+        qta_icon="fa5.clipboard",
+        module="bluepepper.tools.browser.browser_actions",
+        function="kind_copy_convention",
+        kwargs={"convention": "<convention>"},
+        mode="all",
+    )
     file_copy_path_action = MenuAction(
         label="Copy Path",
         qta_icon="fa5.clipboard",
@@ -350,6 +358,7 @@ def get_tool_config() -> AppConfig:
                 kind.add_kind_action(kind_show_in_explorer_action)
                 kind.add_kind_action(kind_copy_path_action)
                 kind.add_kind_action(kind_copy_filename_action)
+                kind.add_kind_action(kind_copy_convention_action)
 
                 # File actions
                 kind.add_file_action(file_show_in_explorer)
