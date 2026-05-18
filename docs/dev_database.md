@@ -105,3 +105,6 @@ Feel free to create an asset and a shot in BluePepper to see how the database is
 ![MongoDB User1](img/mongodb_create_asset.jpg)
 ![MongoDB User1](img/mongodb_create_asset2.jpg)
 ![MongoDB User1](img/mongodb_create_asset3.jpg)
+
+!!! info ""
+    <a href="Next Section"> <div style="text-align: right; font-weight: bold"> [Next Section : Configuring Naming Conventions](./dev_naming_conventions.md) </div>

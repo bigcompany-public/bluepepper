@@ -13,8 +13,13 @@ The various components of BluePepper can be accessed through the left sidebar.
 - :three: The `Batcher`, where background jobs can be monitored.
 - :four: The `EntityCreator`, which allows you to create new assets and shots.
 
-    ??? tip
+    ??? tip "Who should create entities ?"
         When working with a team, it is advised that this tool is only used by supervisors. In general, databases operations should be limited to a handful of people.
 
 - :five: There is also a link to the official `BluePepper documentation`
 - :six: and a button to toggle the `System Console`.
+
+---
+
+!!! info ""
+    <a href="Next Section"> <div style="text-align: right; font-weight: bold"> [Next Section : Launcher](./user_launcher.md) </div>

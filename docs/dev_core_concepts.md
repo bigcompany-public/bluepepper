@@ -23,3 +23,6 @@ Allows you to search for files by combining the `Database` and the `Codex`. When
 The task manager that executes in the background the actions you launch from the Browser. While it is somewhat advanced, it is a powerful tool for running an action across hundreds of shots in a single click.
 
 Once you are familiar with these four components, a world of possibilities opens up!
+
+!!! info ""
+    <a href="Next Section"> <div style="text-align: right; font-weight: bold"> [Next Section : Setting Up a Development Environment](./dev_environment.md) </div>

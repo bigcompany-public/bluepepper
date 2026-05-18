@@ -15,17 +15,15 @@ Here are the actions you can perform on jobs:
 
 - :one: Change job priority
 - :two: Start job
-
-    ??? tip
-        Actually sets the Job's status to `Waiting`, in case it's current status was `Error` or `Terminated`
-
 - :three: Stop job
 - :four: Retart job
-
-    ??? tip
-        Sets the Job's status to `Waiting`. In contrast with the `Start Job` button which ignores jobs that are already running, the `Restart Job` button will terminate running jobs before setting their status to `Waiting`
-
 - :five: Delete job
+
+??? question "Sometimes, clicking "Start" does not start my job"
+    The `Start Job` button actually sets the Job's status to `Waiting` in case it's current status was `Error` or `Terminated`, but the job manager will only execute it when the time comes : jobs that have a higher priority will be executed first.
+
+??? question "What is the difference between Start and Restart?"
+    In contrast with the `Start Job` button which ignores jobs that are already running, the `Restart Job` button will terminate running jobs before setting their status to `Waiting`
 
 ### Job Selection
 
@@ -78,3 +76,8 @@ If checked, the Jobs will be removed when done. By default, this option is unche
 Being flooded with notifications when executing hundreds of jobs can be overwhelming: to mitigate this, the Batcher gives you control over `Success` and `Error` notifications. 
 
 Feel free to adjust these settings to show exactly the notifications you actually need.
+
+---
+
+!!! info ""
+    <a href="Next Section"> <div style="text-align: right; font-weight: bold"> [Next Section : EntityCreator](./user_entitycreator.md) </div>

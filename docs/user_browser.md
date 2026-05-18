@@ -12,7 +12,7 @@ The Browser allows you to browse files related to assets and shots. To look for 
     !!! warning
         This also mean that files that do not **strictly** match the naming convention will **not** appear.
 
-    ![browser_no_match](img/browser_no_match.jpg)
+        ![browser_no_match](img/browser_no_match.jpg)
 
 
 ## Selection
@@ -25,7 +25,7 @@ On the other hand, looking for files with multiple documents selected will show 
 
 ![browser_selection_multiple](img/browser_selection_multiple.jpg)
 
-!!! tip
+!!! tip "Selecting Multiple Documents"
 
     The `Documents` and `Files` columns have an extended selection mode, so various shortcuts are available:
 
@@ -63,13 +63,13 @@ The filters are in order: from the less specific to the more specific, which hel
 
 ### Tag Filter
 
-Tags is a more freeform way of sorting documents, as opposed to fields which are fixed.
+Tags is a more "freeform" way of sorting documents, as opposed to fields which are mandatory hard-written attributes of documents.
 
 Click one or more tags to reveal documents that have any of the tags assigned to them.
 
 ![tags_example](img/tags_example.jpg)
 
-!!! tip
+!!! tip "Selecting Multiple Tags"
     The Tag filter has an extended selection mode, so various shortcuts are available:
 
     - `Ctrl` + `click` -> additive selection 
@@ -91,9 +91,7 @@ Please note that some actions (mainly the time consuming ones) will actually sta
 
 ## Tips And Tricks
 
-### Prefilled Naming Conventions
-
-!!! tip
+!!! tip "Prefilled Naming Conventions"
     You need to create a file, but you are unsure about its naming convention?
 
     The built-in `Copy Path` and `Copy File Name` actions send prefilled names that respect the naming convention into you clipboard.
@@ -104,18 +102,22 @@ Please note that some actions (mainly the time consuming ones) will actually sta
 
     pressing `Ctrl + v` will paste this: `beerCanSixPack_mdl_v{version}_{description}.blend`
 
-### Reading a Document's Content
 
-!!! tip
+
+!!! tip "Reading a Document's Content"
     You can hover above documents to display the full document.
 
     ![browser_hover_document](img/browser_hover_document.jpg)
 
 
-### Advanced Document Search
 
-!!! tip
+!!! tip "Advanced Document Search"
     If you feel like a power user, the search bar also handles mongoDB queries :muscle:
 
     - `{"asset": "sprite"}` will return documents where the `asset` key is **exactly** "sprite"
     - `{"asset" : {"$ne" : "spider"}}` will return all documents in which the `asset` key is **not** "spider".
+
+--- 
+
+!!! info ""
+    <a href="Next Section"> <div style="text-align: right; font-weight: bold"> [Next Section : Batcher](./user_batcher.md) </div>
