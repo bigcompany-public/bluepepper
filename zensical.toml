@@ -30,6 +30,7 @@ nav = [
     { "TD/Dev Documentation" = [
         { "Core Concepts" = "dev_core_concepts.md" },
         { "Setting Up a Development Environment" = "dev_environment.md" },
+        { "Configuring The Project" = "dev_project.md" },
         { "Setting Up The Database" = "dev_database.md" },
         { "Configuring The Launcher" = "dev_launcher.md" },
         { "Configuring Naming Conventions" = "dev_naming_conventions.md" },
