@@ -117,7 +117,7 @@ When opening the Browser, you can see the result:
 6. While there is still no file on the server right now, the console shows that the Browser is actively looking for files that match the naming convention.
 ![Browser Config](img/browser_config.jpg)
 
-### Actions
+## Actions
 
 Contextual menu actions can be added to documents, kinds, and files, allowing you to define which actions are available when right-clicking on various elements of the interface.
 
@@ -179,25 +179,25 @@ Now, see the result, with two documents selected:
 
 You can use the `kwargs` attribute with all the following special keywords, which are automatically substituted when passed to your functions:
 
-- `<document>`: Each of the selected documents (triggers the function once per document)
-- `<documents>`: List of all selected documents (triggers the function once)
-- `<document_name>`: Each of the selected documents' names (triggers the function once per document)
-- `<document_names>`: List of all selected documents' names (triggers the function once)
-- `<document_id>`: Each of the selected documents' MongoDB IDs (triggers the function once per document)
-- `<document_ids>`: List of all selected documents' MongoDB IDs (triggers the function once)
-- `<convention>`: The selected convention object
-- `<path>`: Each selected path (triggers the function once per path)
-- `<paths>`: List of all selected paths (triggers the function once)
+- `<document>`: Each of the selected documents
+- `<documents>`: List of all selected documents
+- `<document_name>`: Each of the selected documents' names
+- `<document_names>`: List of all selected documents' names
+- `<document_id>`: Each of the selected documents' MongoDB IDs
+- `<document_ids>`: List of all selected documents' MongoDB IDs
+- `<path>`: Each selected path
+- `<paths>`: List of all selected paths
+- `<convention>`: The selected Convention object
 - `<browser>`: The BrowserWidget object
 
-You may wonder why there are both singular and plural variants like `<document>` and `<documents>`. The distinction is significant. With 10 selected documents:
+### Dealing With Multiple Selection
 
-- `<document>` triggers the function 10 times, once per document
-- `<documents>` triggers the function once, passing the entire list as an argument (assuming your function contains a loop)
+When triggering an action with multiple documents or paths selected, you may actually want two distinct outcomes:
 
-The same logic applies to `<document_name(s)>`, `<document_id(s)>`, and `<path(s)>`.
+- Executing the action for each selected item, with each item passed as argument
+- Executing the action only once, with a list of items passed as argument
 
-Let's show this subtle difference with an example
+Hopefully, the `mode` argument, can be set to `each` or `all` to cover these two cases.
 
 === "python"
     ```python
@@ -205,7 +205,8 @@ Let's show this subtle difference with an example
         label="print documentS",
         module="conf.scripts.print_stuff",
         callable="print_selection",
-        kwargs={"selection": "<documents>"}
+        kwargs={"selection": "<documents>"},
+        mode="all"
     )
     asset_entity.add_document_action(action)
     ```
@@ -213,6 +214,9 @@ Let's show this subtle difference with an example
 As explained, the result is now printed as a list, instead of printing the documents one by one.
 
 ![Browser Config](img/browser_action3.jpg)
+
+!!! warning
+    The kwargs and the mode must make sense together: passing `<documents>` in `each` mode will indeed not work.
 
 ### Filtering Tasks and Actions
 
@@ -267,16 +271,7 @@ What if you have both a v001 and a v002 selected? The Browser handles this grace
 
 ### Adding Icons to Menu Actions
 
-BluePepper uses QtAwesome for its menu icons. To browse available icons, open a powershell terminal from the Launcher and run the command:
-
-=== "powershell"
-    ```powershell
-    qta-browser
-    ```
-
-![qta browser](img/qta_browser.jpg)
-
-From there, you can copy the icon code and use it when declaring your `MenuAction`. You can also set a custom colour if you wish:
+When declaring your `MenuAction`, you can add a custom icon and set a custom colour:
 
 === "python"
     ```python
@@ -291,32 +286,35 @@ From there, you can copy the icon code and use it when declaring your `MenuActio
 
 ![qta browser](img/browser_icon.jpg)
 
+!!! tip
+    To learn how to get icon codes, see [Tips And Tricks - QtAwesome Icons](./dev_tips_and_tricks/#qtawesome-icons)
+
 ### Creating a Batcher Job through a MenuAction
 
-*(Coming soon. the Batcher feature has not been released yet.)*
-
-### Creating a Batcher Job using FastAPI
-
-It is also possible to submit a job using a web request. All arguments needed to create the job shall be passed through the request's payload.
-Here is an example using BluePepper's builtin client:
+To submit a job to the Batcher, instead of running the action in the main Thread, one can use a `BatcherMenuAction` instead of a regular `MenuAction`.
 
 === "python"
-    ```python
-    from bluepepper.app.api.fastapi_client import run_bluepepper_app_action
+    ```
+    from bluepepper.tools.browser.browser_config import BatcherMenuAction
 
-    run_bluepepper_app_action(
-        route="run_app_function/submit_batcher_job",
-        payload={
-            "name": "FastAPI Job",
-            "description": "This job was submitted using a web request",
-            "module": "pprint",
-            "func": "pprint",
-            "kwargs": {"object": "Hello World"},
-            "priority": 100,
-            "notify_when_done": True,
-            "notify_message": "FastAPI job is now done",
-        },
+    action = BatcherMenuAction(
+        label="Build Workfile",
+        job_name="Build Workfile - <document_name>",
+        job_description="Copying empty blender file at the proper location for <document_name>",
+        batcher_module="conf.scripts.example_build_modeling_workfile",
+        batcher_function="main",
+        batcher_kwargs={"document": "<document>"},
+        batcher_notification=True,
+        batcher_notification_message="<document_name> - New workfile was created",
     )
+    modeling_workfile_kind.add_kind_action(action)
     ```
 
-For more information about BluePepper's FastAPI Server, see [Embedded FastAPI Server](./dev_fastapi.md)
+Executing this action will submit jobs to the Batcher.
+
+![qta browser](img/browser_icon.jpg)
+
+---
+
+!!! info ""
+    <a href="Next Section"> <div style="text-align: right; font-weight: bold"> [Next Section : Embedded FastAPI Server](./dev_fastapi.md) </div>
