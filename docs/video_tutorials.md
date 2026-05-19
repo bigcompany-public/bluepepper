@@ -1,6 +1,6 @@
 # Video Tutorials
 
-??? info "Coming Soon. In the meantime, have a song !"
+??? info "Coming soon. In the meantime, enjoy a song!"
     
     <iframe width="560" height="315"
     src="https://www.youtube.com/embed/dQw4w9WgXcQ"

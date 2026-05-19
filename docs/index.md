@@ -6,18 +6,18 @@ BluePepper is a pipeline application designed for 2D/3D animation studios, whose
 
 ![bluepepper](img/bluepepper_launcher.jpg)
 
-## What Makes BluePepper So Spicy ?
+## What Makes BluePepper So Spicy?
 
-Here are the key design choices that makes BluePepper different than other solutions:
+Here are the key design choices that make BluePepper different from other solutions:
 
-- :heart: Extra care was taken in keeping BluePepper lean and easy to use, in order to provide the best experience for non-technical users.
-- :balance_scale: It aims to strike the best balance between ease of setup and automation capabilities. You will need basic development skills, but adding new features should be reasonably straightforward.
+- :heart: Extra care was taken to keep BluePepper lean and easy to use, providing the best experience for non-technical users.
+- :balance_scale: It strikes a balance between ease of setup and automation capabilities. You will need basic development skills, but adding new features should be reasonably straightforward.
 - :package: It operates independently from production trackers or elaborate online services.
 - :money_with_wings: It is free and open-source.
 
-## What BluePepper is not ?
+## What BluePepper Is Not?
 
-- BluePepper is **not a production tracker**. Assigning tasks and handling retakes is purposefully not part of BluePepper : you are free to use the production tracker that best fits your need, and eventually link it to BluePepper if you want.
+- BluePepper is **not a production tracker**. Assigning tasks and handling retakes is purposefully not part of BluePepper: you are free to use the production tracker that best fits your needs and can link it to BluePepper later if desired.
 
 ---
 

@@ -1,20 +1,20 @@
 # Entity Creator
 
-The EntityCreator lets you create new asset/shots documents to your project.
+The EntityCreator lets you create new asset or shot documents for your project.
 
 ![entitycreator](img/entitycreator.jpg)
 
-??? question "Who should create entities ?"
-    When working with a team, it is advised that this tool is only used by supervisors. In general, databases operations should be limited to a handful of people.
+??? question "Who should create entities?"
+    In a team environment, it's recommended that supervisors use this tool. In general, database operations should be limited to a small number of trusted users.
 
-For each field to provide, the combobox will display the values found for other documents. If the value you want to set is not in the list, you may select `Custom` and enter a new value.
+For each field, the combo box displays values found in other documents. If the value you want is not in the list, select `Custom` and enter a new value.
 
 ![entitycreator_fields](img/entitycreator_fields.jpg)
 
-When providing values, the EntityCreator ensures each provided fields respects the naming convention.
+When providing values, the EntityCreator ensures each provided field respects the naming convention.
 
 !!! tip
-    If the value is wrong, you can hover over the text with your cursor, and a tooltip showing the exact naming convention will show up.
+    If a value is incorrect, hover over the text to see a tooltip with the exact naming convention.
 
     ![entitycreator_validation](img/entitycreator_validation.jpg)
 

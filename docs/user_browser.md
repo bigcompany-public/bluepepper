@@ -1,35 +1,35 @@
 # Browser
 
-The Browser allows you to browse files related to assets and shots. To look for files :
+The Browser allows you to browse files related to assets and shots. To look for files:
 
 ![browser_structure](img/browser_structure.jpg)
 
 - Select the entity type :one:
 - Select your asset/shot :two:
-- File Kinds :four: are regrouped under tasks :three:
-- Selecting an asset/shot document and a File Kind triggers a file search: all files matching the naming convention appear in the right hand side :five:.
+- File Kinds :four: are grouped under tasks :three:
+- Selecting an asset/shot document and a File Kind triggers a file search: all files matching the naming convention appear on the right-hand side :five:.
 
     !!! warning
-        This also mean that files that do not **strictly** match the naming convention will **not** appear.
+        This also means that files that do not **strictly** match the naming convention will **not** appear.
 
         ![browser_no_match](img/browser_no_match.jpg)
 
 
 ## Selection
 
-Searching for files with a single document selected will reveal **all** the files for this specific document.
+Searching for files with a single document selected will reveal **all** the files for that specific document.
 
 ![browser_selection_single](img/browser_selection_single.jpg)
 
-On the other hand, looking for files with multiple documents selected will show the **last file** found for each.
+If multiple documents are selected, the Browser will show the **last file** found for each document.
 
 ![browser_selection_multiple](img/browser_selection_multiple.jpg)
 
 !!! tip "Selecting Multiple Documents"
 
-    The `Documents` and `Files` columns have an extended selection mode, so various shortcuts are available:
+    The `Documents` and `Files` columns have an extended selection mode; the following shortcuts are available:
 
-    - `Ctrl` + `click` -> additive selection 
+    - `Ctrl` + `click` -> additive selection
     - `Shift` + `click` -> contiguous selection
     - `Ctrl` + `A` -> Select all
     - `Shift` + `up/down arrow` -> Extend selection up/down
@@ -37,11 +37,11 @@ On the other hand, looking for files with multiple documents selected will show 
 
 ## Filters
 
-The Browser comes with various filtering options to help you find your documents.
+The Browser includes several filtering options to help you find documents.
 
 ### Name Filter
 
-The name filter looks for documents names that **contain** the search string, and is case insensitive.
+The name filter looks for document names that **contain** the search string and is case-insensitive.
 For instance:
 
 - `CAT` will return `catherine` and `blackCat`
@@ -56,23 +56,23 @@ For instance:
 
 ### Field Filter
 
-Field filters are here to filter documents by other attributes than their name.
-The filters are in order: from the less specific to the more specific, which helps you narrow down your query.
+Field filters let you filter documents by attributes other than their name.
+The filters are ordered from the less specific to the more specific, which helps you narrow your query.
 
 ![browser_filter_fields](img/browser_filter_fields.jpg)
 
 ### Tag Filter
 
-Tags is a more "freeform" way of sorting documents, as opposed to fields which are mandatory hard-written attributes of documents.
+Tags are a more "freeform" way of sorting documents, as opposed to fields which are mandatory attributes of documents.
 
-Click one or more tags to reveal documents that have any of the tags assigned to them.
+Click one or more tags to reveal documents that have any of the selected tags.
 
 ![tags_example](img/tags_example.jpg)
 
 !!! tip "Selecting Multiple Tags"
-    The Tag filter has an extended selection mode, so various shortcuts are available:
+    The Tag filter has an extended selection mode; the following shortcuts are available:
 
-    - `Ctrl` + `click` -> additive selection 
+    - `Ctrl` + `click` -> additive selection
     - `Shift` + `click` -> contiguous selection
     - `Ctrl` + `A` -> Select all
     - `Shift` + `left/right arrow` -> Extend selection up/down
@@ -81,22 +81,22 @@ Click one or more tags to reveal documents that have any of the tags assigned to
 
 ## Actions
 
-Various actions can be performed on the various elements of the Browser. BluePepper comes with a few handy actions out of the box, feel free to try them out.
+Various actions can be performed on elements in the Browser. BluePepper includes a few handy actions out of the box. Feel free to try them.
 
 ![browser_action_document](img/browser_action_document.jpg) ![browser_action_file](img/browser_action_file.jpg)
 
 When clicked, actions will run for all selected documents.
 
-Please note that some actions (mainly the time consuming ones) will actually start a Batcher job. For more informations, see the [Batcher Documentation](./user_batcher)
+Please note that some actions (mainly the time-consuming ones) will start a Batcher job. For more information, see the [Batcher Documentation](./user_batcher)
 
 ## Tags
 
-!!! question "Who should manage tags ?"
-    In a project involving a team, it is advised that tags are handled by supervisors: while some tags are only used for filtering, others may be used to configure actions and tools.
+!!! question "Who should manage tags?"
+    In a team project, it's recommended that supervisors manage tags: some tags are used only for filtering, while others may be used to configure actions and tools.
 
 ### Creating and Adding Tags to Documents
 
-Tags can be added to asset/shot documents, by right clicking on it and clicking `Add Tag`.
+Tags can be added to asset or shot documents by right-clicking the document and selecting `Add Tag`.
 
 ![add_tag_0](img/add_tag_0.jpg)
 
@@ -104,27 +104,27 @@ You may use existing tags or create a new one if needed.
 
 ![add_tag_1](img/add_tag_1.png)
 
-The look of the tag is fully customizable
+The appearance of a tag is fully customizable.
 
 ![add_tag_2](img/add_tag_2.png)
 
-The `Pick Icon` button pops an Icon Browser window, where you can use the search bar, and double click on the icon you want to validate your choice.
+The `Pick Icon` button opens an Icon Browser window where you can use the search bar and double-click the icon to confirm your choice.
 
 ![add_tag_3](img/add_tag_3.png)
 
-When done, simply press `OK`, and you will be able to filter documents using the newly created tag.
+When done, press `OK` to apply the tag and you will be able to filter documents using the newly created tag.
 
 ![add_tag_4](img/add_tag_4.png)
 
 ### Removing a Tag From a Document
 
-Tags can be removed from a document by right clicking on the document and clicking `Remove Tag`
+Tags can be removed from a document by right-clicking the document and selecting `Remove Tag`.
 
 ![remove_tag](img/remove_tag.png)
 
 ### Editing and Deleting Tags
 
-Tags can be edited or deleted by right clicking on them.
+Tags can be edited or deleted by right-clicking them.
 
 ![edit_remove_tag](img/edit_remove_tag.png)
 
@@ -134,22 +134,22 @@ When deleting a tag, you will be prompted if the tag is applied to one or more d
 
 ### Multiple Documents, Multiple Tags
 
-Both documents and tags are in extended selection mode: you may apply multiple tags to multiple documents in one go.
+Both documents and tags support extended selection mode: you may apply multiple tags to multiple documents in one go.
 
 ![add_tag_5](img/add_tag_5.png)
 
 ### Tag Managers
 
-The tag manager we just mentioned can also be accessed from the Launcher.
+The tag manager can also be accessed from the Launcher.
 
 ![asset_tag_manager](img/asset_tag_manager.jpg)
 
 ## Tips And Tricks
 
 !!! tip "Prefilled Naming Conventions"
-    You need to create a file, but you are unsure about its naming convention?
+    Need to create a file but unsure about its naming convention?
 
-    The built-in `Copy Path` and `Copy File Name` actions send prefilled names that respect the naming convention into you clipboard.
+    The built-in `Copy Path` and `Copy File Name` actions send prefilled names that respect the naming convention to your clipboard.
 
     For instance, if you do this:
 
@@ -160,7 +160,7 @@ The tag manager we just mentioned can also be accessed from the Launcher.
 
 
 !!! tip "Reading a Document's Content"
-    You can hover above documents to display the full document.
+    You can hover over documents to display the full document.
 
     ![browser_hover_document](img/browser_hover_document.jpg)
 

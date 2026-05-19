@@ -1,6 +1,6 @@
 # Launcher
 
-The Launcher is pretty straightforward: double-click on an icon to launch the desired software/tool.
+The Launcher is straightforward: double-click an icon to launch the desired software or tool.
 
 ![launcher app](img/launcher_app.jpg)
 
