@@ -18,3 +18,7 @@ When providing values, the EntityCreator ensures each provided fields respects t
 
     ![entitycreator_validation](img/entitycreator_validation.jpg)
 
+---
+
+!!! info ""
+    <a href="Next Section"> <div style="text-align: right; font-weight: bold"> [Next Section : TD/Dev Documentation](./dev_core_concepts.md) </div>

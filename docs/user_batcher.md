@@ -31,15 +31,17 @@ Every button pressed (priority change, start, stop...) affects all selected jobs
 
 The Job List has an extended selection mode, so various shortcuts are available:
 
-- `Ctrl` + `click` -> additive selection 
-- `Shift` + `click` -> contiguous selection
-- `Ctrl` + `A` -> Select all
-- `Shift` + `left/right arrow` -> Extend selection up/down
-- `Ctrl` + `Space` -> Unselect last selected item
+!!! tip ""
+    - `Ctrl` + `click` -> additive selection 
+    - `Shift` + `click` -> contiguous selection
+    - `Ctrl` + `A` -> Select all
+    - `Shift` + `left/right arrow` -> Extend selection up/down
+    - `Ctrl` + `Space` -> Unselect last selected item
 
 ### Additional Shortcuts
 
-- `Suppr` -> Terminate and delete selected jobs  
+!!! tip ""
+    - `Suppr` -> Terminate and delete selected jobs  
 
 
 ## Options
@@ -76,6 +78,72 @@ If checked, the Jobs will be removed when done. By default, this option is unche
 Being flooded with notifications when executing hundreds of jobs can be overwhelming: to mitigate this, the Batcher gives you control over `Success` and `Error` notifications. 
 
 Feel free to adjust these settings to show exactly the notifications you actually need.
+
+## Process Files In Batch
+
+!!! tip "For advanced users only"
+
+BluePepper provides an out of the box way of processing files in batch, by submitting a Job to the batcher for each selected file.
+
+For demonstration purposes, let's create a new script `conf/scripts/my_script.py` :memo:
+
+=== "python"
+    ```python
+    import sys
+
+    def do_stuff(path):
+        print(f"Doing stuff on {path}")
+
+    if __name__ == "__main__":
+        # The selected file that was passed as argument by the browser
+        path = sys.argv[1]
+        do_stuff(path)
+    ```
+
+Now, right click on the file(s) to process, run the action `Execute Python Script`, and drop your script on the dialog.
+
+![!batcher_python_script_file](img/batcher_python_script_file.png)
+![!batcher_python_script_drop](img/batcher_python_script_drop.png)
+
+A job should appear in the Batcher. Here, you can see our `do_stuff` functions worked as intended and printed out the file's path.
+
+![!batcher_python_script_file_result](img/batcher_python_script_file_result.png)
+
+You can now select as many files as you wish and batch any script you like.
+
+![!batcher_python_script_files](img/batcher_python_script_files.png)
+![!batcher_python_script_files_result](img/batcher_python_script_files_result.png)
+
+!!! warning
+    While doing an operation can be very useful, it can also be very dangerous as you may break a lot of files in the blink of an eye. Make sure to add a backup logic if you script involves removing or overwriting files
+
+### About Documents
+
+You can also send jobs to the Batcher from a document selection.
+
+![!batcher_python_script_document](img/batcher_python_script_document.png)
+
+In this case, the document id is passed as argument to the script. You will then need to query the database in your script to recover the document. Here is an update on our example script that demonstrates this.
+
+=== "python"
+    ```python
+    import sys
+    from bluepepper.core import database
+
+    def do_stuff(document_id):
+        document = database.get_asset_document_by_id(document_id)
+        print("Here is the document from the database:")
+        print(document)
+        print(f"Doing stuff on {document['asset']}")
+
+    if __name__ == "__main__":
+        document_id = sys.argv[1]
+        do_stuff(document_id)
+    ```
+
+Exactly like for files, the script is executed for each selected document.
+
+![!batcher_python_script_document_result](img/batcher_python_script_document_result.png)
 
 ---
 
