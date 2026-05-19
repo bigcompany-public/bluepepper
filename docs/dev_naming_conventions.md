@@ -50,5 +50,7 @@ In brief: Lucent organises everything within a `Codex`, which contains `Conventi
 !!! warning
     One important note: the Browser's configuration also relies on Conventions. If you remove a Convention that is used by the Browser, BluePepper will not be able to start. Don't worry, this is covered in the next section.
 
+---
+
 !!! info ""
     <a href="Next Section"> <div style="text-align: right; font-weight: bold"> [Next Section : Configuring The Browser](./dev_browser.md) </div>

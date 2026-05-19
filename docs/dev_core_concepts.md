@@ -1,6 +1,6 @@
 # Core Concepts
 
-BluePepper relies on a few key components that one should learn to unlock the its full potential.
+BluePepper relies on a few key components that one should learn to unlock its full potential.
 
 ## MongoDB Server
 

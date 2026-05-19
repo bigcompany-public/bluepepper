@@ -14,5 +14,7 @@ Edit the file `conf/project.py`:memo: to match your project's needs:
         production_trackers: list[str] = []
     ```
 
+---
+
 !!! info ""
     <a href="Next Section"> <div style="text-align: right; font-weight: bold"> [Next Section : Setting Up The Database](./dev_database.md) </div>

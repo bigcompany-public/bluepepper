@@ -89,6 +89,61 @@ When clicked, actions will run for all selected documents.
 
 Please note that some actions (mainly the time consuming ones) will actually start a Batcher job. For more informations, see the [Batcher Documentation](./user_batcher)
 
+## Tags
+
+!!! question "Who should manage tags ?"
+    In a project involving a team, it is advised that tags are handled by supervisors: while some tags are only used for filtering, others may be used to configure actions and tools.
+
+### Creating and Adding Tags to Documents
+
+Tags can be added to asset/shot documents, by right clicking on it and clicking `Add Tag`.
+
+![add_tag_0](img/add_tag_0.jpg)
+
+You may use existing tags or create a new one if needed.
+
+![add_tag_1](img/add_tag_1.png)
+
+The look of the tag is fully customizable
+
+![add_tag_2](img/add_tag_2.png)
+
+The `Pick Icon` button pops an Icon Browser window, where you can use the search bar, and double click on the icon you want to validate your choice.
+
+![add_tag_3](img/add_tag_3.png)
+
+When done, simply press `OK`, and you will be able to filter documents using the newly created tag.
+
+![add_tag_4](img/add_tag_4.png)
+
+### Removing a Tag From a Document
+
+Tags can be removed from a document by right clicking on the document and clicking `Remove Tag`
+
+![remove_tag](img/remove_tag.png)
+
+### Editing and Deleting Tags
+
+Tags can be edited or deleted by right clicking on them.
+
+![edit_remove_tag](img/edit_remove_tag.png)
+
+When deleting a tag, you will be prompted if the tag is applied to one or more documents.
+
+![remove_tag_warning](img/remove_tag_warning.png)
+
+### Multiple Documents, Multiple Tags
+
+Both documents and tags are in extended selection mode: you may apply multiple tags to multiple documents in one go.
+
+![add_tag_5](img/add_tag_5.png)
+
+### Tag Managers
+
+The tag manager we just mentioned can also be accessed from the Launcher.
+
+![asset_tag_manager](img/asset_tag_manager.jpg)
+
 ## Tips And Tricks
 
 !!! tip "Prefilled Naming Conventions"

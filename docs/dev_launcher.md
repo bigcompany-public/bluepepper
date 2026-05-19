@@ -1,15 +1,16 @@
 # Launcher Configuration
 
+## Adding a New App
 Let's add a simple icon to the Launcher that opens VLC.
 
 First, create a file, for instance, `conf/scripts/vlc.py`:memo::
 
 === "python"
     ```python
-    import os
+    import subprocess
 
     def open_vlc():
-        os.startfile("C:/Program Files/VideoLAN/VLC/vlc.exe")
+        subprocess.Popen(["C:/Program Files/VideoLAN/VLC/vlc.exe"])
     ```
 
 Then open `conf/app_launcher.py`:memo: and append an item to the `apps` list:
@@ -28,13 +29,17 @@ Then open `conf/app_launcher.py`:memo: and append an item to the `apps` list:
         ]
     ```
 
-A new app icon will appear in the Apps section of the Launcher, and VLC will open when you double-click it. Note that there is no technical difference between apps and tools, it is simply a convenient way to organise your icons. If you wanted the VLC icon to appear at the bottom of the Launcher, you would add the `LauncherItem` to `tools` instead of `apps`.
+A new app icon will appear in the Apps section of the Launcher, and VLC will open when you double-click it.
 
 ![launcher app](img/launcher_app.jpg)
 
+!!! tip
+    Note that there is no technical difference between apps and tools, it is simply a convenient way to organise your icons. If you wanted the VLC icon to appear at the bottom of the Launcher, you would add the `LauncherItem` to `tools` instead of `apps`.
+
+
 This approach to launching applications through custom functions gives you a great deal of flexibility from simple one-liners to complex launch sequences. See `maya_launcher.py`:memo: for a more involved example.
 
-## About Qt Dialogs
+## Adding a Qt Tool
 
 BluePepper uses PySide6 for its interface, so you can open your own Qt Dialogs from the Launcher. Let's create one in a new file `conf/scripts/open_dialog.py`:memo::
 
@@ -121,13 +126,10 @@ The result will be identical in functionality, but with considerably more style 
 
 ![launcher qt](img/launcher_qt_style.jpg)
 
-BluePepper uses QtAwesome for its menu icons. To browse available icons, open a powershell terminal from the Launcher and run the command:
+!!! question "How to get the icon code?"
+    You can visit [this section](./dev_tips_and_tricks/#qtawesome-icons) for more informations on the subject.
 
-=== "powershell"
-    ```powershell
-    qta-browser
-    ```
+---
 
-![qta browser](img/qta_browser.jpg)
-
-From there, you can copy the icon code.
+!!! info ""
+    <a href="Next Section"> <div style="text-align: right; font-weight: bold"> [Next Section : Configuring Naming Conventions](./dev_naming_conventions.md) </div>

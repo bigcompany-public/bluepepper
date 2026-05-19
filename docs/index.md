@@ -8,7 +8,7 @@ BluePepper is a pipeline application designed for 2D/3D animation studios, whose
 
 ## What Makes BluePepper So Spicy ?
 
-Here are the key design choices that makes BluePepper different:
+Here are the key design choices that makes BluePepper different than other solutions:
 
 - :heart: Extra care was taken in keeping BluePepper lean and easy to use, in order to provide the best experience for non-technical users.
 - :balance_scale: It aims to strike the best balance between ease of setup and automation capabilities. You will need basic development skills, but adding new features should be reasonably straightforward.

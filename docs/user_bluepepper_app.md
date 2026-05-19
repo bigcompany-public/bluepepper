@@ -1,6 +1,6 @@
 # BluePepper App Overview
 
-A shortcut to the BluePepper App is available in the installation folder. You may copy it to your desktop or pin it to the task bar if you wish. 
+After installation, a shortcut to the BluePepper App is available in the installation folder. You may copy it to your desktop or pin it to the task bar if you wish. 
 
 ![bluepepper_shortcut](img/bluepepper_shortcut.jpg)
 
