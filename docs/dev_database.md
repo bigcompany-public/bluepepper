@@ -21,7 +21,7 @@ In the `conf/mongodb.py`:memo: file, several connection modes to a MongoDB datab
         Keep in mind, however, that the server runs locally and only while the application is open. This option is not suitable for collaborative work.
 
 - **host-port**: If you or your IT department can set up a dedicated MongoDB server, this option will likely suit your needs.
-- **uri**: If setting up a MongoDB server yourself is not an option, the easiest solution is to use an online hosting service and connect using the URI it provides.
+- **uri**: If setting up a MongoDB server yourself is not an option, the easiest solution is to use an online hosting service and connect using the URI it provides. If it is your case, the next section have you covered.
 
 ## MongoDB Atlas Setup (Optional)
 
@@ -35,7 +35,7 @@ MongoDB Atlas allows you to host one database for free per account. Since BluePe
 
 ### Cluster Creation
 
-- Go to https://www.mongodb.com/products/platform/atlas-database and click `Get Started` to create an account.
+- Go to [MongoDB Website](https://www.mongodb.com/products/platform/atlas-database) and click `Get Started` to create an account.
 - Follow the welcome instructions, or navigate to
   **Account → Organizations → {your organization} → All Projects → Project 0 → Project Overview → Create**
 - On the next page:
@@ -56,9 +56,11 @@ Next, MongoDB will ask for a connection method.
 
 - Select **Drivers → Python**
 - uncheck **"SRV Connection String"** and **Show Password**
-- copy the **Connection String** and keep it somewhere safe.
-    !!! failure
+
+    ??? question "What is wrong with the SRV Connection String?"
         the SRV connection string relies on a DNS server, which may fail on VPN networks.
+
+- copy the **Connection String** and keep it somewhere safe.
 
 ![MongoDB Connection String](img/mongodb_connection_string.jpg)
 
