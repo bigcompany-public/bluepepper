@@ -2,16 +2,16 @@
 
 ??? abstract "Installing/Configuring BluePepper"
 
-    ??? question "I need help to setup BluePepper"
+    ??? question "I need help setting up BluePepper"
         :email: Contact us as `contact@bigcompany.fr`
 
-??? abstract "Developper Questions"
+??? abstract "Developer Questions"
     
     ??? question "What if I have multiple projects?"
 
-        Our experience shows how hard it can be to manage multiple projects that use different workflows and DCCs, which leads to edge cases and ever-growing technical debt. This lead us to believe it is wiser to have one pipeline per project.
+        Our experience shows how hard it can be to manage multiple projects that use different workflows and DCCs, which leads to edge cases and ever-growing technical debt. This leads us to believe it is wiser to have one pipeline per project.
 
-        If you really need to work on multiple projects that share the "same" pipeline, fork you repository or use another branch, on which the configuration files will be set differently.
+        If you really need to work on multiple projects that share the "same" pipeline, fork your repository or use another branch on which the configuration files will be set differently.
 
     ??? question "Why is the codebase so monolithic?"
 
@@ -33,14 +33,14 @@
 
 ??? abstract "Misc"
 
-    ??? question "Who developped BluePepper?"
+    ??? question "Who developed BluePepper?"
 
-        BluePepper was developped at Big Company. Its main contributors include:
+        BluePepper was developed at Big Company. Its main contributors include:
         
-        - Tristan Languebien (lead developper)
+        - Tristan Languebien (lead developer)
         - Terry Maire (technical director)
         - Jean-Philippe Pollien (CEO)
 
     ??? question "Who made the assets of the demo project?"
 
-        The assets used in the demo project were made at Blender Studio, for the open source short film "Sprite Fright". For more informations, see [Sprite Fright Gallery](https://studio.blender.org/projects/sprite-fright/gallery/)
+        The assets used in the demo project were made at Blender Studio for the open source short film "Sprite Fright". For more information, see [Sprite Fright Gallery](https://studio.blender.org/projects/sprite-fright/gallery/)

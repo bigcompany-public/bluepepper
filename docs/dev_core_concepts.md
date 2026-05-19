@@ -17,10 +17,10 @@ Here is the structure of the MongoDB Server:
     ??? question "Did you say ''each'' project?"
         A BluePepper installation is designed to handle a single project. However, you may have multiple BluePepper installations that all connect to the same MongoDB server, but that use different project databases.
 
-- :two: The project's database contains a `Collection` for each type of object to store
+- :two: The project's database contains a `Collection` for each type of object to store.
 - :three: Each collection contains all the `Documents` representing assets and shots.
 
-The structure is purposefully simple, in the sense that there is no complex hierarchy between objects, and that document solely consist of dictionaries containing strings. The end goal here is to provide a simple way of querying documents and resolving naming conventions. More on that in the next section.
+The structure is intentionally simple: there is no complex hierarchy between objects, and documents consist only of dictionaries containing strings. The goal is to provide a simple way of querying documents and resolving naming conventions. More on that in the next section.
 
 ## Codex
 
@@ -64,7 +64,7 @@ BluePepper makes extensive use of the `Codex` to ensure naming conventions, file
 
 ## Browser
 
-Thanks to the previous sections, you should now guess how BluePepper's Browser operates under the hood : it uses the `Database` in conjonction with the `Codex` to look for documents and files.
+Thanks to the previous sections, you should now understand how BluePepper's Browser operates under the hood: it uses the `Database` in conjunction with the `Codex` to look for documents and files.
 
 - When you select a `Document` and a file type, you are effectively creating a file search that resolves the naming convention using the asset or shot document.
     ![browser_selection_single](img/browser_selection_single.jpg)

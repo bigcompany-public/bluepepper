@@ -127,7 +127,7 @@ The result will be identical in functionality, but with considerably more style 
 ![launcher qt](img/launcher_qt_style.jpg)
 
 !!! question "How to get the icon code?"
-    You can visit [this section](./dev_tips_and_tricks/#qtawesome-icons) for more informations on the subject.
+    You can visit [this section](./dev_tips_and_tricks/#qtawesome-icons) for more information on the subject.
 
 ---
 

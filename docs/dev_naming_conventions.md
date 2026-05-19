@@ -14,7 +14,7 @@ In brief: Lucent organises everything within a `Codex`, which contains `Conventi
 First, we shall define what are the authorized characters for the various fields. Here are a few general guidelines:
 
 !!! success "Recommended"
-    The default value we recommend is letters and digits, mainly to exclude special characters and spaces, that are known for causing issues in paths, and in multiple DCCs.
+    The default value we recommend is letters and digits, mainly to exclude special characters and spaces, which are known to cause issues in paths and across multiple DCCs.
 
 !!! warning "Not Recommended"
     Avoid characters universally understood as separators like `_`, `-` or `.`: you will risk making fields detection quite complicated.
@@ -26,7 +26,7 @@ First, we shall define what are the authorized characters for the various fields
             or
         - kebabcase (`example-of-multi-part-field`)
         
-        in conjuction with being very strict about what are considered field separators (for instance, having `_` as your universal separator).
+        in conjunction with being very strict about what are considered field separators (for instance, having `_` as your universal separator).
 
 ### Default Rule
 
@@ -93,7 +93,7 @@ Let's add a few more Conventions, shall we?
     )
     ```
 
-The Convention `asset_modeling_workfile` introduces a new concept : fixed fields. In this case, `asset_modeling_workfile` is a declinaison of asset_workfile, where the values or `task` and `extension` are enforced.
+The Convention `asset_modeling_workfile` introduces a new concept: fixed fields. In this case, `asset_modeling_workfile` is a variant of `asset_workfile`, where the values of `task` and `extension` are enforced.
 
 ### Entity Configuration Conventions
 
@@ -108,11 +108,11 @@ The Codex is also used to configure entities such as assets and shots. After all
     ```
 
 - the `asset_fields` and `shot_fields` Conventions configure the fields that are mandatory to create an asset or a shot
-- the `asset_identifier` and `shot_identifier` are Conventions how BluePepper should "represent" your documents. This example is simple, but imagine an episodic show with multiple seasons and episodes, each of which have a shot named "sh0001". In this case, the proper way of "representing" a shot won't be `sh0001`, but `s001_ep001_sh0001`
+- the `asset_identifier` and `shot_identifier` are Conventions for how BluePepper should "represent" your documents. This example is simple, but imagine an episodic show with multiple seasons and episodes, each of which have a shot named "sh0001". In that case, the proper way of representing a shot won't be `sh0001`, but `s001_ep001_sh0001`
 
 ### Wrapping Up The Codex
 
-Finally, we can bound the Rules and the Conventions into a single Codex.
+Finally, we can bind the Rules and the Conventions into a single Codex.
 
 === "python"
     ```python

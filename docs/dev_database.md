@@ -21,7 +21,7 @@ In the `conf/mongodb.py`:memo: file, several connection modes to a MongoDB datab
         Keep in mind, however, that the server runs locally and only while the application is open. This option is not suitable for collaborative work.
 
 - **host-port**: If you or your IT department can set up a dedicated MongoDB server, this option will likely suit your needs.
-- **uri**: If setting up a MongoDB server yourself is not an option, the easiest solution is to use an online hosting service and connect using the URI it provides. If it is your case, the next section have you covered.
+- **uri**: If setting up a MongoDB server yourself is not an option, the easiest solution is to use an online hosting service and connect using the URI it provides. If that's the case, the next section has you covered.
 
 ## MongoDB Atlas Setup (Optional)
 
@@ -55,12 +55,12 @@ MongoDB will ask for an admin password. Set it and store it somewhere safe.
 Next, MongoDB will ask for a connection method.
 
 - Select **Drivers → Python**
-- uncheck **"SRV Connection String"** and **Show Password**
+- Uncheck **"SRV Connection String"** and **Show Password**
 
     ??? question "What is wrong with the SRV Connection String?"
-        the SRV connection string relies on a DNS server, which may fail on VPN networks.
+        The SRV connection string relies on a DNS server, which may fail on VPN networks.
 
-- copy the **Connection String** and keep it somewhere safe.
+- Copy the **Connection String** and keep it somewhere safe.
 
 ![MongoDB Connection String](img/mongodb_connection_string.jpg)
 
@@ -74,14 +74,14 @@ You may create an additional user if you wish to fine-tune permissions. Under th
 ### Opening To The World
 
 For now the database will only be allowed for your IP address. To allow the database to be accessed from anywhere on the internet:
-- In **Database & Network Access**, go to **IP Access List**
-- Add the IP address `0.0.0.0/0`
+- In **Database & Network Access**, go to **IP Access List**.
+- Add the IP address `0.0.0.0/0`.
 ![MongoDB User1](img/mongodb_new_ip.jpg)
 ![MongoDB User1](img/mongodb_new_ip2.jpg)
 
 ### Back To mongodb.py
 
-Now that your database is now up and running, open `conf/mongodb.py`:memo:.
+Now that your database is up and running, open `conf/mongodb.py`:memo:.
 
 - Set the mode to `"uri"`.
 - Paste the connection string as the value for `"uri"` (don't forget to set the proper username and password).

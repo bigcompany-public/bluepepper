@@ -76,7 +76,7 @@ Populate your tasks with file kinds. A `FileKind` provides access to files match
     asset_modeling_task.add_kind(kind)
     ```
 
-FileKinds appear in the third column of the interface. When selecting a `Document` and a `FileFind` the result of a file discovery appears in the fourth column of the interface.
+FileKinds appear in the third column of the interface. When selecting a `Document` and a `FileKind`, the result of a file discovery appears in the fourth column of the interface.
 
 ### Result
 Before going further, we should take a look at the result. Here is the full code so far:
@@ -197,7 +197,7 @@ When triggering an action with multiple documents or paths selected, you may act
 - Executing the action for each selected item, with each item passed as argument
 - Executing the action only once, with a list of items passed as argument
 
-Hopefully, the `mode` argument, can be set to `each` or `all` to cover these two cases.
+Hopefully, the `mode` argument can be set to `each` or `all` to cover these two cases.
 
 === "python"
     ```python

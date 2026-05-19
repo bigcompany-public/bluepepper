@@ -1,6 +1,6 @@
 # Embedded FastAPI Server
 
-BluePepper has an embedded FastAPI server, that starts when BluePepper is launched. This allows to run actions using web requests, meaning that you can interact with BluePepper from the outside (another DCC, another computer, and so on)
+BluePepper has an embedded FastAPI server that starts when BluePepper is launched. This allows you to run actions using web requests, meaning that you can interact with BluePepper from the outside (another DCC, another computer, and so on).
 
 By default, the server runs on port 9999, but you may set your own port in the `conf/fastapi.py`:memo: configuration file.
 
@@ -20,7 +20,7 @@ By default, the server runs on port 9999, but you may set your own port in the `
 ### Submitting a Batcher Job Using FastAPI
 
 It is also possible to submit a job using a web request. All arguments needed to create the job shall be passed through the request's payload.
-Here is an example using BluePepper's builtin client:
+Here is an example using BluePepper's built-in client:
 
 === "python"
     ```python

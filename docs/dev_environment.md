@@ -17,14 +17,14 @@
 - You can now open the app using the newly created BluePepper shortcut.
 
 ??? question "Why are there two installation scripts?"
-    You may have noticed bluepepper's directory contains a `install_dev.bat` file and a `install_enduser.bat`.
+    You may have noticed bluepepper's directory contains an `install_dev.bat` file and an `install_enduser.bat`.
     
-    The first initializes the repository in a way that prevents the update callback from triggering. This way, you can do your own thing without having BluePepper scrapping all your changes at launch.
+    The first initializes the repository in a way that prevents the update callback from triggering. This way, you can do your own thing without BluePepper scraping all your changes at launch.
 
-??? question "How does the installation actually works?"
-    The installation uses UV to install the python virtual environments and the python packages needed by BluePepper.
+??? question "How does the installation actually work?"
+    The installation uses UV to install the Python virtual environments and the Python packages needed by BluePepper.
 
-    The configuration files that drive the installation are located in `conf/requirements` :open_file_folder:, each file representing a separate virtual environment, and containing the list of python packages to install
+    The configuration files that drive the installation are located in `conf/requirements` :open_file_folder:, with each file representing a separate virtual environment and containing the list of Python packages to install.
 
     ![requirements](img/requirements.jpg)
 
@@ -33,7 +33,7 @@
     ![venvs](img/venvs.jpg)
 
     ??? question "Why multiple virtual environments?"
-        All the softwares used on your project won't use the same version of python, which will undeniably cause compatibility issues. Thus, since all softwares will at the very least need an access to the Database and the Codex, each will need a dedicated python environment where pymongo and lucent are installed
+        All the software used on your project won't use the same version of Python, which can cause compatibility issues. Since all software will at the very least need access to the Database and the Codex, each environment needs a dedicated Python environment where `pymongo` and `lucent` are installed.
 
 ## Running BluePepper Like a Dev
 
@@ -102,14 +102,14 @@ Here are the recommended extensions for VSCode
 
 ### Python Interpreter
 
-- Press `Ctrl` + `Shift` + `P` -> `Python: Select Intepreter`
+- Press `Ctrl` + `Shift` + `P` -> `Python: Select Interpreter`
     ![python_interpreter](img/python_interpreter.png)
 
 - Enter Interpreter → Find…
 - Select the `python.exe` file from the `core` virtual environment
 
     ![python_interpreter_2](img/python_interpreter_2.png)
-- It is now advised to close the terminals and restart VSCode, so pylance can update using the new python interpreter.
+- It is now advised to close the terminals and restart VSCode so Pylance can update using the new Python interpreter.
 
 From now on, syntax highlighting and autocompletion should work like a charm.
 

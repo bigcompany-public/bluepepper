@@ -2,7 +2,7 @@
 
 ## QtAwesome Icons
 
-BluePepper uses QtAwesome for its menu icons. To browse available icons, open a powershell terminal from the Launcher and run the command:
+BluePepper uses QtAwesome for its menu icons. To browse available icons, open a PowerShell terminal from the Launcher and run the command:
 
 === "powershell"
     ```powershell
