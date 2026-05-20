@@ -25,10 +25,9 @@ Here are the key design choices that make BluePepper different from other soluti
 ## What BluePepper Is Not?
 
 - BluePepper is **not a production tracker**. Assigning tasks and handling retakes is purposefully not part of BluePepper: you are free to use the production tracker that best fits your needs and can link it to BluePepper later if desired.
+- BluePepper is **not a massive all-in-one pipeline platform**. Its philosophy is to stay lightweight, approachable, and efficient for studios that want strong automation capabilities without maintaining a complex infrastructure or large development team. That being said, BluePepper is designed to be highly extensible, allowing you to expand and adapt it as much as your studio requires.
 
 ---
 
 !!! info ""
     <a href="Next Section"> <div style="text-align: right; font-weight: bold"> [Next Section : Quick Start](./quick_start.md) </div>
-
-
