@@ -2,9 +2,9 @@
 
 ## About The FastAPI Server
 
-BluePepper has an embedded FastAPI server that starts when BluePepper is launched. This allows you to run actions using web requests, meaning that you can interact with BluePepper from the outside (another DCC, another computer, and so on).
+BluePepper has an embedded FastAPI server that starts when the application is launched. This allows you to run actions via web requests, letting you interact with BluePepper from outside (another DCC, another computer, etc.).
 
-By default, the server runs on port 9999, but you may set your own port in the `conf/fastapi.py`:memo: configuration file.
+By default, the server runs on port 9999, but you can set a different port in the `conf/fastapi.py`:memo: configuration file.
 
 === "python"
     ```python
@@ -16,7 +16,7 @@ By default, the server runs on port 9999, but you may set your own port in the `
     ```
 
 !!! info
-    You may open multiple instance of BluePepper, but only one FastAPI server will be able to run at a time. Thus, the first BluePepper instance you open will handle all the requests.
+    You may open multiple instances of BluePepper, but only one FastAPI server can run at a time. Thus, the first BluePepper instance you open will handle all requests.
 
 ## Sending a Request
 
