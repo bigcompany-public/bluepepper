@@ -9,7 +9,6 @@ from qtpy.QtGui import QIcon, QPixmap
 from qtpy.QtWidgets import QListWidget, QListWidgetItem, QWidget
 
 from bluepepper.core import codex, database
-
 from bluepepper.gui.utils import format_widgets, get_stylesheet, get_theme
 from bluepepper.gui.widgets.container import (
     ContainerDialog,
