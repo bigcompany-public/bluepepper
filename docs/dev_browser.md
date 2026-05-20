@@ -317,4 +317,4 @@ Executing this action will submit jobs to the Batcher.
 ---
 
 !!! info ""
-    <a href="Next Section"> <div style="text-align: right; font-weight: bold"> [Next Section : Embedded FastAPI Server](./dev_fastapi.md) </div>
+    <a href="Next Section"> <div style="text-align: right; font-weight: bold"> [Next Section : Writing Your First Script](./dev_first_script.md) </div>

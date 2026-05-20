@@ -43,7 +43,7 @@ Once the python interpreter is configured, you can run BluePepper from your term
 
 === "powershell"
     ```powershell
-    & ./venvs/core_3.11.12/Scripts/python.exe ./main.py  
+    & ./venvs/core_3.11.12/Scripts/python.exe ./main.py
     ```
 
 ### Running a Script

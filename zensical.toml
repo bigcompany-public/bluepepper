@@ -26,6 +26,7 @@ nav = [
         { "Browser" = "user_browser.md" },
         { "Batcher" = "user_batcher.md" },
         { "EntityCreator" = "user_entitycreator.md" },
+        { "Getting Help" = "user_getting_help.md" },
     ]},
     { "TD/Dev Documentation" = [
         { "Core Concepts" = "dev_core_concepts.md" },
@@ -35,6 +36,7 @@ nav = [
         { "Configuring The Launcher" = "dev_launcher.md" },
         { "Configuring Naming Conventions" = "dev_naming_conventions.md" },
         { "Configuring The Browser" = "dev_browser.md" },
+        { "Writing Your First Script" = "dev_first_script.md" },
         { "Embedded FastAPI Server" = "dev_fastapi.md" },
         { "Tips and Tricks" = "dev_tips_and_tricks.md" },
     ]},
