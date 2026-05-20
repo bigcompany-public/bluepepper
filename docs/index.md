@@ -4,7 +4,14 @@
 
 BluePepper is a pipeline application designed for 2D/3D animation studios, whose main goal is to make navigation and automation efficient and simple to set up.
 
-![bluepepper](img/bluepepper_launcher.jpg)
+!!! note ""
+    ![bluepepper_app](img/bluepepper_app.png)
+
+    ---
+    ![bluepepper_app_2](img/bluepepper_app_2.png)
+
+    ---
+    ![bluepepper](img/batcher.jpg)
 
 ## What Makes BluePepper So Spicy?
 
