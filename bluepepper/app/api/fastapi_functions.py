@@ -52,7 +52,7 @@ def log_info(bluepepper_app: BluePepperApp, message: str):
     logging.info(message)
 
 
-def set_active_tab(bluepepper_app: BluePepperApp, index: int):
+def set_active_page(bluepepper_app: BluePepperApp, index: int):
     bluepepper_app.page_buttons[index].click()
 
 
