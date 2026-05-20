@@ -6,11 +6,11 @@ BluePepper is a pipeline application for 2D/3D animation studios.
 
 [**Read the documentation here**](https://bigcompany-public.github.io/bluepepper/).
 
-![bluepepper_app](img/bluepepper_app.png)
+![bluepepper_app](docs/img/bluepepper_app.png)
 
-![bluepepper_app_2](img/bluepepper_app_2.png)
+![bluepepper_app_2](docs/img/bluepepper_app_2.png)
 
-![bluepepper](img/batcher.jpg)
+![bluepepper](docs/img/batcher.jpg)
 
 ## Contact
 
