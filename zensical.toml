@@ -39,7 +39,7 @@ nav = [
         { "Tips and Tricks" = "dev_tips_and_tricks.md" },
     ]},
     { "FAQ" = "faq.md" },
-    { "Lab" = "lab.md" },
+    # { "Lab" = "lab.md" },
 ]
 
 # Palette toggle for dark mode
