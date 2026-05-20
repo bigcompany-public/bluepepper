@@ -1,6 +1,8 @@
 # Writing Your First Script
 
-This section demonstrates how to use the `Database` and the `Codex`. In this example we write a script that finds the latest version of an asset workfile and copies it to a delivery folder. The examples use documents and naming conventions from the demo project, feel free to adjust them to your needs.
+This section demonstrates how to use the `Database` and the `Codex`, and shows how to automate the resulting script with the Batcher.
+
+In this example, we write a script that finds the latest version of an asset workfile and copies it to a delivery folder. The examples use documents and naming conventions from the demo project, feel free to adjust them to your needs.
 
 !!! tip
     Before going any further, remember to initialize the terminal properly, as specified in [this section](dev_environment/#running-a-script)
