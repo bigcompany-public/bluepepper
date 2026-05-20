@@ -150,18 +150,30 @@ class EntityTab(QWidget):
 
     def add_document_table(self):
         self.document_table = TableDocuments(self)
+        size_policy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+        size_policy.setHorizontalStretch(6)
+        self.document_table.setSizePolicy(size_policy)
         self.layout_results.addWidget(self.document_table)
 
     def add_task_table(self):
         self.task_table = TableTasks(self)
+        size_policy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+        size_policy.setHorizontalStretch(5)
+        self.task_table.setSizePolicy(size_policy)
         self.layout_results.addWidget(self.task_table)
 
     def add_kind_table(self):
         self.kind_table = TableFileKinds(self)
+        size_policy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+        size_policy.setHorizontalStretch(5)
+        self.kind_table.setSizePolicy(size_policy)
         self.layout_results.addWidget(self.kind_table)
 
     def add_file_table(self):
         self.file_table = TableFiles(self)
+        size_policy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+        size_policy.setHorizontalStretch(10)
+        self.file_table.setSizePolicy(size_policy)
         self.layout_results.addWidget(self.file_table)
 
     def setup_initial_state(self):
