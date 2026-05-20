@@ -1,6 +1,6 @@
 # Writing Your First Script
 
-This section will demonstrate how to use the `Database` and the `Codex`. In this example, we will write a script that looks for the last version of an asset workfile, and copy it to a delivery folder (we will be using documents and naming conventions from the demo project, feel free to adjust it to your needs).
+This section demonstrates how to use the `Database` and the `Codex`. In this example we write a script that finds the latest version of an asset workfile and copies it to a delivery folder. The examples use documents and naming conventions from the demo project, feel free to adjust them to your needs.
 
 !!! tip
     Before going any further, remember to initialize the terminal properly, as specified in [this section](dev_environment/#running-a-script)
@@ -14,7 +14,7 @@ This section will demonstrate how to use the `Database` and the `Codex`. In this
 
 ### Laying the foundations
 
-Create a new python file `conf/scripts/my_first_script.py` :memo: with a placeholder `main()` function.
+Create a new Python file `conf/scripts/my_first_script.py` :memo: with a placeholder `main()` function.
 
 === "Python"
     ```python
@@ -32,10 +32,10 @@ Create a new python file `conf/scripts/my_first_script.py` :memo: with a placeho
     ```
 
 ??? question "What is `sys.argv` ?"
-    `sys.argv` returns the list of arguments provided to python. Index 0 is the path of the script, and index 1 will be the argument provided along the script.
+    `sys.argv` returns the list of arguments provided to Python. Index 0 is the path to the script, and index 1 is the first argument passed to the script.
 
 ??? question "What is `if __name__ == "__main__"` ?"
-    This line of code basically means "if this python file is executed as a script". This prevents the `main()` function from triggering if this python file is imported somewhere else.
+    This line means "if this Python file is executed as a script". It prevents the `main()` function from running when the file is imported as a module.
 
 You can now run your python script using this command:
 
@@ -47,14 +47,14 @@ You can now run your python script using this command:
     ```
 
 ??? question "How to get a document ID?"
-    A document's ID can conviniently be copied directly from the Browser
+    A document's ID can conveniently be copied directly from the Browser.
 
     ![copy_document_id](img/copy_document_id.png)
 
 
 ### Querying The Database
 
-Having a document's ID is nice, but there is not much we ca do with it as-is. Hopefully, the database provides a function to find the document using its ID.
+Having a document's ID is useful, but there is not much you can do with it on its own. The database provides a function to find the full document using its ID.
 
 === "Python"
     ```python
@@ -81,16 +81,16 @@ BluePepper's Codex has functions to find files that match a specific naming conv
     # >>> bluepepper_project\assetWorkspace\chr\elderSprite\mdl\blender\elderSprite_mdl_v001_newFile.blend
     ```
 
-??? question "How did the file seach work?"
-    The Convention needed the fields `type`, `asset`, `version` and `description`. The `asset` and `type` by using the document as fields, resulting in a search string looking like this: 
+??? question "How did the file search work?"
+    The Convention requires the fields `type`, `asset`, `version`, and `description`. The `asset` and `type` are taken from the document fields, resulting in a search string like this:
 
         bluepepper_project\assetWorkspace\chr\elderSprite\mdl\blender\elderSprite_mdl_v*_*.blend
-    
-    Lucent found all matching files, and returned the last one.
+
+    Lucent found all matching files and returned the last one.
 
 ### Constructing A Destination Path
 
-Building paths by splitting and mixing parts of an existing path is not worthy of your time. Let's use the Codex instead.
+Building paths by splitting and mixing parts of an existing path is not worth your time. Use the Codex instead.
 
 Add a new Convention to the Codex in `conf/naming_conventions.py` :memo:
 
@@ -101,7 +101,7 @@ Add a new Convention to the Codex in `conf/naming_conventions.py` :memo:
         modeling_delivery = Convention("{@project_root}/delivery/{asset}_{task}_v{version}_{description}.{extension}")
     ```
 
-And use this new Convention in our script. We will use the `transmute()` function, to transform a path into another path.
+Use this new Convention in the script. We'll use the `transmute()` function to convert a source path into a destination path.
 
 === "Python"
     ```python
@@ -112,7 +112,7 @@ And use this new Convention in our script. We will use the `transmute()` functio
     ```
 
 ??? question "How did the transmutation work?"
-    Lucent extracted the fields from the original path, deducing their value:
+    Lucent extracted the fields from the original path and deduced their values:
 
     - `asset` = `elderSprite`
     - `type` = `chr`
@@ -134,7 +134,7 @@ And use this new Convention in our script. We will use the `transmute()` functio
 
 ### Copying The File
 
-Now that we have the source and the destination, the last step is to proceed to the copy.
+Now that we have the source and destination paths, the last step is to copy the file.
 
 === "Python"
     ```python
@@ -171,13 +171,13 @@ Here is the full code of our awesome script:
         main(sys.argv[1])
     ```
 
-As you can see, using the Database in conjunction with the Codex allow file manipulations with very few lines of code.
+As you can see, using the `Database` together with the `Codex` allows file manipulations with very few lines of code.
 
 ## Process Assets In Batch
 
-To turn this simple script into something we can actually process as batch, we well follow the steps described in the [Batcher Menu Action Tutorial](./dev_browser/#creating-a-batcher-job-through-a-menuaction). 
+To turn this simple script into something we can process as a batch job, we will follow the steps described in the [Batcher Menu Action Tutorial](./dev_browser/#creating-a-batcher-job-through-a-menuaction).
 
-Edit the Browser configuration file `conf/app_browser.py` :memo: to add a new 
+Edit the Browser configuration file `conf/app_browser.py` :memo: to add a new action.
 
 === "Python"
     ```python
@@ -198,7 +198,7 @@ Edit the Browser configuration file `conf/app_browser.py` :memo: to add a new
     asset_entity.add_document_action(deliver_modeling_action)
     ```
 
-The contextural action is now available, and the Batch works wonders.
+The contextual action is now available, and the Batcher will process the job.
 
 ![first_script_action](img/first_script_action.png)
 ![first_script_batcher](img/first_script_batcher.png)
@@ -206,9 +206,9 @@ The contextural action is now available, and the Batch works wonders.
 
 ## Process Files In Batch
 
-For demonstration purposes, we performed document queries and file discovery to get you aquainted with the Database and the Codex, but the Browser can already do most of the heavy lifting.
+For demonstration purposes, we performed document queries and file discovery to help you become acquainted with the `Database` and the `Codex`, but the Browser can already do most of the heavy lifting.
 
-Our script can be adjusted to take a path as argument instead of a document ID.
+Our script can be adjusted to take a path as an argument instead of a document ID.
 
 === "Python"
     ```python
