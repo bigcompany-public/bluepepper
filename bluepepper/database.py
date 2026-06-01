@@ -22,6 +22,7 @@ from conf.naming_conventions import codex
 _LOCAL_STARTUP_RETRIES = 20
 _LOCAL_STARTUP_TIMEOUT_S = 0.5
 _LOCAL_STARTUP_SLEEP_S = 0.5
+_SOCKET_TIMEOUT_S = 5
 
 
 class AssetNotFoundError(Exception):
