@@ -7,11 +7,18 @@ used to standardize the way files are opened
 """
 
 import argparse
+import json
 import logging
 import os
 import subprocess
 import webbrowser
 from pathlib import Path
+
+from bluepepper.core import root_dir
+from bluepepper.helpers.run_callable import run_callable
+
+OPENFILE_CONFIG_FILE = root_dir / "conf/openfile.json"
+OPENFILE_CONFIG: dict = json.loads(OPENFILE_CONFIG_FILE.read_text())
 
 
 def open_file(path: Path, os_default=False):
@@ -44,15 +51,19 @@ def open_file(path: Path, os_default=False):
         webbrowser.open(path)
         return
 
-    # Get extension & software assigned to it
-    if path.suffix in [".ma", ".mb"]:
-        print("Open in maya")
-    elif path.suffix == ".blend":
-        print("Open in photoshop")
-    elif path.suffix in [".mov", ".mp4"]:
-        print("Open in vlc")
-    elif path.suffix == ".nk":
-        print("Open in nuke")
+    # Get specific extension management
+    extension_config: dict = OPENFILE_CONFIG.get(path.suffix, {})
+    if extension_config:
+        kwargs: dict[str, str] = extension_config.get("kwargs", {})
+        for key, value in kwargs.items():
+            if value == "<path>":
+                kwargs[key] = path.as_posix()
+
+        run_callable(extension_config["module"], extension_config["function"], kwargs=kwargs)
+        return
+
+    # Open with windows default
+    os.startfile(path)
 
 
 def show_in_explorer(path: Path):

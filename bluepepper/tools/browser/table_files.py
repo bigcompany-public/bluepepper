@@ -21,6 +21,7 @@ from watchdog.events import FileSystemEvent, FileSystemEventHandler
 from watchdog.observers import Observer
 
 from bluepepper.core import database
+from bluepepper.openfile import open_file
 from bluepepper.tools.browser.browser_config import FileKind
 from bluepepper.tools.browser.browser_menu import BrowserMenu
 
@@ -111,15 +112,15 @@ class TableFiles(QTableWidget):
     def setup_ui(self):
         self.setColumnCount(1)
         size_policy = QSizePolicy(
-            QSizePolicy.Expanding,
-            QSizePolicy.Expanding,
+            QSizePolicy.Policy.Expanding,
+            QSizePolicy.Policy.Expanding,
         )
         self.setSizePolicy(size_policy)
         item = QTableWidgetItem()
         self.setHorizontalHeaderItem(0, item)
         self.setHorizontalHeaderLabels(["Files"])
-        self.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.horizontalHeader().setVisible(True)
         self.horizontalHeader().setDefaultSectionSize(100)
         self.horizontalHeader().setHighlightSections(True)
@@ -131,11 +132,19 @@ class TableFiles(QTableWidget):
     def setup_signals(self):
         """Sets ut the signals of the table widget"""
         self.itemSelectionChanged.connect(self.file_changed)
+        self.doubleClicked.connect(self.open_files)
 
     def file_changed(self):
         """This method is triggered when the file's selection has changed"""
         file_names = [item.path for item in self.get_selected_items()]
         logging.info(f"File selection changed to {file_names}")
+
+    def open_files(self):
+        """
+        This method opens the selected files
+        """
+        for path in self.selected_paths:
+            open_file(path)
 
     def get_selected_items(
         self,

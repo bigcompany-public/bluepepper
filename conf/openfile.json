@@ -1,0 +1,7 @@
+{
+    ".ma" : {
+        "module": "bluepepper.softwares.maya.maya_launcher",
+        "function": "open",
+        "kwargs": {"path": "<path>"}
+    }
+}

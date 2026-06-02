@@ -272,6 +272,13 @@ def get_tool_config() -> AppConfig:
         kwargs={"convention": "<convention>"},
         mode="all",
     )
+    file_open = MenuAction(
+        label="Open",
+        qta_icon="fa6s.folder-open",
+        module="bluepepper.openfile",
+        function="open_file",
+        kwargs={"path": "<path>"},
+    )
     file_copy_path_action = MenuAction(
         label="Copy Path",
         qta_icon="fa5.clipboard",
@@ -361,6 +368,7 @@ def get_tool_config() -> AppConfig:
                 kind.add_kind_action(kind_copy_convention_action)
 
                 # File actions
+                kind.add_file_action(file_open)
                 kind.add_file_action(file_show_in_explorer)
                 kind.add_file_action(file_copy_path_action)
                 kind.add_file_action(file_copy_filename_action)
