@@ -33,7 +33,7 @@ def open_file(path: Path, os_default=False):
 
     # Cover the case of urls
     if str(path).startswith("http"):
-        webbrowser.open(path)
+        webbrowser.open(path.as_posix())
         return
 
     # Return if the provided file does not exist
@@ -48,18 +48,20 @@ def open_file(path: Path, os_default=False):
 
     # Reveal in explorer if the provided path is a folder
     if path.is_dir():
-        webbrowser.open(path)
+        webbrowser.open(path.as_posix())
         return
 
     # Get specific extension management
     extension_config: dict = OPENFILE_CONFIG.get(path.suffix, {})
     if extension_config:
+        _kwargs = {}
         kwargs: dict[str, str] = extension_config.get("kwargs", {})
         for key, value in kwargs.items():
+            _kwargs[key] = value
             if value == "<path>":
-                kwargs[key] = path.as_posix()
+                _kwargs[key] = path.as_posix()
 
-        run_callable(extension_config["module"], extension_config["function"], kwargs=kwargs)
+        run_callable(extension_config["module"], extension_config["function"], kwargs=_kwargs)
         return
 
     # Open with windows default
