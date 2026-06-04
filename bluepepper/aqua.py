@@ -4,16 +4,15 @@ import argparse
 import logging
 import os
 from pathlib import Path
-from typing import Optional
 
 import keyring
 from aquarium import Aquarium
 from aquarium.aquarium import Asset, Element, Item, Project, Shot, Task
 from aquarium.exceptions import AutorisationError
-from conf.aquarium import AquariumConfig
 
 from bluepepper.core import codex, init_logging
 from bluepepper.helpers.timeit import timeit
+from conf.aquarium import AquariumConfig
 
 # TODO : ajouter des retries avec le package "tenacity"
 
@@ -21,7 +20,7 @@ from bluepepper.helpers.timeit import timeit
 BLUEPEPPER_AQUARIUM_KEYRING = "bluepepper_aquarium"
 
 # Create an Aqua instance at the module level to avoid re-connecting again and again
-aqua: Optional[Aqua] = None
+aqua: Aqua | None = None
 
 
 @timeit
@@ -30,7 +29,7 @@ def get_aqua() -> Aqua:
     global aqua
     if aqua is None:
         connect()
-    return aqua
+    return aqua  # type: ignore
 
 
 class AquaPermissionError(Exception): ...
@@ -99,6 +98,16 @@ class Aqua:
                 current_item = result[0].item
         return current_item
 
+    def get_task_versions(self, task: Task) -> list[Item]:
+        versions: list[Element] = task.get_children(types=["Version"])
+        return [elem.item for elem in versions]
+
+    def get_task_version(self, task: Task, version: str) -> Item:
+        versions: list[Element] = task.get_children(types=["Version"], names=[version])
+        if not versions:
+            raise RuntimeError(f"Version not found : {version}")
+        return versions[0].item
+
     def get_asset_path(self, fields: dict[str, str]) -> Path:
         return Path(codex.convs.aquarium_asset.format(fields))
 
@@ -111,7 +120,7 @@ class Aqua:
         group = self.ensure_asset_hierarchy(group_path)
         data = fields.copy()
         data["name"] = fields["asset"]
-        template: int = AquariumConfig.asset_templates.get(fields["type"])
+        template: int = AquariumConfig.asset_templates.get(fields["type"], 0)
         if not template:
             template = AquariumConfig.asset_templates["_default"]
 
@@ -165,7 +174,15 @@ class Aqua:
         result = asset.get_tasks(task_name=task)
         if not result:
             raise AquaTaskNotFoundError(f"Task not found on aquarium : {asset.data['name']}/{task}")
-        return result[0]
+        return result[0].item
+
+    def set_task_status(self, task: Task, status: str):
+        statuses = task.get_statuses()
+        if status not in statuses:
+            raise RuntimeError(f'Task "{task.data.name}" does not have a status called "{status}"')
+        data = statuses[status]
+        data["status"] = status
+        task.update_data(data)
 
     def create_shot(self, fields: dict[str, str]) -> Shot:
         logging.info(f"Creating aquarium shot : {fields}")
@@ -247,6 +264,8 @@ def user_has_stored_credentials() -> bool:
 def connect_with_stored_credentials() -> Aqua:
     logging.info("Fetching stored credentials")
     creds = keyring.get_credential(service_name=BLUEPEPPER_AQUARIUM_KEYRING, username=None)
+    if not creds:
+        raise RuntimeError("Aquarium credentials not found")
     return connect_with_credentials(email=creds.username, password=creds.password)
 
 
@@ -258,7 +277,7 @@ def connect(email: str = "", password: str = "", token="", bot: bool = True, sto
     elif email and password:
         connect_with_credentials(email=email, password=password, store=store)
     elif os.environ.get("BLUEPEPPER_AQUARIUM_TOKEN"):
-        connect_with_token(os.environ.get("BLUEPEPPER_AQUARIUM_TOKEN"))
+        connect_with_token(os.environ.get("BLUEPEPPER_AQUARIUM_TOKEN", ""))
     elif user_has_stored_credentials():
         connect_with_stored_credentials()
     elif bot:
@@ -334,4 +353,5 @@ def _main():
 
 if __name__ == "__main__":
     # os.environ["BLUEPEPPER_TIMEIT"] = "1"
-    _main()
+    # _main()
+    connect_with_bot()
