@@ -9,9 +9,8 @@ import subprocess
 from pathlib import Path
 from typing import Optional
 
-from conf.maya.maya import MayaConfig
-
 from bluepepper.core import init_logging, root_dir, user_prefs_dir
+from conf.maya.maya import MayaConfig
 
 
 class MayaLauncher:
@@ -32,8 +31,8 @@ class MayaLauncher:
         self.kwargs = kwargs
 
     @property
-    def default_scene_path(self) -> Path:
-        return ""
+    def default_scene_path(self) -> Path | None:
+        return None
 
     @property
     def executable(self) -> Path:
