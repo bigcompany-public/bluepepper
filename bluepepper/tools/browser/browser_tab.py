@@ -101,10 +101,14 @@ class EntityTab(QWidget):
         self.tag_filter_widget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
 
         # Adjust tag filter height
-        if len(self.tag_filter_widget.get_tag_documents()) < 8:
-            self.tag_filter_widget.setFixedHeight(34)
+        num_tags = len(self.tag_filter_widget.get_tag_documents())
+        if num_tags < 5:
+            height = 35
+        elif num_tags < 10:
+            height = 62
         else:
-            self.tag_filter_widget.setFixedHeight(68)
+            height = 90
+        self.tag_filter_widget.setFixedHeight(height)
         self.layout_tags.addWidget(self.tag_filter_widget)
 
         # Add frame for other miscellaneous buttons
