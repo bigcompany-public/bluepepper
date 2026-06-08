@@ -2,7 +2,7 @@
 
 BluePepper simply uses git to handle the version of the codebase that gets deployed across your team. As a result, downloading BluePepper is basically a `git clone` command, and updating it is basically a `git fetch / git checkout`.
 
-This section explains how to setup git for this purpose.
+This section explains how to set up git for this purpose.
 
 ## Setting Up A Personal Access Token
 
@@ -40,7 +40,7 @@ The script `conf/deploy_enduser.bat` :memo: is designed to provide a simple and 
 
     ```bat
     SET BLUEPEPPER_GIT_URL=https://github.com/your-username/bluepepper_myproject.git
-    SET BLUEPEPPER_GIT_PAT=your_readonly_personnal_access_token
+    SET BLUEPEPPER_GIT_PAT=your_readonly_personal_access_token
     ```
 
 - Edit the `conf/deploy_enduser.bat` :memo: and remove the lines `SET BLUEPEPPER_GIT_URL=` and `SET BLUEPEPPER_GIT_PATH=`
@@ -52,9 +52,9 @@ The script `conf/deploy_enduser.bat` :memo: is designed to provide a simple and 
 
 ## Updating BluePepper
 
-When BluePepper is launched, the update happens during the spash screen. The update consists of a `git fetch \ git pull` to get all changes made to the repository, and a `git checkout` to set the repository in a specific state.
+When BluePepper is launched, the update happens during the splash screen. The update consists of a `git fetch` and `git pull` to get all changes made to the repository, and a `git checkout` to set the repository in a specific state.
 
-By default, the update checks out the `main` branch, but you can specify the branch, the commit, or the tag to checkout within to the `conf/deployment.json` :memo: file.
+By default, the update checks out the `main` branch, but you can specify the branch, the commit, or the tag to check out in the `conf/deployment.json` :memo: file.
 
 === "main (default)"
     ```json
