@@ -16,7 +16,7 @@
 
 ??? question "What is the purpose of a separate Git Repository?"
     This will make it easier to edit the configuration and deploy it to your team later.
-    For more information, see [Deploying BluePepper](./dev_deployment.md/#deploying-bluepepper)
+    For more information, see [Deploying BluePepper](./dev_deployment.md)
 
 
 ## Installation

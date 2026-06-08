@@ -253,4 +253,4 @@ The Action can now be triggered on files, and the result will be the same.
 ---
 
 !!! info ""
-    <a href="Next Section"> <div style="text-align: right; font-weight: bold"> [Next Section : Embedded FastAPI Server](./dev_fastapi.md) </div>
+    <a href="Next Section"> <div style="text-align: right; font-weight: bold"> [Next Section : Deploying BluePepper](./dev_deployment.md) </div>

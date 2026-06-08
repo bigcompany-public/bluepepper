@@ -37,6 +37,7 @@ nav = [
         { "Configuring Naming Conventions" = "dev_naming_conventions.md" },
         { "Configuring The Browser" = "dev_browser.md" },
         { "Writing Your First Script" = "dev_first_script.md" },
+        { "Deploying BluePepper" = "dev_deployment.md" },
         { "Embedded FastAPI Server" = "dev_fastapi.md" },
         { "Tips and Tricks" = "dev_tips_and_tricks.md" },
     ]},
