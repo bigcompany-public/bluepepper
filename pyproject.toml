@@ -1,6 +1,6 @@
 [project]
 name = "bluepepper"
-version = "0.0.1"
+version = "0.0.2"
 description = "Pipeline application designed for 2D/3D animation studios"
 readme = "README.md"
 authors = [
