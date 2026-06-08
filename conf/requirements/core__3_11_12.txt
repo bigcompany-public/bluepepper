@@ -5,6 +5,7 @@ PySide6
 QtPy
 QtAwesome
 fastapi
+toml
 uvicorn
 pymongo
 keyring
