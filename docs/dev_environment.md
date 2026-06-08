@@ -1,15 +1,23 @@
 # Setting Up a Development Environment
 
-## Forking and Cloning
+## Creating Your BluePepper Instance 
 
-- Fork [the repository](https://github.com/bigcompany-public/bluepepper) to your personal GitHub page (for example, `bluepepper_myProject`). This will make it easier to edit the configuration and deploy it to your team later.
-    ![github_fork](img/github_fork.jpg)
+- Create a new repository on your personal or on your organization's GitHub page (for example, `bluepepper_myProject`).
+
+    !!! warning "For confidentiality purposes, you should create a private repository. Only make it public if you know what you are doing."
 
 - Clone the repository.
-
     ```
     git clone https://github.com/my-account/bluepepper_myproject.git
     ```
+
+- Dowload the source code from [the repository](https://github.com/bigcompany-public/bluepepper)
+- Unzip it to your empty git folder.
+
+??? question "What is the purpose of a separate Git Repository?"
+    This will make it easier to edit the configuration and deploy it to your team later.
+    For more information, see [Deploying BluePepper](./dev_deployment.md/#deploying-bluepepper)
+
 
 ## Installation
 

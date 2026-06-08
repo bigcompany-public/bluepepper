@@ -4,6 +4,7 @@ This module provides automated installation, virtual environment setup,
 and repository management for the BluePepper project.
 """
 
+import json
 import logging
 import os
 import shutil
@@ -12,12 +13,10 @@ import sys
 import time
 import traceback
 from argparse import ArgumentParser, Namespace
-from collections.abc import Callable
 from datetime import datetime
 from functools import wraps
 from pathlib import Path
-from typing import Any, List, TypeVar
-from urllib.request import urlopen
+from typing import Any, List
 
 
 def _main(
@@ -166,9 +165,6 @@ class BluePepperInstaller:
             )
             return
 
-        # Retrieve current tag from server
-        current_tag = self.current_tag
-
         # Add current directory to safe directories for multi-user access
         command = [
             "git",
@@ -188,6 +184,7 @@ class BluePepperInstaller:
         logging.info(f"Git - Checkout to {branch}")
         subprocess.run(["git", "checkout", branch], check=True, cwd=self.root_path, text=True)
         subprocess.run(["git", "pull"], check=True, cwd=self.root_path, text=True)
+        subprocess.run(["git", "fetch", "--tags"], check=True, cwd=self.root_path, text=True)
 
         logging.info("Git - Reverting changes")
         subprocess.run(
@@ -199,14 +196,17 @@ class BluePepperInstaller:
         subprocess.run(["git", "clean", "-f"], check=True, cwd=self.root_path, text=True)
 
         # Fetch all tags and checkout to current tag
-        logging.info(f"Git - Checkout to {current_tag}")
-        subprocess.run(["git", "fetch", "--tags"], check=True, cwd=self.root_path, text=True)
-        subprocess.run(
-            ["git", "checkout", f"tags/v{current_tag}"],
-            check=True,
-            cwd=self.root_path,
-            text=True,
-        )
+        deployment_conf_file = self.root_path / "conf/deployment.json"
+        deployment_conf = json.loads(deployment_conf_file.read_text())
+        checkout_to = deployment_conf["checkout"]
+        if checkout_to != "main":
+            logging.info(f"Git - Checkout to {checkout_to}")
+            subprocess.run(
+                ["git", "checkout", f"{checkout_to}"],
+                check=True,
+                cwd=self.root_path,
+                text=True,
+            )
 
         # Bouble-check if workspace is clean
         logging.info("Git - Checking for remaining changes")
@@ -398,28 +398,6 @@ class BluePepperInstaller:
         return list(self.requirements_dir.glob("*.txt"))
 
     @property
-    def current_tag(self) -> str:
-        """Fetch the current version tag from the shared URL.
-
-        Reads the URL from current_tag_url.txt and fetches the version string.
-
-        Returns:
-            Version tag string (without 'v' prefix).
-
-        Raises:
-            FileNotFoundError: If current_tag_url.txt doesn't exist.
-            urllib.error.URLError: If the URL cannot be fetched.
-            TimeoutError: If the request takes longer than 1 second.
-        """
-        path = self.root_path / "install" / "current_tag_url.txt"
-        with path.open("r") as txt_file:
-            url = txt_file.read().strip()
-
-        with urlopen(url, timeout=1) as response:
-            version = response.read().decode().strip()
-        return version
-
-    @property
     def core_python_exe(self) -> Path:
         """Get the Python executable from the core virtual environment.
 
@@ -461,7 +439,7 @@ class BluePepperInstaller:
             shortcut_path=console_shortcut_path,
             icon_path=self.root_path / "bluepepper/gui/icons/console.ico",
             target=self.core_python_exe,
-            arguments=f'{str(self.root_path / "main.py")} --shell',
+            arguments=f"{str(self.root_path / 'main.py')} --shell",
         )
 
         # Create user-friendly shortcut

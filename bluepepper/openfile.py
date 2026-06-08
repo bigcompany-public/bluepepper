@@ -48,7 +48,7 @@ def open_file(path: Path, os_default=False):
 
     # Reveal in explorer if the provided path is a folder
     if path.is_dir():
-        webbrowser.open(path.as_posix())
+        os.startfile(path)
         return
 
     # Get specific extension management
