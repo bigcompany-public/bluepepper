@@ -11,7 +11,7 @@
 
         Our experience shows how hard it can be to manage multiple projects that use different workflows and DCCs, which leads to edge cases and ever-growing technical debt. This leads us to believe it is wiser to have one pipeline per project.
 
-        If you really need to work on multiple projects that share the "same" pipeline, fork your repository or use another branch on which the configuration files will be set differently.
+        If you really need to work on multiple projects that share the "same" pipeline, create another repository or use another branch on which the configuration files will be set differently.
 
     ??? question "Why is the codebase so monolithic?"
 
