@@ -11,4 +11,10 @@ if (-Not $env:BLUEPEPPER_GIT_PAT) {
 # Compose git connection url
 $protocol, $_, $website, $user, $repo = $env:BLUEPEPPER_GIT_URL.split("/")
 
+# Clone repository
 git clone "$protocol//$env:BLUEPEPPER_GIT_PAT@$website/$user/$repo"
+
+# Run installation
+$folder = $repo.split(".")[0]
+& "$PSScriptRoot/$folder/install_enduser.ps1"
+
