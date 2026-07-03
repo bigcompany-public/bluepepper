@@ -6,15 +6,15 @@ This module contains the BlenderLauncher class, used to open blender in a standa
 """
 
 import argparse
+import json
 import os
 import subprocess
 from pathlib import Path
 from typing import Optional
 
-from conf.blender import BlenderConfig
-
 from bluepepper.core import root_dir
 from bluepepper.logger import get_log_path
+from conf.blender import BlenderConfig
 
 
 class BlenderLauncher:
@@ -69,7 +69,7 @@ class BlenderLauncher:
     def venv_site_package_path(self) -> Path:
         """
         Returns the paths to the packages intalled in a python virtual environment setup with UV,
-        that matches the python version of maya
+        that matches the python version of blender
         """
         venv_dir = root_dir / "venvs" / BlenderConfig.venv
         site_package_dir = venv_dir / "Lib/site-packages"
@@ -80,12 +80,25 @@ class BlenderLauncher:
         """
         Returns the PYTHONPATH string used as an environment variable
         """
-        return [
+        paths = [
             # Add pipeline root to python path, in order to import bluepepper modules
             root_dir,
             # add virtual environment to python path, in order to import packages installed with uv
             self.venv_site_package_path,
         ]
+
+        # Add editable mode packages (dev only)
+        from urllib.parse import urlparse
+        from urllib.request import url2pathname
+
+        # p = urlparse('file:///home/pi/Desktop/music/Radio%20Song.mp3')
+        # file_path = url2pathname(p.path)
+        for i in self.venv_site_package_path.rglob("direct_url.json"):
+            url = json.loads(i.read_text())["url"]
+            path = Path(url2pathname(urlparse(url).path))
+            paths.append(path / "src")
+
+        return paths
 
     @property
     def script_dir(self) -> Path:
@@ -102,7 +115,7 @@ class BlenderLauncher:
 
         # Startup scene
         if self.startup_scene:
-            command += [self.startup_scene.as_posix()]
+            command += [str(self.startup_scene)]
         # command += [
         #     "--addons",
         #     "bluepepper_addon",  # Addon must be called by the name of the module
@@ -125,11 +138,19 @@ class BlenderLauncher:
         env["BLUEPEPPER_LOG_PATH"] = log_path.as_posix()
         log_path.parent.mkdir(parents=True, exist_ok=True)
         command += ["--log-file", log_path.as_posix()]
+
+        # Open Blender with a separate console and hide console by default
+        # This must be done so blender doesn't use bluepepper's console and so "toggle system console" works as intended
+        flag = subprocess.CREATE_NEW_CONSOLE
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+        startupinfo.wShowWindow = subprocess.SW_HIDE
+
         self.process = subprocess.Popen(
             command,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
             env=env,
+            creationflags=flag,
+            startupinfo=startupinfo,
         )
 
     @property
@@ -139,8 +160,9 @@ class BlenderLauncher:
 
 
 def open(path: Optional[Path] = None, script: Optional[Path] = None):
-    maya = BlenderLauncher(path=path, script=script)
-    maya.open()
+    print(path)
+    blender = BlenderLauncher(path=path, script=script)
+    blender.open()
 
 
 if __name__ == "__main__":
