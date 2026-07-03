@@ -13,6 +13,7 @@ from bson import ObjectId
 from bluepepper.aqua import get_aqua
 from bluepepper.core import codex, database
 from bluepepper.helpers.timeit import timeit
+from conf.project import ProjectSettings
 
 
 class AssetNotFoundError(Exception): ...
@@ -56,6 +57,13 @@ class Asset:
 
         # invalidate current document
         del self.document
+        self.update_aquarium_tags()
+
+    def update_aquarium_tags(self):
+        if "aquarium" not in ProjectSettings.production_trackers:
+            return
+        tags = self.document.get("_tags", [])
+        self.aquarium_asset.update_data({"tags": tags})
 
     def remove_tag(self, tag: str):
         # Raise error if asset tag was not found
@@ -70,6 +78,7 @@ class Asset:
 
         # invalidate current document
         del self.document
+        self.update_aquarium_tags()
 
     def __repr__(self) -> str:
         return f"Asset {self.identifier}:\n{json.dumps(self.document, indent=4)}"
