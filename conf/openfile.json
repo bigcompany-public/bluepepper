@@ -3,5 +3,10 @@
         "module": "bluepepper.softwares.maya.maya_launcher",
         "function": "open",
         "kwargs": {"path": "<path>"}
+    },
+    ".blend" : {
+        "module": "bluepepper.softwares.blender.blender_launcher",
+        "function": "open",
+        "kwargs": {"path": "<path>"}
     }
 }
